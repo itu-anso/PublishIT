@@ -26,7 +26,7 @@ namespace PublishITService
         [OperationContract]
         bool EditUser(string userName, string password, string birthday, int gender);
 
-        
+
         // Operation contracts for media
 
         [OperationContract]
@@ -46,7 +46,7 @@ namespace PublishITService
 
         [OperationContract]
         string GetMedia(int id);
- 
+
 
         // Operation contracts for rating
         // int? is nullable
