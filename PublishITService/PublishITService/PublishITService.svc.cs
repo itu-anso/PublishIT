@@ -129,7 +129,8 @@ namespace PublishITService
 
         public bool UploadMedia(File media)
         {
-            throw new NotImplementedException();
+            bool success = true;
+            return success;
         }
 
         public File DownloadMedia(int id)
@@ -137,24 +138,33 @@ namespace PublishITService
             throw new NotImplementedException();
         }
 
-        public Stream StreamMedia(int id)
+        public string StreamMedia(int id)
         {
-            throw new NotImplementedException();
+            string mediaStreamed = "<video width='320' heigth='240' controls>" +
+                                        "<source src='GetMoviesByGenre.mp4' type='video/mp4'>" +
+                                        "<source='movie.ogg' type='video/ogg'>" +
+                                   "</video>";
+            return mediaStreamed;
         }
 
         public List<string> SearchMedia(string title)
         {
-            throw new NotImplementedException();
+            List<string> dummyList = new List<string>();
+            dummyList.Add("The movie with the title: " + title + " is found. This is just dummy data for testing");
+            return dummyList;
         }
 
         public List<string> GetMoviesByGenre(string genre)
         {
-            throw new NotImplementedException();
+            List<string> dummyList = new List<string>();
+            dummyList.Add("A movie with the genre: " + genre + " is found. This is just dummy data for testing");
+            return dummyList;
         }
 
         public string GetMedia(int id)
         {
-            throw new NotImplementedException();
+            string movie = "this is a test movie with id: " + id;
+            return movie;
         }
 
         public int GetRating(int movieId, int userId)
