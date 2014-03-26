@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.ServiceModel;
 
@@ -11,16 +12,16 @@ namespace PublishITService
         // Operation contracts for users
 
         [OperationContract]
-        string GetUser(string userName, string password);
+        UserDTO GetUser(UserDTO user);
 
         [OperationContract]
-        bool RegisterUser(string userName, string password, string birthday, int gender);
+        bool RegisterUser(UserDTO user);
 
         [OperationContract]
-        bool DeleteUser(string userName, string password);
+        bool DeleteUser(UserDTO user);
 
         [OperationContract]
-        bool EditUser(string userName, string password, string birthday, int gender);
+        bool EditUser(UserDTO user);
 
 
         // Operation contracts for media
@@ -47,7 +48,7 @@ namespace PublishITService
         // Operation contracts for rating
         // int? is nullable
         [OperationContract]
-        int? GetRating(int movieId, int userId);
+        int GetRating(int movieId, int userId);
 
         [OperationContract]
         bool PostRating(int rating, int movieId, int userId);

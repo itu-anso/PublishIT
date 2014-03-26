@@ -1,72 +1,90 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace PublishITService
 {
     public class PublishITService : IPublishITService
     {
-        public string GetUser(string userName, string password)
+        public IPublishITEntities _publishITEntities { get; set; }
+
+        public PublishITService(IPublishITEntities publishITEntities = null)
+        {
+            _publishITEntities = publishITEntities;
+        }
+
+        public UserDTO GetUser(UserDTO inputUser)
         {
             using (var entities = _publishITEntities ?? new PublishITEntities())
             {
-                var foundUser = from user in entities.User
-                                where user.Name == userName
-                                select new
+                var foundUser = (from user in entities.user
+                                where user.name == inputUser.name
+                                select new UserDTO()
                                 {
-                                    user.Name,
-                                    user.Password,
-                                    user.birthday,
-                                    user.gender
-                                };
+                                    name = user.name,
+                                    birthday = user.birthday,
+                                    status = user.status,
+                                    email = user.email,
+                                    user_id = user.user_id,
+                                    roles = ;
+                                }).FirstOrDefault();
+                if (foundUser != null && foundUser.status == )
+                {
+                    return foundUser;
+                }
 
-                var userString = foundUser.Name + "; " + foundUser.Password + "; " + foundUser.birthday + "; " + foundUser.gender;
-
-                return userString;
+                return new UserDTO() {name = "No user found"};
             }
         }
 
-        public bool RegisterUser(string userName, string password, string birthday, int gender)
+        public bool RegisterUser(UserDTO inputUser)
         {
             using (var entities = _publishITEntities ?? new PublishITEntities())
             {
                 int id;
 
-                if (!entities.User.Any())
+                indsæt eventuelt et GetUser kald og se om den findes i forvejen (og overvej om returtypen skal være andet end bool)
+                if (!entities.user.Any())
                 {
                     id = 1;
                 }
                 else
                 {
-                    id = entities.User.Max(u => u.Id) + 1;
+                    id = entities.user.Max(u => u.user_id) + 1;
                 }
-                entities.User.Add(new User
+                entities.user.Add(new user
                 {
-                    Id = id,
-                    name = name,
-                    password = password,
-                    birthday = birthday,
-                    gender = gender
+                    user_id = id,
+                    name = inputUser.name,
+                    password = inputUser.password,
+                    birthday = inputUser.birthday,
+                    email = inputUser.email,
+                    organization_id = inputUser.organization_id,
+                    role_id = ,
+                    salt = ,
+                    status = ,
+
                 });
 
                 entities.SaveChanges();
             }
-            return GetUser(userName, password).Equals(userName + "; " + password + "; " + birthday + "; " + gender);
+            return GetUser(inputUser).name.Equals(inputUser.name);
         }
 
-        public bool DeleteUser(string userName, string password)
+        public bool DeleteUser(UserDTO inputUser)
         {
             using (var entities = _publishITEntities ?? new PublishITEntities())
             {
-                var foundUser = from user in entities.User
-                    where user.Name == userName
-                    select user;
+                var foundUser = (from user in entities.user
+                    where user.name == inputUser.name
+                    select user).FirstOrDefault();
 
-                entities.User.DeleteOnSubmit(foundUser);
+                entities.user.Remove(foundUser);
 
                 try
                 {
-                    entities.SubmitChanges();
+                    entities.SaveChanges();
                 }
                 catch (Exception e)
                 {
@@ -74,33 +92,38 @@ namespace PublishITService
                     // Provide for exceptions.
                 }
 
-                return something
+                return GetUser(inputUser).name.Equals("No user found");
             }
         }
 
-        public bool EditUser(string userName, string password, string birthday, int gender)
+        public bool EditUser(UserDTO inputUser)
         {
             using (var entities = _publishITEntities ?? new PublishITEntities())
             {
-                var foundUser = from user in entities.User
-                                where user.Name == userName
-                                select user;
+                var foundUser = (from user in entities.user
+                                where user.name == inputUser.name
+                                select user).FirstOrDefault();
 
-                foundUser.name = userName;
-                foundUser.password = password;
-                foundUser.birthday = birthday;
-                foundUser.gernder = gender;
-
-                try
+                if (foundUser != null)
                 {
-                    entities.SubmitChanges();
-                }
-                catch (Exception e)
-                {
-                    throw;
-                }
+                    foundUser.name = inputUser.name;
+                    foundUser.password = inputUser.password;
+                    foundUser.birthday = inputUser.birthday;
+                    foundUser.email = inputUser.email;
+                    foundUser.organization_id = inputUser.organization_id;
+                    foundUser.salt = inputUser.salt;
+                    foundUser.status = inputUser.status;
+                    try
+                    {
+                        entities.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        throw;
+                    }
 
-                return GetUser(userName, password).Equals(foundUser.Name + "; " + foundUser.Password + "; " + foundUser.birthday + "; " + foundUser.gender);
+                    return GetUser(inputUser).Equals();
+                }
             }
         }
 
@@ -134,14 +157,18 @@ namespace PublishITService
             throw new NotImplementedException();
         }
 
-        public int? GetRating(int movieId, int userId)
+        public int GetRating(int movieId, int userId)
         {
             using (var entities = _publishITEntities ?? new PublishITEntities())
             {
                 var foundRating =
-                    entities.Rating.SingleOrDefault(rate => rate.movie_id == movieId && rate.user_Id == userId);
+                    entities.rating.SingleOrDefault(rate => rate.media_id == movieId && rate.user_id == userId);
 
-                return foundRating;
+                if (foundRating != null)
+                {
+                    return foundRating.rating1;
+                }
+                return -1;
             }
         }
 
@@ -150,42 +177,39 @@ namespace PublishITService
             using (var entities = _publishITEntities ?? new PublishITEntities())
             {
                 var foundRating =
-                    entities.Rating.SingleOrDefault(rate => rate.movie_id == movieId && rate.user_Id == foundUserId);
+                    entities.rating.SingleOrDefault(rate => rate.media_id == movieId && rate.user_id == userId);
 
                 if (foundRating == null)
                 {
                     int id;
 
-                    if (!entities.Rating.Any())
+                    if (!entities.rating.Any())
                     {
                         id = 1;
                     }
                     else
                     {
-                        id = entities.Rating.Max(u => u.id) + 1;
+                        id = entities.rating.Max(r => r.rating_id) + 1;
                     }
 
 
-                    entities.Rating.Add(new Rating
+                    entities.rating.Add(new rating
                     {
-                        id = id,
+                        rating_id = id,
                         rating1 = rating,
-                        // FindUserIdFromUsername ville kun være relevant hvis de ikke kan sende id (som det ser ud nu sender vi ikke et userId til dem)
-                        user_Id = FindUserIdFromUsername(userId),
-                        movie_id = data.MovieId
+                        user_id = userId,
+                        media_id = movieId
                     });
 
                     entities.SaveChanges();
                 }
                 else
                 {
-                    // FindUserIdFromUsername ville kun være relevant hvis de ikke kan sende id (som det ser ud nu sender vi ikke et userId til dem)
-                    int foundUserId = FindUserIdFromUsername(userId);
-
-                    foundRating.RatingId = rating;
+                    //?? er det sådan man editer?
+                    foundRating.rating_id = rating;
                     try
                     {
-                        entities.SubmitChanges();
+                        entities.SaveChanges();
                     }
                     catch (Exception)
                     {
