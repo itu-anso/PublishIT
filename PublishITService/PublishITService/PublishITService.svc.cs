@@ -16,7 +16,7 @@ namespace PublishITService
 
         public UserDTO GetUser(UserDTO inputUser)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundUser = (from user in entities.user
                                 where user.name == inputUser.name
