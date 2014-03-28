@@ -149,9 +149,18 @@ namespace PublishITService
 
         public List<string> SearchMedia(string title)
         {
-            List<string> dummyList = new List<string>();
-            dummyList.Add("The movie with the title: " + title + " is found. This is just dummy data for testing");
-            return dummyList;
+            List<string> mediaTitles;
+
+            var mediaFound = from mediaTitle in media
+                             where title = media.title
+                             select media.title
+
+            foreach (mediaTitle in media)
+            {
+                mediaTitles.Add(mediaTitles);
+            }
+
+            return mediaTitles;
         }
 
         public List<string> GetMoviesByGenre(string genre)
