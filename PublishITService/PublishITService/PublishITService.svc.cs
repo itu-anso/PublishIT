@@ -16,7 +16,7 @@ namespace PublishITService
 
         public UserDTO GetUser(UserDTO inputUser)
         {
-            using (var entities = _publishITEntities ?? new RentIt09Entities())
+            using (var entities = _publishITEntities ?? new RentIt09Entities1())
             {
                 var foundUser = (from u in entities.user
                                 where u.name == inputUser.name
@@ -167,7 +167,14 @@ namespace PublishITService
 
         public File DownloadMedia(int id)
         {
-            throw new NotImplementedException();
+            using (var entities = _publishITEntities = new RentIt09Entities1())
+            {
+                var foundLocation = from med in entities.media
+                                    where med.media_id == id
+                                    select med.location;
+                throw new NotImplementedException();
+
+            }
         }
 
         public string StreamMedia(int id)
@@ -179,24 +186,54 @@ namespace PublishITService
             return mediaStreamed;
         }
 
-        public List<string> SearchMedia(string title)
+        public List<media> SearchMedia(string title)
         {
-            List<string> dummyList = new List<string>();
-            dummyList.Add("The movie with the title: " + title + " is found. This is just dummy data for testing");
-            return dummyList;
+            using (var entities = _publishITEntities ?? new RentIt09Entities1())
+            {
+                List<media> mediaTitles = new List<media>();
+
+                var foundTitle = from mediaTitle in entities.media
+                                 where mediaTitle.title == title
+                                 select mediaTitle;
+
+                foreach (media mediaTitle in foundTitle)
+                    {
+                        mediaTitles.Add(mediaTitle);
+                    }
+
+                return mediaTitles;
+            }
         }
 
         public List<string> GetMoviesByGenre(string genre)
         {
-            List<string> dummyList = new List<string>();
-            dummyList.Add("A movie with the genre: " + genre + " is found. This is just dummy data for testing");
-            return dummyList;
+            using (var entities = _publishITEntities ?? new RentIt09Entities1())
+            {
+                List<string> moviesByGenre = new List<string>();
+
+                var movieByGenre = from mov in entities.video
+                                   join med in entities.media on mov.media_id equals med.media_id
+                                   select med.title;
+
+                foreach (string mov in movieByGenre)
+                {
+                    moviesByGenre.Add(mov);
+                }
+
+                return moviesByGenre;
+            }
         }
 
-        public string GetMedia(int id)
+        public media GetMedia(int id)
         {
-            string movie = "this is a test movie with id: " + id;
-            return movie;
+            using (var entities = _publishITEntities ?? new RentIt09Entities1())
+            {
+                media foundMovies = (from med in entities.media
+                                    where med.media_id == id
+                                    select med).First();
+
+                return foundMovies;
+            }
         }
 
         public int GetRating(int movieId, int userId)

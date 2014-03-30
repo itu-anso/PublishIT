@@ -12,16 +12,9 @@ namespace PublishITService
     using System;
     using System.Collections.Generic;
     
-    public partial class role
+    public partial class NAMES
     {
-        public role()
-        {
-            this.user = new HashSet<user>();
-        }
-    
-        public int role_id { get; set; }
-        public string role1 { get; set; }
-    
-        public virtual ICollection<user> user { get; set; }
+        public decimal Id { get; set; }
+        public string Name { get; set; }
     }
 }

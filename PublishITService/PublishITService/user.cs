@@ -19,11 +19,10 @@ namespace PublishITService
             this.media = new HashSet<media>();
             this.rating = new HashSet<rating>();
             this.rent = new HashSet<rent>();
-            this.role1 = new HashSet<role>();
+            this.role = new HashSet<role>();
         }
     
         public int user_id { get; set; }
-        public int role_id { get; set; }
         public int organization_id { get; set; }
         public string name { get; set; }
         public string email { get; set; }
@@ -36,7 +35,6 @@ namespace PublishITService
         public virtual organization organization { get; set; }
         public virtual ICollection<rating> rating { get; set; }
         public virtual ICollection<rent> rent { get; set; }
-        public virtual role role { get; set; }
-        public virtual ICollection<role> role1 { get; set; }
+        public virtual ICollection<role> role { get; set; }
     }
 }

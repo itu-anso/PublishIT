@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d087467370ab4bfc971393a940769721" Name="Diagram1" ZoomLevel="62">
+        <EntityTypeShape EntityType="RentIt09Model.document" Width="1.5" PointX="7.5" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.format" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.genre" Width="1.5" PointX="3" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.media" Width="1.5" PointX="5.25" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.NAMES" Width="1.5" PointX="9.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.organization" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.person" Width="1.5" PointX="5.75" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.profession" Width="1.5" PointX="8" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.rating" Width="1.5" PointX="7.5" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.rent" Width="1.5" PointX="10.5" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.role" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.user" Width="1.5" PointX="3" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RentIt09Model.video" Width="1.5" PointX="7.5" PointY="10.375" IsExpanded="true" />
+        <AssociationConnector Association="RentIt09Model.FK__document__media___0A9D95DB" ManuallyRouted="false" />
+        <AssociationConnector Association="RentIt09Model.FK__media__format_id__06CD04F7" ManuallyRouted="false" />
+        <AssociationConnector Association="RentIt09Model.FK__media__user_id__05D8E0BE" ManuallyRouted="false" />
+        <AssociationConnector Association="RentIt09Model.FK__rating__media_id__160F4887" ManuallyRouted="false" />
+        <AssociationConnector Association="RentIt09Model.FK__rent__media_id__123EB7A3" ManuallyRouted="false" />
+        <AssociationConnector Association="RentIt09Model.FK__video__media_id__08B54D69" ManuallyRouted="false" />
+        <AssociationConnector Association="RentIt09Model.FK__user__organizati__02084FDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RentIt09Model.FK__rating__user_id__151B244E" ManuallyRouted="false" />
+        <AssociationConnector Association="RentIt09Model.FK__rent__user_id__114A936A" ManuallyRouted="false" />
+        <AssociationConnector Association="RentIt09Model.hasRole" ManuallyRouted="false" />
+        <AssociationConnector Association="RentIt09Model.isProfession" ManuallyRouted="false" />
+        <AssociationConnector Association="RentIt09Model.media_genre" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
