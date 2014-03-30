@@ -149,7 +149,7 @@ namespace PublishITService
 
         public List<string> SearchMedia(string title)
         {
-            List<string> mediaTitles;
+            List<string> mediaTitles = new List<string>();
 
             var mediaFound = from mediaTitle in media
                              where title = media.title
@@ -165,6 +165,11 @@ namespace PublishITService
 
         public List<string> GetMoviesByGenre(string genre)
         {
+            List<string> moviesByGenre = new List<string>();
+
+            var movieByGenre = from movie in video
+                               where genre = 
+
             List<string> dummyList = new List<string>();
             dummyList.Add("A movie with the genre: " + genre + " is found. This is just dummy data for testing");
             return dummyList;
