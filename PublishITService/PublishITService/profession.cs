@@ -14,7 +14,14 @@ namespace PublishITService
     
     public partial class profession
     {
+        public profession()
+        {
+            this.person = new HashSet<person>();
+        }
+    
         public int profession_id { get; set; }
         public string profession1 { get; set; }
+    
+        public virtual ICollection<person> person { get; set; }
     }
 }

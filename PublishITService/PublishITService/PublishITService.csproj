@@ -115,21 +115,6 @@
     <Compile Include="profession.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="PublishITModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PublishITModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PublishITModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PublishITModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PublishITModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PublishITModel.edmx</DependentUpon>
-    </Compile>
     <Compile Include="PublishITService.svc.cs">
       <DependentUpon>PublishITService.svc</DependentUpon>
     </Compile>
@@ -155,24 +140,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <EntityDeploy Include="PublishITModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>PublishITModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <Content Include="packages.config" />
-    <Content Include="PublishITModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>PublishITModel.edmx</DependentUpon>
-      <LastGenOutput>PublishITModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="PublishITModel.edmx.diagram">
-      <DependentUpon>PublishITModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="PublishITModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>PublishITModel.edmx</DependentUpon>
-      <LastGenOutput>PublishITModel.cs</LastGenOutput>
-    </Content>
     <EntityDeploy Include="Model.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model.Designer.cs</LastGenOutput>

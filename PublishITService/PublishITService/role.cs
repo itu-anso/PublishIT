@@ -17,13 +17,11 @@ namespace PublishITService
         public role()
         {
             this.user = new HashSet<user>();
-            this.user1 = new HashSet<user>();
         }
     
         public int role_id { get; set; }
         public string role1 { get; set; }
     
         public virtual ICollection<user> user { get; set; }
-        public virtual ICollection<user> user1 { get; set; }
     }
 }

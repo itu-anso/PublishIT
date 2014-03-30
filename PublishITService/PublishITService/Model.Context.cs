@@ -13,10 +13,10 @@ namespace PublishITService
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class RentIt09Entities : DbContext
+    public partial class RentIt09Entities1 : DbContext, IPublishITEntities
     {
-        public RentIt09Entities()
-            : base("name=RentIt09Entities")
+        public RentIt09Entities1()
+            : base("name=RentIt09Entities1")
         {
         }
     
@@ -25,18 +25,18 @@ namespace PublishITService
             throw new UnintentionalCodeFirstException();
         }
     
-        public DbSet<document> document { get; set; }
-        public DbSet<format> format { get; set; }
-        public DbSet<genre> genre { get; set; }
-        public DbSet<media> media { get; set; }
-        public DbSet<NAMES> NAMES { get; set; }
-        public DbSet<organization> organization { get; set; }
-        public DbSet<person> person { get; set; }
-        public DbSet<profession> profession { get; set; }
-        public DbSet<rating> rating { get; set; }
-        public DbSet<rent> rent { get; set; }
-        public DbSet<role> role { get; set; }
-        public DbSet<user> user { get; set; }
-        public DbSet<video> video { get; set; }
+        public IDbSet<document> document { get; set; }
+        public IDbSet<format> format { get; set; }
+        public IDbSet<genre> genre { get; set; }
+        public IDbSet<media> media { get; set; }
+        public IDbSet<NAMES> NAMES { get; set; }
+        public IDbSet<organization> organization { get; set; }
+        public IDbSet<person> person { get; set; }
+        public IDbSet<profession> profession { get; set; }
+        public IDbSet<rating> rating { get; set; }
+        public IDbSet<rent> rent { get; set; }
+        public IDbSet<role> role { get; set; }
+        public IDbSet<user> user { get; set; }
+        public IDbSet<video> video { get; set; }
     }
 }
