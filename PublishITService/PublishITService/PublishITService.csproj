@@ -65,10 +65,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\PublishIT.mdf" />
-    <Content Include="App_Data\PublishIT_log.ldf">
-      <DependentUpon>PublishIT.mdf</DependentUpon>
-    </Content>
     <Content Include="PublishITService.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -86,6 +82,9 @@
     </Compile>
     <Compile Include="IPublishITEntities.cs" />
     <Compile Include="media.cs">
+      <DependentUpon>PublishITModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NAMES.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
     <Compile Include="organization.cs">
@@ -123,6 +122,7 @@
     <Compile Include="rent.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ResponseMessage.cs" />
     <Compile Include="role.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
@@ -135,13 +135,15 @@
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
     <EntityDeploy Include="PublishITModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>PublishITModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="packages.config" />
     <Content Include="PublishITModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>PublishITModel.edmx</DependentUpon>

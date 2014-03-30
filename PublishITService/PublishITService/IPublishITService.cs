@@ -15,13 +15,13 @@ namespace PublishITService
         UserDTO GetUser(UserDTO user);
 
         [OperationContract]
-        bool RegisterUser(UserDTO user);
+        ResponseMessage RegisterUser(UserDTO user);
 
         [OperationContract]
-        bool DeleteUser(UserDTO user);
+        ResponseMessage DeleteUser(UserDTO user);
 
         [OperationContract]
-        bool EditUser(UserDTO user);
+        ResponseMessage EditUser(UserDTO user);
 
 
         // Operation contracts for media
@@ -33,7 +33,7 @@ namespace PublishITService
         File DownloadMedia(int id);
 
         [OperationContract]
-        Stream StreamMedia(int id);
+        string StreamMedia(int id);
 
         [OperationContract]
         List<string> SearchMedia(string title);

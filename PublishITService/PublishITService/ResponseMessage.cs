@@ -3,12 +3,11 @@
 namespace PublishITService
 {
     [DataContract]
-    public class RoleDTO
+    public class ResponseMessage
     {
         [DataMember]
-        public int Id { get; set; }
-
+        public bool IsExecuted { get; set; }
         [DataMember]
-        public string Title { get; set; }
+        public string Message { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace PublishITService
 {
     public class PublishITService : IPublishITService
     {
-        public IPublishITEntities _publishITEntities { get; set; }
+        private readonly IPublishITEntities _publishITEntities;
 
         public PublishITService(IPublishITEntities publishITEntities = null)
         {
@@ -16,20 +16,22 @@ namespace PublishITService
 
         public UserDTO GetUser(UserDTO inputUser)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                var foundUser = (from user in entities.user
-                                where user.name == inputUser.name
+                var foundUser = (from u in entities.user
+                                where u.name == inputUser.name
                                 select new UserDTO()
                                 {
-                                    name = user.name,
-                                    birthday = user.birthday,
-                                    status = user.status,
-                                    email = user.email,
-                                    user_id = user.user_id,
-                                    roles = ;
+                                    name = u.name,
+                                    birthday = u.birthday,
+                                    status = u.status,
+                                    email = u.email,
+                                    user_id = u.user_id,
+                                    roles = (from r in entities.role where r.role_id == u.role_id select new RoleDTO(){Id = r.role_id, Title = r.role1}).ToList()
                                 }).FirstOrDefault();
-                if (foundUser != null && foundUser.status == )
+
+                
+                if (foundUser != null && foundUser.status.Equals("active"))
                 {
                     return foundUser;
                 }
@@ -38,47 +40,60 @@ namespace PublishITService
             }
         }
 
-        public bool RegisterUser(UserDTO inputUser)
+        public ResponseMessage RegisterUser(UserDTO inputUser)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                int id;
-
-                indsæt eventuelt et GetUser kald og se om den findes i forvejen (og overvej om returtypen skal være andet end bool)
-                if (!entities.user.Any())
+                if (GetUser(inputUser).name.Equals("No user found"))
                 {
-                    id = 1;
+                    int id;
+                    if (!entities.user.Any())
+                    {
+                        id = 1;
+                    }
+                    else
+                    {
+                        id = entities.user.Max(u => u.user_id) + 1;
+                    }
+                    entities.user.Add(new user
+                    {
+                        user_id = id,
+                        name = inputUser.name,
+                        password = inputUser.password,
+                        birthday = inputUser.birthday,
+                        email = inputUser.email,
+                        organization_id = inputUser.organization_id,
+                        salt = "salt",
+                        status = "active",
+
+                    });
+
+                    entities.SaveChanges();
+
+                    if (GetUser(inputUser).name.Equals(inputUser.name))
+                    {
+                        return new ResponseMessage() {IsExecuted = true, Message = "User registered"};
+                    }
+                    else
+                    {
+                        return new ResponseMessage() {IsExecuted = false, Message = "Registration failed"};
+                    }
+                    
                 }
                 else
                 {
-                    id = entities.user.Max(u => u.user_id) + 1;
+                    return new ResponseMessage() {IsExecuted = false, Message = "Username already exists"};
                 }
-                entities.user.Add(new user
-                {
-                    user_id = id,
-                    name = inputUser.name,
-                    password = inputUser.password,
-                    birthday = inputUser.birthday,
-                    email = inputUser.email,
-                    organization_id = inputUser.organization_id,
-                    role_id = ,
-                    salt = ,
-                    status = ,
-
-                });
-
-                entities.SaveChanges();
             }
-            return GetUser(inputUser).name.Equals(inputUser.name);
         }
 
-        public bool DeleteUser(UserDTO inputUser)
+        public ResponseMessage DeleteUser(UserDTO inputUser)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                var foundUser = (from user in entities.user
-                    where user.name == inputUser.name
-                    select user).FirstOrDefault();
+                var foundUser = (from u in entities.user
+                    where u.name == inputUser.name
+                    select u).FirstOrDefault();
 
                 entities.user.Remove(foundUser);
 
@@ -89,16 +104,23 @@ namespace PublishITService
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    // Provide for exceptions.
                 }
 
-                return GetUser(inputUser).name.Equals("No user found");
+                if (GetUser(inputUser).name.Equals("No user found"))
+                {
+                    return new ResponseMessage() {IsExecuted = true, Message = "Deletion completed"};
+                }
+                else
+                {
+                    return new ResponseMessage() {IsExecuted = false, Message = "Deletion failed"};
+                }
+                
             }
         }
 
-        public bool EditUser(UserDTO inputUser)
+        public ResponseMessage EditUser(UserDTO inputUser)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundUser = (from user in entities.user
                                 where user.name == inputUser.name
@@ -113,16 +135,26 @@ namespace PublishITService
                     foundUser.organization_id = inputUser.organization_id;
                     foundUser.salt = inputUser.salt;
                     foundUser.status = inputUser.status;
-                    try
+                }
+
+                try
                     {
                         entities.SaveChanges();
                     }
                     catch (Exception e)
                     {
-                        throw;
+                        throw new Exception();
                     }
 
-                    return GetUser(inputUser).Equals();
+                    var gottenUser = GetUser(inputUser);
+
+                if (gottenUser.name.Equals(inputUser.name) && gottenUser.password.Equals(inputUser.password) && gottenUser.birthday.Equals(inputUser.birthday) && gottenUser.email.Equals(inputUser.email) && gottenUser.salt.Equals(inputUser.salt))
+                {
+                    return new ResponseMessage() {IsExecuted = true, Message = "User edited"};
+                }
+                else
+                {
+                    return new ResponseMessage() {IsExecuted = false, Message = "Editing failed"};
                 }
             }
         }
@@ -169,7 +201,7 @@ namespace PublishITService
 
         public int GetRating(int movieId, int userId)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundRating =
                     entities.rating.SingleOrDefault(rate => rate.media_id == movieId && rate.user_id == userId);
@@ -184,7 +216,7 @@ namespace PublishITService
 
         public bool PostRating(int rating, int movieId, int userId)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundRating =
                     entities.rating.SingleOrDefault(rate => rate.media_id == movieId && rate.user_id == userId);
@@ -215,7 +247,6 @@ namespace PublishITService
                 }
                 else
                 {
-                    //?? er det sådan man editer?
                     foundRating.rating_id = rating;
                     try
                     {
@@ -223,7 +254,7 @@ namespace PublishITService
                     }
                     catch (Exception)
                     {
-                        throw;
+                        throw new Exception();
                     }
 
                 }
