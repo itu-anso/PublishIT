@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
@@ -31,10 +32,13 @@ namespace PublishITService
         // Operation contracts for media
 
         //[OperationContract]
-        //bool UploadMedia(File media);
+		//[WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
+        //bool UploadMedia(MediaInfo mediaInfo, Stream media);
+		[OperationContract]
+		void UploadMedia(RemoteFileInfo request);
 
-        //[OperationContract]
-        //File DownloadMedia(int id);
+        [OperationContract]
+        Stream DownloadMedia(int id);
 
         [OperationContract]
         string StreamMedia(int id);
@@ -58,4 +62,66 @@ namespace PublishITService
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
         bool PostRating(int rating, int movieId, int userId);
     }
+
+	[MessageContract]
+	public class RemoteFileInfo : IDisposable
+	{
+		[MessageHeader(MustUnderstand = true)] 
+		public string FileName;
+
+		[MessageHeader(MustUnderstand = true)]
+		public int Length;
+
+		[MessageHeader(MustUnderstand = true)]
+		public int UserId;
+
+		[MessageHeader(MustUnderstand = true)]
+		public string Title;
+
+		[MessageHeader(MustUnderstand = true)]
+		public int GenreId;
+
+		[MessageHeader(MustUnderstand = true)]
+		public string Status;
+
+		[MessageBodyMember(Order = 1)] 
+		public Stream FileStream;
+
+		public void Dispose()
+		{
+			if (FileStream != null) {
+				FileStream.Close();
+				FileStream = null;
+			}
+		}
+	}
+
+	[DataContract]
+	public class MediaInfo
+	{
+		[DataMember]
+		public string FileName { get; set; }
+
+		[DataMember]
+		public string Title { get; set; }
+
+		[DataMember]
+		public int UserId { get; set; }
+
+		[DataMember]
+		public string Description { get; set; }
+
+		[DataMember]
+		public string Date { get; set; }
+
+		[DataMember]
+		public string Status { get; set; }
+
+		[DataMember]
+		public string Length { get; set; }
+
+		[DataMember]
+		public int GenreId { get; set; }
+
+	}
 }

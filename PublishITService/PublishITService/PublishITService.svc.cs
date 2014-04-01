@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PublishITService.Resources;
 
 namespace PublishITService
 {
@@ -9,10 +10,7 @@ namespace PublishITService
     {
         private readonly IPublishITEntities _publishITEntities;
 
-        public PublishITService()
-        {
-            
-        }
+		public PublishITService(){}
 
         public PublishITService(IPublishITEntities publishITEntities = null)
         {
@@ -174,23 +172,34 @@ namespace PublishITService
             }
         }
 
-        //public bool UploadMedia(File media)
-        //{
-        //    bool success = true;
-        //    return success;
-        //}
+		public void UploadMedia(RemoteFileInfo request)
+		{
+			string extension = Path.GetExtension(request.FileName);
 
-        //public File DownloadMedia(int id)
-        //{
-        //    using (var entities = _publishITEntities = new RentIt09Entities())
-        //    {
-        //        var foundLocation = from med in entities.media
-        //                            where med.media_id == id
-        //                            select med.location;
-        //        throw new NotImplementedException();
+			IMediaParser parser = (extension == ".mp4") ? (IMediaParser)new VideoParser() : (IMediaParser) new DocumentParser();
 
-        //    }
-        //}
+			byte[] buffer = new byte[10000];
+			int bytesRead, totalBytesRead = 0;
+
+			do
+			{
+				bytesRead = request.FileStream.Read(buffer, 0, buffer.Length);
+				totalBytesRead += bytesRead;
+			} while (bytesRead > 0);
+			
+			byte[] fileStream = new byte[totalBytesRead];
+			request.FileStream.Read(fileStream, 0, fileStream.Length);
+
+			using (var entities = _publishITEntities ?? new RentIt09Entities())
+			{
+				parser.StoreMedia(fileStream, request, entities);
+			}
+		}
+
+        public Stream DownloadMedia(int id)
+        {
+            throw new NotImplementedException();
+        }
 
         public string StreamMedia(int id)
         {
