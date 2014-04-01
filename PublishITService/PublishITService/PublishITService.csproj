@@ -29,6 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -65,10 +66,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\PublishIT.mdf" />
-    <Content Include="App_Data\PublishIT_log.ldf">
-      <DependentUpon>PublishIT.mdf</DependentUpon>
-    </Content>
     <Content Include="PublishITService.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -78,14 +75,19 @@
     <Compile Include="document.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="DocumentParser.cs" />
     <Compile Include="format.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
     <Compile Include="genre.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="IMediaParser.cs" />
     <Compile Include="IPublishITEntities.cs" />
     <Compile Include="media.cs">
+      <DependentUpon>PublishITModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NAMES.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
     <Compile Include="organization.cs">
@@ -134,14 +136,17 @@
     <Compile Include="video.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="VideoParser.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
     <EntityDeploy Include="PublishITModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>PublishITModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="packages.config" />
     <Content Include="PublishITModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>PublishITModel.edmx</DependentUpon>

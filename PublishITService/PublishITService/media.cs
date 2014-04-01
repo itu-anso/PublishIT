@@ -16,7 +16,6 @@ namespace PublishITService
     {
         public media()
         {
-            this.document = new HashSet<document>();
             this.rating = new HashSet<rating>();
             this.rent = new HashSet<rent>();
             this.genre = new HashSet<genre>();
@@ -32,7 +31,7 @@ namespace PublishITService
         public Nullable<double> average_rating { get; set; }
         public Nullable<int> number_of_downloads { get; set; }
     
-        public virtual ICollection<document> document { get; set; }
+        public virtual document document { get; set; }
         public virtual format format { get; set; }
         public virtual user user { get; set; }
         public virtual ICollection<rating> rating { get; set; }

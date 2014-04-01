@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PublishITService.Resources;
 
 namespace PublishITService
 {
     public class PublishITService : IPublishITService
     {
         public IPublishITEntities _publishITEntities { get; set; }
+
+		public PublishITService(){}
 
         public PublishITService(IPublishITEntities publishITEntities = null)
         {
@@ -16,7 +19,7 @@ namespace PublishITService
 
         public UserDTO GetUser(UserDTO inputUser)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundUser = (from user in entities.user
                                 where user.name == inputUser.name
@@ -27,9 +30,9 @@ namespace PublishITService
                                     status = user.status,
                                     email = user.email,
                                     user_id = user.user_id,
-                                    roles = ;
+                                    //roles = ;
                                 }).FirstOrDefault();
-                if (foundUser != null && foundUser.status == )
+                if (foundUser != null )//&& foundUser.status == )
                 {
                     return foundUser;
                 }
@@ -40,11 +43,11 @@ namespace PublishITService
 
         public bool RegisterUser(UserDTO inputUser)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 int id;
 
-                indsæt eventuelt et GetUser kald og se om den findes i forvejen (og overvej om returtypen skal være andet end bool)
+                //indsæt eventuelt et GetUser kald og se om den findes i forvejen (og overvej om returtypen skal være andet end bool)
                 if (!entities.user.Any())
                 {
                     id = 1;
@@ -61,9 +64,9 @@ namespace PublishITService
                     birthday = inputUser.birthday,
                     email = inputUser.email,
                     organization_id = inputUser.organization_id,
-                    role_id = ,
-                    salt = ,
-                    status = ,
+                    //role_id = ,
+                    //salt = ,
+                    //status = ,
 
                 });
 
@@ -74,7 +77,7 @@ namespace PublishITService
 
         public bool DeleteUser(UserDTO inputUser)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+			using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundUser = (from user in entities.user
                     where user.name == inputUser.name
@@ -98,7 +101,7 @@ namespace PublishITService
 
         public bool EditUser(UserDTO inputUser)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+	        using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundUser = (from user in entities.user
                                 where user.name == inputUser.name
@@ -122,18 +125,37 @@ namespace PublishITService
                         throw;
                     }
 
-                    return GetUser(inputUser).Equals();
+                    return GetUser(inputUser).Equals("");
                 }
             }
+	        return false;
         }
 
-        public bool UploadMedia(File media)
-        {
-            bool success = true;
-            return success;
-        }
+		public void UploadMedia(RemoteFileInfo request)
+		{
+			string extension = Path.GetExtension(request.FileName);
 
-        public File DownloadMedia(int id)
+			IMediaParser parser = (extension == ".mp4") ? (IMediaParser)new VideoParser() : (IMediaParser) new DocumentParser();
+
+			byte[] buffer = new byte[10000];
+			int bytesRead, totalBytesRead = 0;
+
+			do
+			{
+				bytesRead = request.FileStream.Read(buffer, 0, buffer.Length);
+				totalBytesRead += bytesRead;
+			} while (bytesRead > 0);
+			
+			byte[] fileStream = new byte[totalBytesRead];
+			request.FileStream.Read(fileStream, 0, fileStream.Length);
+
+			using (var entities = _publishITEntities ?? new RentIt09Entities())
+			{
+				parser.StoreMedia(fileStream, request, entities);
+			}
+		}
+
+        public Stream DownloadMedia(int id)
         {
             throw new NotImplementedException();
         }
@@ -169,7 +191,7 @@ namespace PublishITService
 
         public int GetRating(int movieId, int userId)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+			using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundRating =
                     entities.rating.SingleOrDefault(rate => rate.media_id == movieId && rate.user_id == userId);
@@ -184,7 +206,7 @@ namespace PublishITService
 
         public bool PostRating(int rating, int movieId, int userId)
         {
-            using (var entities = _publishITEntities ?? new PublishITEntities())
+			using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundRating =
                     entities.rating.SingleOrDefault(rate => rate.media_id == movieId && rate.user_id == userId);
