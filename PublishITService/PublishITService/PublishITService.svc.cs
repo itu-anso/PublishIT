@@ -9,6 +9,11 @@ namespace PublishITService
     {
         private readonly IPublishITEntities _publishITEntities;
 
+        public PublishITService()
+        {
+            
+        }
+
         public PublishITService(IPublishITEntities publishITEntities = null)
         {
             _publishITEntities = publishITEntities;
@@ -16,10 +21,10 @@ namespace PublishITService
 
         public UserDTO GetUser(UserDTO inputUser)
         {
-            using (var entities = _publishITEntities ?? new RentIt09Entities1())
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundUser = (from u in entities.user
-                                where u.name == inputUser.name
+                                where u.user_id == inputUser.user_id
                                 select new UserDTO()
                                 {
                                     name = u.name,
@@ -27,12 +32,24 @@ namespace PublishITService
                                     status = u.status,
                                     email = u.email,
                                     user_id = u.user_id,
-                                    roles = (from r in entities.role where r.role_id == u.role_id select new RoleDTO(){Id = r.role_id, Title = r.role1}).ToList()
                                 }).FirstOrDefault();
 
                 
-                if (foundUser != null && foundUser.status.Equals("active"))
+                if (foundUser != null && foundUser.status.Equals("Active"))
                 {
+                    foundUser.roles = new List<RoleDTO>();
+
+                    var roleList = (from r in entities.role
+                        from u in r.user
+                        where u.user_id == foundUser.user_id
+                        select r).ToList();
+
+                    foreach (var r in roleList)
+                    {
+                        var x = new RoleDTO {Id = r.role_id, Title = r.role1};
+                        foundUser.roles.Add(x);
+                    }
+
                     return foundUser;
                 }
 
@@ -92,7 +109,7 @@ namespace PublishITService
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundUser = (from u in entities.user
-                    where u.name == inputUser.name
+                    where u.user_id == inputUser.user_id
                     select u).FirstOrDefault();
 
                 entities.user.Remove(foundUser);
@@ -123,7 +140,7 @@ namespace PublishITService
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundUser = (from user in entities.user
-                                where user.name == inputUser.name
+                                where user.user_id == inputUser.user_id
                                 select user).FirstOrDefault();
 
                 if (foundUser != null)
@@ -133,8 +150,6 @@ namespace PublishITService
                     foundUser.birthday = inputUser.birthday;
                     foundUser.email = inputUser.email;
                     foundUser.organization_id = inputUser.organization_id;
-                    foundUser.salt = inputUser.salt;
-                    foundUser.status = inputUser.status;
                 }
 
                 try
@@ -148,7 +163,7 @@ namespace PublishITService
 
                     var gottenUser = GetUser(inputUser);
 
-                if (gottenUser.name.Equals(inputUser.name) && gottenUser.password.Equals(inputUser.password) && gottenUser.birthday.Equals(inputUser.birthday) && gottenUser.email.Equals(inputUser.email) && gottenUser.salt.Equals(inputUser.salt))
+                if (gottenUser.name.Equals(inputUser.name) /*&& gottenUser.password.Equals(inputUser.password)*/ && gottenUser.birthday.Equals(inputUser.birthday) && gottenUser.email.Equals(inputUser.email))
                 {
                     return new ResponseMessage() {IsExecuted = true, Message = "User edited"};
                 }
@@ -159,23 +174,23 @@ namespace PublishITService
             }
         }
 
-        public bool UploadMedia(File media)
-        {
-            bool success = true;
-            return success;
-        }
+        //public bool UploadMedia(File media)
+        //{
+        //    bool success = true;
+        //    return success;
+        //}
 
-        public File DownloadMedia(int id)
-        {
-            using (var entities = _publishITEntities = new RentIt09Entities1())
-            {
-                var foundLocation = from med in entities.media
-                                    where med.media_id == id
-                                    select med.location;
-                throw new NotImplementedException();
+        //public File DownloadMedia(int id)
+        //{
+        //    using (var entities = _publishITEntities = new RentIt09Entities())
+        //    {
+        //        var foundLocation = from med in entities.media
+        //                            where med.media_id == id
+        //                            select med.location;
+        //        throw new NotImplementedException();
 
-            }
-        }
+        //    }
+        //}
 
         public string StreamMedia(int id)
         {
@@ -186,28 +201,28 @@ namespace PublishITService
             return mediaStreamed;
         }
 
-        public List<media> SearchMedia(string title)
-        {
-            using (var entities = _publishITEntities ?? new RentIt09Entities1())
-            {
-                List<media> mediaTitles = new List<media>();
+        //public List<media> SearchMedia(string title)
+        //{
+        //    using (var entities = _publishITEntities ?? new RentIt09Entities())
+        //    {
+        //        List<media> mediaTitles = new List<media>();
 
-                var foundTitle = from mediaTitle in entities.media
-                                 where mediaTitle.title == title
-                                 select mediaTitle;
+        //        var foundTitle = from mediaTitle in entities.media
+        //                         where mediaTitle.title == title
+        //                         select mediaTitle;
 
-                foreach (media mediaTitle in foundTitle)
-                    {
-                        mediaTitles.Add(mediaTitle);
-                    }
+        //        foreach (media mediaTitle in foundTitle)
+        //            {
+        //                mediaTitles.Add(mediaTitle);
+        //            }
 
-                return mediaTitles;
-            }
-        }
+        //        return mediaTitles;
+        //    }
+        //}
 
         public List<string> GetMoviesByGenre(string genre)
         {
-            using (var entities = _publishITEntities ?? new RentIt09Entities1())
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 List<string> moviesByGenre = new List<string>();
 
@@ -224,17 +239,17 @@ namespace PublishITService
             }
         }
 
-        public media GetMedia(int id)
-        {
-            using (var entities = _publishITEntities ?? new RentIt09Entities1())
-            {
-                media foundMovies = (from med in entities.media
-                                    where med.media_id == id
-                                    select med).First();
+        //public media GetMedia(int id)
+        //{
+        //    using (var entities = _publishITEntities ?? new RentIt09Entities())
+        //    {
+        //        media foundMovies = (from med in entities.media
+        //                            where med.media_id == id
+        //                            select med).First();
 
-                return foundMovies;
-            }
-        }
+        //        return foundMovies;
+        //    }
+        //}
 
         public int GetRating(int movieId, int userId)
         {
