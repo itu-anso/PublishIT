@@ -196,19 +196,39 @@ namespace PublishITService
 			}
 		}
 
-        public Stream DownloadMedia(int id)
-        {
-            throw new NotImplementedException();
-        }
+		public Stream DownloadMedia(int id)
+		{
+			throw new NotImplementedException();
+		}
 
-        public string StreamMedia(int id)
-        {
-            string mediaStreamed = "<video width='320' heigth='240' controls>" +
-                                        "<source src='GetMoviesByGenre.mp4' type='video/mp4'>" +
-                                        "<source='movie.ogg' type='video/ogg'>" +
-                                   "</video>";
-            return mediaStreamed;
-        }
+		public string StreamMedia(int userId, int movieId)
+		{
+			string mediaStreamed = "";
+
+			if (RentExist(userId, movieId))
+			{
+				var media = "";
+				using (var entities = _publishITEntities ?? new RentIt09Entities())
+				{
+					media = (from m in entities.media
+						where m.media_id == userId
+						select m.location).SingleOrDefault();
+				}
+				mediaStreamed = "" +
+					"<video width='320' heigth='240' controls>" +
+						"<source src='" + media + "' type='video/mp4'>" +
+						"<source='movie.ogg' type='video/ogg'>" +
+					"</video>";
+			}
+			else
+			{
+				mediaStreamed = "" +
+					"<div>" +
+						"<span>Sorry.. It appears you did not rent this title. </span>" +
+					"</div>";
+			}
+			return mediaStreamed;
+		}
 
         //public List<media> SearchMedia(string title)
         //{
@@ -323,5 +343,22 @@ namespace PublishITService
                 return GetRating(movieId, userId) == rating;
             }
         }
-    }
+
+		private bool RentExist(int userId, int movieId)
+		{
+			DateTime date = new DateTime();
+			using (var entities = _publishITEntities ?? new RentIt09Entities())
+			{
+				var q = from r in entities.rent
+					where (r.media_id == movieId && r.user_id == userId && (r.start_date <= date && r.end_date >= date))
+					select r;
+
+				if (q.Any())
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	}
 }

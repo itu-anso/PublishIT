@@ -161,6 +161,7 @@
       <DependentUpon>PublishITModel.edmx</DependentUpon>
       <LastGenOutput>PublishITModel.cs</LastGenOutput>
     </Content>
+    <None Include="Properties\PublishProfiles\ads.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
