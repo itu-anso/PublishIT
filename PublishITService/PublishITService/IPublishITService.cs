@@ -19,6 +19,7 @@ namespace PublishITService
         UserDTO GetUserByName(UserDTO user);
 
         [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
         ResponseMessage RegisterUser(UserDTO user);
 
         [OperationContract]
