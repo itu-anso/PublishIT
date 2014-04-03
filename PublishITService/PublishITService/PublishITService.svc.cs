@@ -196,10 +196,21 @@ namespace PublishITService
 			}
 		}
 
-		public Stream DownloadMedia(int id)
-		{
-			throw new NotImplementedException();
-		}
+		public FileStream DownloadMedia(int id)
+        {
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
+            {
+                // Get the path to the requested file
+                var path = (from med in entities.media
+                            where med.media_id == id
+                            select med.location).FirstOrDefault();
+
+                // Create a new FileStream with the path ect.
+                FileStream stream = new FileStream(@path, FileMode.Open, FileAccess.Read);
+
+                return stream;
+            }
+        }
 
 		public string StreamMedia(int userId, int movieId)
 		{

@@ -38,7 +38,7 @@ namespace PublishITService
 		void UploadMedia(RemoteFileInfo request);
 
         [OperationContract]
-        Stream DownloadMedia(int id);
+        FileStream DownloadMedia(int id);
 
         [OperationContract]
 		string StreamMedia(int id, int userId, int movieId);
