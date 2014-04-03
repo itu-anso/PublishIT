@@ -90,6 +90,7 @@
     <Compile Include="organization.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="PasswordEncryption.cs" />
     <Compile Include="person.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>

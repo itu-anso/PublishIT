@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace PublishITService
@@ -16,9 +17,10 @@ namespace PublishITService
         [DataMember]
         public string name { get; set; }
         [DataMember]
+        [EmailAddress]
         public string email { get; set; }
         [DataMember]
-        public byte[] password { get; set; }
+        public string password { get; set; }
         [DataMember]
         public DateTime? birthday { get; set; }
         [DataMember]

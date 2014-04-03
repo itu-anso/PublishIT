@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
 namespace PublishITService
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IService1" in both code and config file together.
+    
     [ServiceContract]
     public interface IPublishITService
     {
@@ -14,7 +12,11 @@ namespace PublishITService
 
         [OperationContract]
         [WebInvoke (Method = "GET", ResponseFormat = WebMessageFormat.Json)]
-        UserDTO GetUser(UserDTO user);
+        UserDTO GetUserById(UserDTO user);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json)]
+        UserDTO GetUserByName(UserDTO user);
 
         [OperationContract]
         ResponseMessage RegisterUser(UserDTO user);
