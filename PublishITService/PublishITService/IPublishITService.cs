@@ -38,7 +38,7 @@ namespace PublishITService
         Stream DownloadMedia(int id);
 
         [OperationContract]
-		string StreamMedia(int id, int userId, int movieId);
+		string StreamMedia(int userId, int movieId);
 
         [OperationContract]
         List<string> SearchMedia(string title);
