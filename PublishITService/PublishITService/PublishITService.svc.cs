@@ -200,12 +200,12 @@ namespace PublishITService
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                // Get the path to the requested file
+                // Get the path for the requested file
                 var path = (from med in entities.media
                             where med.media_id == id
                             select med.location).FirstOrDefault();
 
-                // Create a new FileStream with the path ect.
+                // Create a new FileStream with the path, how to open the file and access rights.
                 FileStream stream = new FileStream(@path, FileMode.Open, FileAccess.Read);
 
                 return stream;
