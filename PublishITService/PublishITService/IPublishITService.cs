@@ -41,16 +41,16 @@ namespace PublishITService
         FileStream DownloadMedia(int id);
 
         [OperationContract]
-		string StreamMedia(int id, int userId, int movieId);
+		string StreamMedia(int userId, int movieId);
 
-        //[OperationContract]
-        //List<string> SearchMedia(string title);
+        [OperationContract]
+        List<string> SearchMedia(string title);
 
         [OperationContract]
         List<string> GetMoviesByGenre(string genre);
 
-        //[OperationContract]
-        //string GetMedia(int id);
+        [OperationContract]
+        media GetMedia(int id);
 
 
         // Operation contracts for rating

@@ -214,22 +214,22 @@ namespace PublishITService
 
 		public string StreamMedia(int userId, int movieId)
 		{
-			string mediaStreamed = "";
+			string mediaStreamed;
 
 			if (RentExist(userId, movieId))
 			{
-				var media = "";
 				using (var entities = _publishITEntities ?? new RentIt09Entities())
 				{
-					media = (from m in entities.media
-						where m.media_id == userId
-						select m.location).SingleOrDefault();
+                    var mediaPath = (from m in entities.media
+						            where m.media_id == userId
+						            select m.location).FirstOrDefault();
+
+                    // Set mediastreamed  with a video xml tag witch provide a screen with the requested video
+                    mediaStreamed = "<video width='320' heigth='240' controls>" +
+                                        "<source src='" + mediaPath + "' type='video/mp4'>" +
+                                        "<source='movie.ogg' type='video/ogg'>" +
+                                    "</video>";
 				}
-				mediaStreamed = "" +
-					"<video width='320' heigth='240' controls>" +
-						"<source src='" + media + "' type='video/mp4'>" +
-						"<source='movie.ogg' type='video/ogg'>" +
-					"</video>";
 			}
 			else
 			{
@@ -241,24 +241,27 @@ namespace PublishITService
 			return mediaStreamed;
 		}
 
-        //public List<media> SearchMedia(string title)
-        //{
-        //    using (var entities = _publishITEntities ?? new RentIt09Entities())
-        //    {
-        //        List<media> mediaTitles = new List<media>();
+        public List<media> SearchMedia(string title)
+        {
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
+            {
+                // List for the media titles found in the database
+                List<media> mediaTitles = new List<media>();
 
-        //        var foundTitle = from mediaTitle in entities.media
-        //                         where mediaTitle.title == title
-        //                         select mediaTitle;
+                // The titles found in the database
+                var foundTitle = from mediaTitle in entities.media
+                                 where mediaTitle.title == title
+                                 select mediaTitle;
 
-        //        foreach (media mediaTitle in foundTitle)
-        //            {
-        //                mediaTitles.Add(mediaTitle);
-        //            }
+                // Every title found is put in the list
+                foreach (media mediaTitle in foundTitle)
+                    {
+                        mediaTitles.Add(mediaTitle);
+                    }
 
-        //        return mediaTitles;
-        //    }
-        //}
+                return mediaTitles;
+            }
+        }
 
         public List<string> GetMoviesByGenre(string genre)
         {
@@ -279,17 +282,17 @@ namespace PublishITService
             }
         }
 
-        //public media GetMedia(int id)
-        //{
-        //    using (var entities = _publishITEntities ?? new RentIt09Entities())
-        //    {
-        //        media foundMovies = (from med in entities.media
-        //                            where med.media_id == id
-        //                            select med).First();
+        public media GetMedia(int id)
+        {
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
+            {
+                media foundMovies = (from med in entities.media
+                                    where med.media_id == id
+                                    select med).First();
 
-        //        return foundMovies;
-        //    }
-        //}
+                return foundMovies;
+            }
+        }
 
         public int GetRating(int movieId, int userId)
         {

@@ -73,46 +73,46 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="document.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="DocumentParser.cs" />
     <Compile Include="format.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="genre.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="IMediaParser.cs" />
     <Compile Include="IPublishITEntities.cs" />
     <Compile Include="media.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model.edmx</DependentUpon>
     </Compile>
     <Compile Include="NAMES.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="organization.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="person.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="profession.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PublishITModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PublishITModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PublishITModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PublishITModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PublishITModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PublishITModel.edmx</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="PublishITService.svc.cs">
       <DependentUpon>PublishITService.svc</DependentUpon>
@@ -120,22 +120,22 @@
     <Compile Include="IPublishITService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="rating.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="rent.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="ResponseMessage.cs" />
     <Compile Include="role.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="RoleDTO.cs" />
     <Compile Include="user.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="UserDTO.cs" />
     <Compile Include="video.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="VideoParser.cs" />
   </ItemGroup>
@@ -144,22 +144,22 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <EntityDeploy Include="PublishITModel.edmx">
+    <EntityDeploy Include="Model.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>PublishITModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>Model.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="PublishITModel.Context.tt">
+    <Content Include="Model.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>PublishITModel.edmx</DependentUpon>
-      <LastGenOutput>PublishITModel.Context.cs</LastGenOutput>
+      <DependentUpon>Model.edmx</DependentUpon>
+      <LastGenOutput>Model.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="PublishITModel.edmx.diagram">
-      <DependentUpon>PublishITModel.edmx</DependentUpon>
+    <Content Include="Model.edmx.diagram">
+      <DependentUpon>Model.edmx</DependentUpon>
     </Content>
-    <Content Include="PublishITModel.tt">
+    <Content Include="Model.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>PublishITModel.edmx</DependentUpon>
-      <LastGenOutput>PublishITModel.cs</LastGenOutput>
+      <DependentUpon>Model.edmx</DependentUpon>
+      <LastGenOutput>Model.cs</LastGenOutput>
     </Content>
     <None Include="Properties\PublishProfiles\ads.pubxml" />
     <None Include="Web.Debug.config">
