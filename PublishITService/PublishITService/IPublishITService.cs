@@ -44,10 +44,10 @@ namespace PublishITService
 		string StreamMedia(int userId, int movieId);
 
         [OperationContract]
-        List<string> SearchMedia(string title);
+        List<media> SearchMedia(string title);
 
         [OperationContract]
-        List<string> GetMoviesByGenre(string genre);
+        List<media> GetMoviesByGenre(string genre);
 
         [OperationContract]
         media GetMedia(int id);

@@ -246,34 +246,34 @@ namespace PublishITService
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 // List for the media titles found in the database
-                List<media> mediaTitles = new List<media>();
+                List<media> medias = new List<media>();
 
                 // The titles found in the database
-                var foundTitle = from mediaTitle in entities.media
+                var foundMovie = from mediaTitle in entities.media
                                  where mediaTitle.title == title
                                  select mediaTitle;
 
                 // Every title found is put in the list
-                foreach (media mediaTitle in foundTitle)
+                foreach (media mediaTitle in foundMovie)
                     {
-                        mediaTitles.Add(mediaTitle);
+                        medias.Add(mediaTitle);
                     }
 
-                return mediaTitles;
+                return medias;
             }
         }
 
-        public List<string> GetMoviesByGenre(string genre)
+        public List<media> GetMoviesByGenre(string genre)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                List<string> moviesByGenre = new List<string>();
+                List<media> moviesByGenre = new List<media>();
 
                 var movieByGenre = from mov in entities.video
                                    join med in entities.media on mov.media_id equals med.media_id
-                                   select med.title;
+                                   select med;
 
-                foreach (string mov in movieByGenre)
+                foreach (media mov in movieByGenre)
                 {
                     moviesByGenre.Add(mov);
                 }
