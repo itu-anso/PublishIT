@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using PublishITService.Resources;
@@ -17,22 +18,57 @@ namespace PublishITService
             _publishITEntities = publishITEntities;
         }
 
-        public UserDTO GetUser(UserDTO inputUser)
+		public UserDTO GetUserById(int id) {
+			using (var entities = _publishITEntities ?? new RentIt09Entities()) {
+				var foundUser = (from u in entities.user
+								 where u.user_id == id
+								 select new UserDTO() {
+									 name = u.name,
+                                     username = u.user_name,
+									 birthday = u.birthday,
+									 status = u.status,
+									 email = u.email,
+									 user_id = u.user_id,
+								 }).FirstOrDefault();
+
+
+				if (foundUser != null && foundUser.status.Equals("Active")) {
+					foundUser.roles = new List<RoleDTO>();
+
+					var roleList = (from r in entities.role
+									from u in r.user
+									where u.user_id == foundUser.user_id
+									select r).ToList();
+
+					foreach (var r in roleList) {
+						var x = new RoleDTO { Id = r.role_id, Title = r.role1 };
+						foundUser.roles.Add(x);
+					}
+
+					return foundUser;
+				}
+
+				return new UserDTO() { name = "No user found" };
+			}
+		}
+
+        public UserDTO SignIn(string username, string password)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundUser = (from u in entities.user
-                                where u.user_id == inputUser.user_id
-                                select new UserDTO()
-                                {
-                                    name = u.name,
-                                    birthday = u.birthday,
-                                    status = u.status,
-                                    email = u.email,
-                                    user_id = u.user_id,
-                                }).FirstOrDefault();
+                    where u.user_name == username && u.password == password
+                    select new UserDTO()
+                    {
+                        name = u.name,
+                        username = u.user_name,
+                        birthday = u.birthday,
+                        status = u.status,
+                        email = u.email,
+                        user_id = u.user_id,
+                    }).First();
 
-                
+
                 if (foundUser != null && foundUser.status.Equals("Active"))
                 {
                     foundUser.roles = new List<RoleDTO>();
@@ -44,65 +80,98 @@ namespace PublishITService
 
                     foreach (var r in roleList)
                     {
-                        var x = new RoleDTO {Id = r.role_id, Title = r.role1};
+                        var x = new RoleDTO { Id = r.role_id, Title = r.role1 };
                         foundUser.roles.Add(x);
                     }
 
                     return foundUser;
                 }
-
-                return new UserDTO() {name = "No user found"};
+                return new UserDTO() {name = "Sign in failed"};
             }
         }
 
-        public ResponseMessage RegisterUser(UserDTO inputUser)
-        {
-            using (var entities = _publishITEntities ?? new RentIt09Entities())
-            {
-                if (GetUser(inputUser).name.Equals("No user found"))
-                {
-                    int id;
-                    if (!entities.user.Any())
-                    {
-                        id = 1;
-                    }
-                    else
-                    {
-                        id = entities.user.Max(u => u.user_id) + 1;
-                    }
-                    entities.user.Add(new user
-                    {
-                        user_id = id,
-                        name = inputUser.name,
-                        password = inputUser.password,
-                        birthday = inputUser.birthday,
-                        email = inputUser.email,
-                        organization_id = inputUser.organization_id,
-                        salt = "salt",
-                        status = "active",
+        public UserDTO GetUserByName(string username) {
+			using (var entities = _publishITEntities ?? new RentIt09Entities()) {
+				var foundUser = (from u in entities.user
+								 where u.name == username
+								 select new UserDTO() {
+									 name = u.name,
+                                     username = u.user_name,
+									 birthday = u.birthday,
+									 status = u.status,
+									 email = u.email,
+									 user_id = u.user_id,
+								 }).FirstOrDefault();
 
-                    });
 
-                    entities.SaveChanges();
+				if (foundUser != null && foundUser.status.Equals("Active")) {
+					foundUser.roles = new List<RoleDTO>();
 
-                    if (GetUser(inputUser).name.Equals(inputUser.name))
-                    {
-                        return new ResponseMessage() {IsExecuted = true, Message = "User registered"};
-                    }
-                    else
-                    {
-                        return new ResponseMessage() {IsExecuted = false, Message = "Registration failed"};
-                    }
-                    
-                }
-                else
-                {
-                    return new ResponseMessage() {IsExecuted = false, Message = "Username already exists"};
-                }
-            }
-        }
+					var roleList = (from r in entities.role
+									from u in r.user
+									where u.user_id == foundUser.user_id
+									select r).ToList();
 
-        public ResponseMessage DeleteUser(UserDTO inputUser)
+					foreach (var r in roleList) {
+						var x = new RoleDTO { Id = r.role_id, Title = r.role1 };
+						foundUser.roles.Add(x);
+					}
+
+					return foundUser;
+				}
+
+				return new UserDTO() { name = "No user found" };
+			}
+		}
+
+	    public ResponseMessage RegisterUser(UserDTO inputUser)
+	    {
+		    using (var entities = _publishITEntities ?? new RentIt09Entities())
+		    {
+			    if (GetUserByName(inputUser.name).name.Equals("No user found"))
+			    {
+				    var salt = "salt";
+				    int id;
+				    if (!entities.user.Any())
+				    {
+					    id = 1;
+				    }
+				    else
+				    {
+					    id = entities.user.Max(u => u.user_id) + 1;
+				    }
+				    var userRole = (from r in entities.role
+					    where r.role_id == 1
+					    select r).FirstOrDefault();
+
+				    entities.user.Add(new user
+				    {
+					    user_id = id,
+					    name = inputUser.name,
+					    user_name = inputUser.username,
+					    password = inputUser.password,
+					    birthday = inputUser.birthday,
+					    email = inputUser.email,
+					    organization_id = inputUser.organization_id,
+					    salt = "salt",
+					    status = "Active",
+					    role = new Collection<role>() {new role() {role_id = userRole.role_id, role1 = userRole.role1}}
+				    });
+
+				    entities.SaveChanges();
+
+				    if (GetUserByName(inputUser.name).name.Equals(inputUser.name))
+				    {
+					    return new ResponseMessage() {IsExecuted = true, Message = "User registered"};
+				    }
+
+				    return new ResponseMessage() {IsExecuted = false, Message = "Registration failed"};
+			    }
+			    return new ResponseMessage() {IsExecuted = false, Message = "Username already exists"};
+		    }
+	    }
+
+	    public ResponseMessage DeleteUser(UserDTO inputUser)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
@@ -121,7 +190,7 @@ namespace PublishITService
                     Console.WriteLine(e);
                 }
 
-                if (GetUser(inputUser).name.Equals("No user found"))
+                if (GetUserById(inputUser.user_id).name.Equals("No user found"))
                 {
                     return new ResponseMessage() {IsExecuted = true, Message = "Deletion completed"};
                 }
@@ -144,6 +213,7 @@ namespace PublishITService
                 if (foundUser != null)
                 {
                     foundUser.name = inputUser.name;
+                    foundUser.user_name = inputUser.username;
                     foundUser.password = inputUser.password;
                     foundUser.birthday = inputUser.birthday;
                     foundUser.email = inputUser.email;
@@ -159,9 +229,9 @@ namespace PublishITService
                         throw new Exception();
                     }
 
-                    var gottenUser = GetUser(inputUser);
+                    var gottenUser = GetUserById(inputUser.user_id);
 
-                if (gottenUser.name.Equals(inputUser.name) /*&& gottenUser.password.Equals(inputUser.password)*/ && gottenUser.birthday.Equals(inputUser.birthday) && gottenUser.email.Equals(inputUser.email))
+                if (gottenUser.name.Equals(inputUser.name) && gottenUser.password.Equals(inputUser.password) && gottenUser.birthday.Equals(inputUser.birthday) && gottenUser.email.Equals(inputUser.email))
                 {
                     return new ResponseMessage() {IsExecuted = true, Message = "User edited"};
                 }

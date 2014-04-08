@@ -66,6 +66,19 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="PublishITModel.Context.tt">
+      <DependentUpon>PublishITModel.edmx</DependentUpon>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PublishITModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="PublishITModel.edmx.diagram">
+      <DependentUpon>PublishITModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="PublishITModel.tt">
+      <DependentUpon>PublishITModel.edmx</DependentUpon>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PublishITModel.cs</LastGenOutput>
+    </Content>
     <Content Include="PublishITService.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -113,6 +126,32 @@
     </Compile>
     <Compile Include="profession.cs">
       <DependentUpon>Model.tt</DependentUpon>
+    <Compile Include="NAMES.cs">
+      <DependentUpon>PublishITModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="organization.cs">
+      <DependentUpon>PublishITModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="person.cs">
+      <DependentUpon>PublishITModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="profession.cs">
+      <DependentUpon>PublishITModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PublishITModel.Context.cs">
+      <DependentUpon>PublishITModel.Context.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="PublishITModel.cs">
+      <DependentUpon>PublishITModel.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="PublishITModel.Designer.cs">
+      <DependentUpon>PublishITModel.edmx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="PublishITService.svc.cs">
       <DependentUpon>PublishITService.svc</DependentUpon>
@@ -171,6 +210,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="PublishITModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>PublishITModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
