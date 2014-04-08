@@ -18,7 +18,7 @@ namespace PublishITService
         [DataMember]
         public string email { get; set; }
         [DataMember]
-        public byte[] password { get; set; }
+        public string password { get; set; }
         [DataMember]
         public DateTime? birthday { get; set; }
         [DataMember]

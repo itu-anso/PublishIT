@@ -24,12 +24,12 @@ namespace PublishITService
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+
+
         public IDbSet<document> document { get; set; }
         public IDbSet<format> format { get; set; }
         public IDbSet<genre> genre { get; set; }
         public IDbSet<media> media { get; set; }
-        public IDbSet<NAMES> NAMES { get; set; }
         public IDbSet<organization> organization { get; set; }
         public IDbSet<person> person { get; set; }
         public IDbSet<profession> profession { get; set; }

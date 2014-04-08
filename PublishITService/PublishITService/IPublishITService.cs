@@ -7,15 +7,18 @@ using System.ServiceModel.Web;
 
 namespace PublishITService
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IService1" in both code and config file together.
     [ServiceContract]
     public interface IPublishITService
     {
         // Operation contracts for users
+        [OperationContract]
+        UserDTO GetUserById(int id);
 
         [OperationContract]
-        [WebInvoke (Method = "GET", ResponseFormat = WebMessageFormat.Json)]
-        UserDTO GetUser(UserDTO user);
+        UserDTO SignIn(string username, string password);
+
+        [OperationContract]
+        UserDTO GetUserByName(string username);
 
         [OperationContract]
         ResponseMessage RegisterUser(UserDTO user);
