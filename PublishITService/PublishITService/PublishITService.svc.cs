@@ -24,6 +24,7 @@ namespace PublishITService
 								 where u.user_id == id
 								 select new UserDTO() {
 									 name = u.name,
+                                     username = u.user_name,
 									 birthday = u.birthday,
 									 status = u.status,
 									 email = u.email,
@@ -56,15 +57,16 @@ namespace PublishITService
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundUser = (from u in entities.user
-                    where u.name == username && u.password == password
+                    where u.user_name == username && u.password == password
                     select new UserDTO()
                     {
                         name = u.name,
+                        username = u.user_name,
                         birthday = u.birthday,
                         status = u.status,
                         email = u.email,
                         user_id = u.user_id,
-                    }).FirstOrDefault();
+                    }).First();
 
 
                 if (foundUser != null && foundUser.status.Equals("Active"))
@@ -94,6 +96,7 @@ namespace PublishITService
 								 where u.name == username
 								 select new UserDTO() {
 									 name = u.name,
+                                     username = u.user_name,
 									 birthday = u.birthday,
 									 status = u.status,
 									 email = u.email,
@@ -145,15 +148,13 @@ namespace PublishITService
 				    {
 					    user_id = id,
 					    name = inputUser.name,
-					    //Skal ændres
+					    user_name = inputUser.username,
 					    password = inputUser.password,
 					    birthday = inputUser.birthday,
 					    email = inputUser.email,
 					    organization_id = inputUser.organization_id,
-					    //Skal ændres
 					    salt = "salt",
 					    status = "Active",
-					    //Ved ikke om useren også skal lægges i role.user
 					    role = new Collection<role>() {new role() {role_id = userRole.role_id, role1 = userRole.role1}}
 				    });
 
@@ -212,6 +213,7 @@ namespace PublishITService
                 if (foundUser != null)
                 {
                     foundUser.name = inputUser.name;
+                    foundUser.user_name = inputUser.username;
                     foundUser.password = inputUser.password;
                     foundUser.birthday = inputUser.birthday;
                     foundUser.email = inputUser.email;

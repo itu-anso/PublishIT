@@ -30,6 +30,7 @@ namespace PublishITService
         public Nullable<System.DateTime> birthday { get; set; }
         public string salt { get; set; }
         public string status { get; set; }
+        public string user_name { get; set; }
     
         public virtual ICollection<media> media { get; set; }
         public virtual organization organization { get; set; }
