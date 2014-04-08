@@ -26,7 +26,7 @@ namespace PublishITService
         public int organization_id { get; set; }
         public string name { get; set; }
         public string email { get; set; }
-        public byte[] password { get; set; }
+        public string password { get; set; }
         public Nullable<System.DateTime> birthday { get; set; }
         public string salt { get; set; }
         public string status { get; set; }
