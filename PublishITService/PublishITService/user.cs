@@ -25,12 +25,12 @@ namespace PublishITService
         public int user_id { get; set; }
         public int organization_id { get; set; }
         public string name { get; set; }
+        public string user_name { get; set; }
         public string email { get; set; }
         public string password { get; set; }
         public Nullable<System.DateTime> birthday { get; set; }
         public string salt { get; set; }
         public string status { get; set; }
-        public string user_name { get; set; }
     
         public virtual ICollection<media> media { get; set; }
         public virtual organization organization { get; set; }
