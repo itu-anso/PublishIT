@@ -126,6 +126,7 @@
     </Compile>
     <Compile Include="profession.cs">
       <DependentUpon>Model.tt</DependentUpon>
+    </Compile> 
     <Compile Include="NAMES.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
