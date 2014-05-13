@@ -124,11 +124,6 @@
     <Compile Include="person.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="profession.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    <Compile Include="NAMES.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="organization.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
