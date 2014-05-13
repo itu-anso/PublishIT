@@ -275,29 +275,40 @@ namespace PublishITService
 			}
 		}
 
-		public Stream DownloadMedia(int id)
-		{
-			throw new NotImplementedException();
-		}
+		public FileStream DownloadMedia(int id)
+        {
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
+            {
+                // Get the path for the requested file
+                var path = (from med in entities.media
+                            where med.media_id == id
+                            select med.location).FirstOrDefault();
+
+                // Create a new FileStream with the path, how to open the file and access rights.
+                FileStream stream = new FileStream(@path, FileMode.Open, FileAccess.Read);
+
+                return stream;
+            }
+        }
 
 		public string StreamMedia(int userId, int movieId)
 		{
-			string mediaStreamed = "";
+			string mediaStreamed;
 
 			if (RentExist(userId, movieId))
 			{
-				var media = "";
 				using (var entities = _publishITEntities ?? new RentIt09Entities())
 				{
-					media = (from m in entities.media
-						where m.media_id == userId
-						select m.location).SingleOrDefault();
+                    var mediaPath = (from m in entities.media
+						            where m.media_id == userId
+						            select m.location).FirstOrDefault();
+
+                    // Set mediastreamed  with a video xml tag witch provide a screen with the requested video
+                    mediaStreamed = "<video width='320' heigth='240' controls>" +
+                                        "<source src='" + mediaPath + "' type='video/mp4'>" +
+                                        "<source='movie.ogg' type='video/ogg'>" +
+                                    "</video>";
 				}
-				mediaStreamed = "" +
-					"<video width='320' heigth='240' controls>" +
-						"<source src='" + media + "' type='video/mp4'>" +
-						"<source='movie.ogg' type='video/ogg'>" +
-					"</video>";
 			}
 			else
 			{
@@ -309,36 +320,39 @@ namespace PublishITService
 			return mediaStreamed;
 		}
 
-        //public List<media> SearchMedia(string title)
-        //{
-        //    using (var entities = _publishITEntities ?? new RentIt09Entities())
-        //    {
-        //        List<media> mediaTitles = new List<media>();
-
-        //        var foundTitle = from mediaTitle in entities.media
-        //                         where mediaTitle.title == title
-        //                         select mediaTitle;
-
-        //        foreach (media mediaTitle in foundTitle)
-        //            {
-        //                mediaTitles.Add(mediaTitle);
-        //            }
-
-        //        return mediaTitles;
-        //    }
-        //}
-
-        public List<string> GetMoviesByGenre(string genre)
+        public List<media> SearchMedia(string title)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                List<string> moviesByGenre = new List<string>();
+                // List for the media titles found in the database
+                List<media> medias = new List<media>();
+
+                // The titles found in the database
+                var foundMovie = from mediaTitle in entities.media
+                                 where mediaTitle.title == title
+                                 select mediaTitle;
+
+                // Every title found is put in the list
+                foreach (media mediaTitle in foundMovie)
+                    {
+                        medias.Add(mediaTitle);
+                    }
+
+                return medias;
+            }
+        }
+
+        public List<media> GetMoviesByGenre(string genre)
+        {
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
+            {
+                List<media> moviesByGenre = new List<media>();
 
                 var movieByGenre = from mov in entities.video
                                    join med in entities.media on mov.media_id equals med.media_id
-                                   select med.title;
+                                   select med;
 
-                foreach (string mov in movieByGenre)
+                foreach (media mov in movieByGenre)
                 {
                     moviesByGenre.Add(mov);
                 }
@@ -347,17 +361,17 @@ namespace PublishITService
             }
         }
 
-        //public media GetMedia(int id)
-        //{
-        //    using (var entities = _publishITEntities ?? new RentIt09Entities())
-        //    {
-        //        media foundMovies = (from med in entities.media
-        //                            where med.media_id == id
-        //                            select med).First();
+        public media GetMedia(int id)
+        {
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
+            {
+                media foundMovies = (from med in entities.media
+                                    where med.media_id == id
+                                    select med).First();
 
-        //        return foundMovies;
-        //    }
-        //}
+                return foundMovies;
+            }
+        }
 
         public int GetRating(int movieId, int userId)
         {

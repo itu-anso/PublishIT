@@ -41,19 +41,19 @@ namespace PublishITService
 		void UploadMedia(RemoteFileInfo request);
 
         [OperationContract]
-        Stream DownloadMedia(int id);
+        FileStream DownloadMedia(int id);
 
         [OperationContract]
 		string StreamMedia(int userId, int movieId);
 
-        //[OperationContract]
-        //List<string> SearchMedia(string title);
+        [OperationContract]
+        List<media> SearchMedia(string title);
 
         [OperationContract]
-        List<string> GetMoviesByGenre(string genre);
+        List<media> GetMoviesByGenre(string genre);
 
-        //[OperationContract]
-        //string GetMedia(int id);
+        [OperationContract]
+        media GetMedia(int id);
 
 
         // Operation contracts for rating
