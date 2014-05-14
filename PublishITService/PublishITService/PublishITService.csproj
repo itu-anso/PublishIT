@@ -93,14 +93,14 @@
     <Compile Include="document.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="DocumentParser.cs" />
+    <Compile Include="Parsers\DocumentParser.cs" />
     <Compile Include="format.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
     <Compile Include="genre.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="IMediaParser.cs" />
+    <Compile Include="Parsers\IMediaParser.cs" />
     <Compile Include="IPublishITEntities.cs" />
     <Compile Include="media.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
@@ -150,19 +150,18 @@
     <Compile Include="role.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="RoleDTO.cs" />
+    <Compile Include="DTOs\RoleDTO.cs" />
     <Compile Include="user.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="UserDTO.cs" />
+    <Compile Include="DTOs\UserDTO.cs" />
     <Compile Include="video.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="VideoParser.cs" />
+    <Compile Include="Parsers\VideoParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web;
 
-namespace PublishITService.Resources {
+namespace PublishITService.Parsers {
 	public class DocumentParser : IMediaParser {
 
 		public IPublishITEntities _publishITEntities { get; set; }

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PublishITService;
+using PublishITService.DTOs;
 
 namespace PublishITServiceTests
 {
@@ -18,26 +20,21 @@ namespace PublishITServiceTests
         private Mock<IDbSet<user>> _userMockSet;
         private Mock<IDbSet<role>> _roleMockSet;
         private Mock<IDbSet<rating>> _ratingMockSet;
+        private Mock<IDbSet<media>> _mediaMockSet;
+        private Mock<IDbSet<document>> _documentMockSet;
+        private Mock<IDbSet<rent>> _rentMockSet;
             
         [TestInitialize]
         public void InitTests()
         {
-            _userMockSet = new Mock<IDbSet<user>>();
-            SetupUserMockSet(InitUserData());
+            SetupMockSets();
 
-            _roleMockSet = new Mock<IDbSet<role>>();
-            SetupRoleMockSet(InitRoleData());
+            SetupEntitiesReturnValue();
 
-            _ratingMockSet = new Mock<IDbSet<rating>>();
-            SetupRatingMockSet(InitRatingData());
-
-            _publishITEntitiesMock = new Mock<IPublishITEntities>();
-            _publishITEntitiesMock.Setup(call => call.user).Returns(_userMockSet.Object);
-            _publishITEntitiesMock.Setup(call => call.role).Returns(_roleMockSet.Object);
-            _publishITEntitiesMock.Setup(call => call.rating).Returns(_ratingMockSet.Object);
 
             _publishITService = new PublishITService.PublishITService(_publishITEntitiesMock.Object);
         }
+
 
         [TestMethod]
         public void SuccessfullyGettingUserById()
@@ -115,7 +112,8 @@ namespace PublishITServiceTests
             });
 
             _userMockSet.Verify(x => x.Add(It.Is<user>(
-                                                        newUser => newUser.birthday == DateTime.MinValue &&
+                                                        newUser => 
+                                                        newUser.birthday == DateTime.MinValue &&
                                                         newUser.email.Equals("newEmail@email.com") && 
                                                         newUser.name.Equals("newName") && 
                                                         newUser.user_name.Equals("newUserName") && 
@@ -145,7 +143,8 @@ namespace PublishITServiceTests
             });
 
             _userMockSet.Verify(x => x.Add(It.Is<user>(
-                                                        newUser => newUser.birthday == DateTime.MinValue && 
+                                                        newUser => 
+                                                        newUser.birthday == DateTime.MinValue && 
                                                         newUser.email.Equals("newEmail@email.com") && 
                                                         newUser.name.Equals("newName") && 
                                                         newUser.user_name.Equals("userName 1") && 
@@ -168,10 +167,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyDeletingUser()
         {
-            var responseMessage = _publishITService.DeleteUser(new UserDTO
-            {
-                user_id = 1
-            });
+            var responseMessage = _publishITService.DeleteUser(1);
 
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Once);
 
@@ -183,10 +179,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullyDeletingUserDoToUnknownUserId()
         {
-            var responseMessage = _publishITService.DeleteUser(new UserDTO
-            {
-                user_id = 5
-            });
+            var responseMessage = _publishITService.DeleteUser(5);
 
             Assert.IsFalse(responseMessage.IsExecuted);
 
@@ -248,6 +241,148 @@ namespace PublishITServiceTests
             Assert.IsFalse(responseMessage.IsExecuted);
 
             Assert.AreEqual(responseMessage.Message, "Editing failed");
+        }
+
+        [TestMethod]
+        public void SuccessfullyUploadingMedia()
+        {
+            var remoteFileInfo = new RemoteFileInfo
+            {
+                FileName = "filename.pdf",
+                FileStream = new MemoryStream(),
+                Title = "title",
+                GenreId = 1,
+                Length = 1,
+                Status = "status",
+                UserId = 1
+            };
+
+            _publishITService.UploadMedia(remoteFileInfo);
+
+            _mediaMockSet.Verify(x => x.Add(It.Is<media>(
+                                            newMedia =>
+                                            newMedia.title.Equals("title") && 
+                                            newMedia.user_id == 1)),
+                                            Times.Once
+                                            );
+
+            //Thomas
+            //Should find a way to increment media_id when the id already exists..
+            _documentMockSet.Verify(x => x.Add(It.Is<document>(
+                                            newDocument =>
+                                            newDocument.media_id == 0 &&
+                                            newDocument.status.Equals("status"))), 
+                                            Times.Once
+                                            );
+
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyUploadingMedia()
+        {
+            Assert.AreEqual(1, 2);
+        }
+
+        //Thomas
+        [TestMethod]
+        public void SuccessfullyDownloadMedia()
+        {
+            //var downloadedMedia = _publishITService.DownloadMedia(1);
+            Assert.AreEqual(1, 2);
+        }
+
+        //Thomas
+        [TestMethod]
+        public void UnsuccessfullyDownloadMedia()
+        {
+            Assert.AreEqual(1, 2);
+        }
+
+        [TestMethod]
+        public void SuccessfullyStreamMedia()
+        {
+            var movie = _publishITService.StreamMovie(1,0);
+
+            Assert.AreEqual(movie, "<video width='320' heigth='240' controls>" +
+                                        "<source src='location 0' type='video/mp4'>" +
+                                        "<source='movie.ogg' type='video/ogg'>" +
+                                    "</video>");
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyStreamMediaDoToNoFoundUserId()
+        {
+            var movie = _publishITService.StreamMovie(9, 0);
+
+            Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyStreamMediaDoToNoFoundMovieId()
+        {
+            var movie = _publishITService.StreamMovie(1, 9);
+
+            Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyStreamMediaDoToDateExpired()
+        {
+            var movie = _publishITService.StreamMovie(2, 1);
+
+            Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyStreamMediaDoToDateNotStarted()
+        {
+            var movie = _publishITService.StreamMovie(2, 0);
+
+            Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
+        }
+
+        //Thomas
+        [TestMethod]
+        public void SuccessfullySearchMedia()
+        {
+            Assert.AreEqual(1, 2);
+        }
+
+        //Thomas
+        [TestMethod]
+        public void UnsuccessfullySearchMedia()
+        {
+            Assert.AreEqual(1, 2);
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingMoviesByGenre()
+        {
+            //Ændr metode til at gøre det rigtige
+            //Lav videomock (hvis det stadig er relevant efter ændring
+            //Giv Genre til medier
+            //lav eventuelt genremock
+            _publishITService.GetMoviesByGenre("Comedy");
+
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyGettingMoviesByGenre()
+        {
+            Assert.AreEqual(1, 2);
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingMedia()
+        {
+            Assert.AreEqual(1, 2);
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyGettingMedia()
+        {
+            Assert.AreEqual(1, 2);
         }
 
         [TestMethod]
@@ -391,6 +526,88 @@ namespace PublishITServiceTests
             }.AsQueryable();
         }
 
+        private IQueryable<media> InitMediaData()
+        {
+            return new List<media>
+            {
+                new media
+                {
+                    media_id = 0,
+                    user_id = 1,
+                    format_id = 1,
+                    title = "title 0",
+                    location = "location 0"
+                },
+
+                new media
+                {
+                    media_id = 1,
+                    user_id = 1,
+                    format_id = 1,
+                    title = "title 1",
+                    location = "location 1"
+                },
+                
+                new media
+                {
+                    media_id = 2,
+                    user_id = 2,
+                    format_id = 2,
+                    title = "title 2",
+                    location = "location 2"
+                }
+            }.AsQueryable();
+        }
+
+        private IQueryable<document> InitDocumentData()
+        {
+            return new List<document>
+            {
+                new document
+                {
+                    media_id = 0
+                },
+
+                new document
+                {
+                    media_id = 1
+                }
+            }.AsQueryable();
+        }
+
+        private IQueryable<rent> InitRentData()
+        {
+            return new List<rent>
+            {
+                new rent
+                {
+                    rent_id = 1,
+                    media_id = 0,
+                    user_id = 1,
+                    start_date = DateTime.MinValue,
+                    end_date = DateTime.MaxValue
+                },
+
+                new rent
+                {
+                    rent_id = 2,
+                    media_id = 1,
+                    user_id = 2,
+                    start_date = DateTime.MinValue,
+                    end_date = DateTime.Parse("10-05-1991 00:00:00")
+                },
+
+                new rent
+                {
+                    rent_id = 3,
+                    media_id = 0,
+                    user_id = 2,
+                    start_date = DateTime.Parse("10-05-2050 00:00:00"),
+                    end_date = DateTime.MaxValue
+                }
+            }.AsQueryable();
+        }
+
         private void SetupUserMockSet(IQueryable<user> data)
         {
             _userMockSet.As<IQueryable<user>>().Setup(m => m.Provider).Returns(data.Provider);
@@ -413,6 +630,64 @@ namespace PublishITServiceTests
             _ratingMockSet.As<IQueryable<rating>>().Setup(m => m.Expression).Returns(data.Expression);
             _ratingMockSet.As<IQueryable<rating>>().Setup(m => m.ElementType).Returns(data.ElementType);
             _ratingMockSet.As<IQueryable<rating>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+        }
+
+        private void SetupMediaMockSet(IQueryable<media> data)
+        {
+            _mediaMockSet.As<IQueryable<media>>().Setup(m => m.Provider).Returns(data.Provider);
+            _mediaMockSet.As<IQueryable<media>>().Setup(m => m.Expression).Returns(data.Expression);
+            _mediaMockSet.As<IQueryable<media>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _mediaMockSet.As<IQueryable<media>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+        }
+
+        private void SetupDocumentMockSet(IQueryable<document> data)
+        {
+            _documentMockSet.As<IQueryable<document>>().Setup(m => m.Provider).Returns(data.Provider);
+            _documentMockSet.As<IQueryable<document>>().Setup(m => m.Expression).Returns(data.Expression);
+            _documentMockSet.As<IQueryable<document>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _documentMockSet.As<IQueryable<document>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+        }
+
+        private void SetupRentMockSet(IQueryable<rent> data)
+        {
+            _rentMockSet.As<IQueryable<rent>>().Setup(m => m.Provider).Returns(data.Provider);
+            _rentMockSet.As<IQueryable<rent>>().Setup(m => m.Expression).Returns(data.Expression);
+            _rentMockSet.As<IQueryable<rent>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _rentMockSet.As<IQueryable<rent>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+        }
+
+
+
+        private void SetupMockSets()
+        {
+            _userMockSet = new Mock<IDbSet<user>>();
+            SetupUserMockSet(InitUserData());
+
+            _roleMockSet = new Mock<IDbSet<role>>();
+            SetupRoleMockSet(InitRoleData());
+
+            _ratingMockSet = new Mock<IDbSet<rating>>();
+            SetupRatingMockSet(InitRatingData());
+
+            _mediaMockSet = new Mock<IDbSet<media>>();
+            SetupMediaMockSet(InitMediaData());
+
+            _documentMockSet = new Mock<IDbSet<document>>();
+            SetupDocumentMockSet(InitDocumentData());
+
+            _rentMockSet = new Mock<IDbSet<rent>>();
+            SetupRentMockSet(InitRentData());
+        }
+
+        private void SetupEntitiesReturnValue()
+        {
+            _publishITEntitiesMock = new Mock<IPublishITEntities>();
+            _publishITEntitiesMock.Setup(call => call.user).Returns(_userMockSet.Object);
+            _publishITEntitiesMock.Setup(call => call.role).Returns(_roleMockSet.Object);
+            _publishITEntitiesMock.Setup(call => call.rating).Returns(_ratingMockSet.Object);
+            _publishITEntitiesMock.Setup(call => call.media).Returns(_mediaMockSet.Object);
+            _publishITEntitiesMock.Setup(call => call.document).Returns(_documentMockSet.Object);
+            _publishITEntitiesMock.Setup(call => call.rent).Returns(_rentMockSet.Object);
         }
 
     }

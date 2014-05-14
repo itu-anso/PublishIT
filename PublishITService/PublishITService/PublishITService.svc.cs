@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using PublishITService.Resources;
+using PublishITService.DTOs;
+using PublishITService.Parsers;
 
 namespace PublishITService
 {
@@ -22,7 +23,7 @@ namespace PublishITService
 			using (var entities = _publishITEntities ?? new RentIt09Entities()) {
 				var foundUser = (from u in entities.user
 								 where u.user_id == id
-								 select new UserDTO() {
+								 select new UserDTO {
 									 name = u.name,
                                      username = u.user_name,
 									 birthday = u.birthday,
@@ -49,7 +50,7 @@ namespace PublishITService
 					return foundUser;
 				}
 
-				return new UserDTO()
+				return new UserDTO
 				{
 				    name = "No user found",
                     status = "Not a user"
@@ -63,7 +64,7 @@ namespace PublishITService
             {
                 var foundUser = (from u in entities.user
                     where u.user_name == username && u.password == password
-                    select new UserDTO()
+                    select new UserDTO
                     {
                         name = u.name,
                         username = u.user_name,
@@ -91,7 +92,7 @@ namespace PublishITService
 
                     return foundUser;
                 }
-                return new UserDTO() {name = "Sign in failed"};
+                return new UserDTO {name = "Sign in failed"};
             }
         }
 
@@ -99,7 +100,7 @@ namespace PublishITService
 			using (var entities = _publishITEntities ?? new RentIt09Entities()) {
 				var foundUser = (from u in entities.user
 								 where u.user_name == username
-								 select new UserDTO() {
+								 select new UserDTO {
 									 name = u.name,
                                      username = u.user_name,
 									 birthday = u.birthday,
@@ -126,7 +127,7 @@ namespace PublishITService
 					return foundUser;
 				}
 
-				return new UserDTO()
+				return new UserDTO
 				{
 				    username = "No user found",
 				    status = "Not a user"
@@ -164,28 +165,28 @@ namespace PublishITService
 					    organization_id = inputUser.organization_id,
 					    salt = "salt",
 					    status = "Active",
-					    role = new Collection<role>() {new role() {role_id = userRole.role_id, role1 = userRole.role1}}
+					    role = new Collection<role> {new role {role_id = userRole.role_id, role1 = userRole.role1}}
 				    });
 
 				    entities.SaveChanges();
 
 				    if (GetUserByUserName(inputUser.username).username.Equals(inputUser.username))
 				    {
-					    return new ResponseMessage() {IsExecuted = true, Message = "User registered"};
+					    return new ResponseMessage {IsExecuted = true, Message = "User registered"};
 				    }
 
-				    return new ResponseMessage() {IsExecuted = false, Message = "Registration failed"};
+				    return new ResponseMessage {IsExecuted = false, Message = "Registration failed"};
 			    }
-			    return new ResponseMessage() {IsExecuted = false, Message = "Username already exists"};
+			    return new ResponseMessage {IsExecuted = false, Message = "Username already exists"};
 		    }
 	    }
 
-	    public ResponseMessage DeleteUser(UserDTO inputUser)
+	    public ResponseMessage DeleteUser(int id)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundUser = (from u in entities.user
-                    where u.user_id == inputUser.user_id
+                    where u.user_id == id
                     select u).FirstOrDefault();
 
                 if (foundUser != null) foundUser.status = "Deleted";
@@ -199,15 +200,11 @@ namespace PublishITService
                     Console.WriteLine(e);
                 }
 
-                if (GetUserById(inputUser.user_id).status.Equals("Deleted"))
+                if (GetUserById(id).status.Equals("Deleted"))
                 {
-                    return new ResponseMessage() {IsExecuted = true, Message = "Deletion completed"};
+                    return new ResponseMessage {IsExecuted = true, Message = "Deletion completed"};
                 }
-                else
-                {
-                    return new ResponseMessage() {IsExecuted = false, Message = "Deletion failed"};
-                }
-                
+                return new ResponseMessage {IsExecuted = false, Message = "Deletion failed"};
             }
         }
 
@@ -242,12 +239,9 @@ namespace PublishITService
 
                 if (gottenUser.name.Equals(inputUser.name) && gottenUser.password.Equals(inputUser.password) && gottenUser.birthday.Equals(inputUser.birthday) && gottenUser.email.Equals(inputUser.email))
                 {
-                    return new ResponseMessage() {IsExecuted = true, Message = "User edited"};
+                    return new ResponseMessage {IsExecuted = true, Message = "User edited"};
                 }
-                else
-                {
-                    return new ResponseMessage() {IsExecuted = false, Message = "Editing failed"};
-                }
+                return new ResponseMessage {IsExecuted = false, Message = "Editing failed"};
             }
         }
 
@@ -291,7 +285,7 @@ namespace PublishITService
             }
         }
 
-		public string StreamMedia(int userId, int movieId)
+		public string StreamMovie(int userId, int movieId)
 		{
 			string mediaStreamed;
 
@@ -300,7 +294,7 @@ namespace PublishITService
 				using (var entities = _publishITEntities ?? new RentIt09Entities())
 				{
                     var mediaPath = (from m in entities.media
-						            where m.media_id == userId
+						            where m.media_id == movieId
 						            select m.location).FirstOrDefault();
 
                     // Set mediastreamed  with a video xml tag witch provide a screen with the requested video
@@ -324,19 +318,27 @@ namespace PublishITService
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                // List for the media titles found in the database
-                List<media> medias = new List<media>();
+                var medias = new List<media>();
 
-                // The titles found in the database
-                var foundMovie = from mediaTitle in entities.media
-                                 where mediaTitle.title == title
-                                 select mediaTitle;
+                var foundMedia = from m in entities.media
+                    where m.title == title
+                    select m;
 
-                // Every title found is put in the list
-                foreach (media mediaTitle in foundMovie)
+                foreach (var med in foundMedia)
+                {
+                    medias.Add(new media
                     {
-                        medias.Add(mediaTitle);
-                    }
+                        media_id = med.media_id,
+                        user_id = med.user_id,
+                        format_id = med.format_id,
+                        title = med.title,
+                        average_rating = med.average_rating,
+                        date = med.date,
+                        description = med.description,
+                        location = med.location,
+                        number_of_downloads = med.number_of_downloads
+                    });
+                }
 
                 return medias;
             }
@@ -346,18 +348,29 @@ namespace PublishITService
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                List<media> moviesByGenre = new List<media>();
+                var medias = new List<media>();
 
-                var movieByGenre = from mov in entities.video
+                var foundMedia = from mov in entities.video
                                    join med in entities.media on mov.media_id equals med.media_id
                                    select med;
 
-                foreach (media mov in movieByGenre)
+                foreach (var med in foundMedia)
                 {
-                    moviesByGenre.Add(mov);
+                    medias.Add(new media
+                    {
+                        media_id = med.media_id,
+                        user_id = med.user_id,
+                        format_id = med.format_id,
+                        title = med.title,
+                        average_rating = med.average_rating,
+                        date = med.date,
+                        description = med.description,
+                        location = med.location,
+                        number_of_downloads = med.number_of_downloads
+                    });
                 }
 
-                return moviesByGenre;
+                return medias;
             }
         }
 
@@ -365,11 +378,30 @@ namespace PublishITService
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                media foundMovies = (from med in entities.media
+                var foundMedia = (from med in entities.media
                                     where med.media_id == id
-                                    select med).First();
+                                    select med).FirstOrDefault();
 
-                return foundMovies;
+                if (foundMedia != null)
+                {
+                    var theMedia = new media
+                    {
+                        media_id = foundMedia.media_id,
+                        user_id = foundMedia.user_id,
+                        format_id = foundMedia.format_id,
+                        title = foundMedia.title,
+                        average_rating = foundMedia.average_rating,
+                        date = foundMedia.date,
+                        description = foundMedia.description,
+                        location = foundMedia.location,
+                        number_of_downloads = foundMedia.number_of_downloads
+                    };
+                    return theMedia;
+                }
+                return new media
+                {
+                    title = "No media found"
+                };
             }
         }
 
@@ -439,7 +471,7 @@ namespace PublishITService
 
 		private bool RentExist(int userId, int movieId)
 		{
-			DateTime date = new DateTime();
+			var date = DateTime.Now;
 			using (var entities = _publishITEntities ?? new RentIt09Entities())
 			{
 				var q = from r in entities.rent
