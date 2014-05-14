@@ -24,6 +24,7 @@ namespace PublishITServiceTests
         private Mock<IDbSet<document>> _documentMockSet;
         private Mock<IDbSet<rent>> _rentMockSet;
         private Mock<IDbSet<video>> _videoMockSet;
+        private Mock<IDbSet<genre>> _genreMockSet;
 
         [TestInitialize]
         public void InitTests()
@@ -112,16 +113,8 @@ namespace PublishITServiceTests
                 organization_id = 1
             });
 
-            _userMockSet.Verify(x => x.Add(It.Is<user>(
-                                                        newUser => 
-                                                        newUser.birthday == DateTime.MinValue &&
-                                                        newUser.email.Equals("newEmail@email.com") && 
-                                                        newUser.name.Equals("newName") && 
-                                                        newUser.user_name.Equals("newUserName") && 
-                                                        newUser.password.Equals("newPassword") && 
-                                                        newUser.organization_id == 1)), 
-                                                        Times.Once
-                                                        );
+
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Once);
 
             //Assert.AreEqual(responseMessage.Message, "User registered");
 
@@ -262,7 +255,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
+            _publishITService.UploadMedia(remoteFileInfo);
 
             _mediaMockSet.Verify(x => x.Add(It.Is<media>(
                                             newMedia =>
@@ -285,10 +278,6 @@ namespace PublishITServiceTests
                                             );
 
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
-
-            Assert.IsTrue(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "File successfully uploaded");
         }
 
         [TestMethod]
@@ -305,7 +294,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
+            _publishITService.UploadMedia(remoteFileInfo);
 
             _mediaMockSet.Verify(x => x.Add(It.Is<media>(
                                             newMedia =>
@@ -328,10 +317,6 @@ namespace PublishITServiceTests
                                             );
 
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
-
-            Assert.IsTrue(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "File successfully uploaded");
         }
 
         [TestMethod]
@@ -348,7 +333,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
+            _publishITService.UploadMedia(remoteFileInfo);
 
             _mediaMockSet.Verify(x => x.Add(It.Is<media>(
                                             newMedia =>
@@ -371,10 +356,6 @@ namespace PublishITServiceTests
                                             );
 
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Never);
-
-            Assert.IsFalse(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "Unknown file format");
         }
 
         //Thomas
@@ -456,17 +437,19 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingMoviesByGenre()
         {
-            //Ændr metode til at gøre det rigtige
-            //Lav videomock (hvis det stadig er relevant efter ændring
-            //Giv Genre til medier
-            //lav eventuelt genremock
-            Assert.AreEqual(1, 2);
+            var movies = _publishITService.GetMediaByGenre("Comedy");
+
+            Assert.AreEqual(movies.Count, 2);
+
+            Assert.AreEqual(movies[0].title, "title 2");
         }
 
         [TestMethod]
-        public void UnsuccessfullyGettingMoviesByGenre()
+        public void UnsuccessfullyGettingMoviesByGenreDoToNoMoviesInTheGenre()
         {
-            Assert.AreEqual(1, 2);
+            var movies = _publishITService.GetMediaByGenre("Science Fiction");
+
+            Assert.AreEqual(movies.Count, 0);
         }
 
         [TestMethod]
@@ -695,6 +678,55 @@ namespace PublishITServiceTests
             }.AsQueryable();
         }
 
+        private IQueryable<genre> InitGenreData()
+        {
+            return new List<genre>
+            {
+                new genre
+                {
+                    genre_id = 1,
+                    genre1 = "Comedy",
+                    media = new Collection<media>(new List<media>
+                    {
+                        new media
+                        {
+                            media_id = 2,
+                            user_id = 2,
+                            format_id = 2,
+                            title = "title 2",
+                            location = "location 2"
+                        },
+
+                        new media
+                        {
+                            media_id = 4,
+                            user_id = 1,
+                            format_id = 2,
+                            title = "title 4",
+                            location = "location 4"
+                        }
+                    })
+                },
+
+                new genre
+                {
+                    genre_id = 2,
+                    genre1 = "Biography",
+                    media = new Collection<media>(new List<media>
+                    {
+                        new media
+                        {
+                            media_id = 1,
+                            user_id = 1,
+                            format_id = 1,
+                            title = "title 1",
+                            location = "location 1"
+                        }
+                    })
+                }
+            }.AsQueryable();
+        }
+
         private IQueryable<document> InitDocumentData()
         {
             return new List<document>
@@ -818,6 +850,14 @@ namespace PublishITServiceTests
             _videoMockSet.As<IQueryable<video>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
         }
 
+        private void SetupGenreMockSet(IQueryable<genre> data)
+        {
+            _genreMockSet.As<IQueryable<genre>>().Setup(m => m.Provider).Returns(data.Provider);
+            _genreMockSet.As<IQueryable<genre>>().Setup(m => m.Expression).Returns(data.Expression);
+            _genreMockSet.As<IQueryable<genre>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _genreMockSet.As<IQueryable<genre>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+        }
+
         private void SetupRentMockSet(IQueryable<rent> data)
         {
             _rentMockSet.As<IQueryable<rent>>().Setup(m => m.Provider).Returns(data.Provider);
@@ -850,6 +890,9 @@ namespace PublishITServiceTests
 
             _rentMockSet = new Mock<IDbSet<rent>>();
             SetupRentMockSet(InitRentData());
+
+            _genreMockSet = new Mock<IDbSet<genre>>();
+            SetupGenreMockSet(InitGenreData());
         }
 
         private void SetupEntitiesReturnValue()
@@ -862,6 +905,7 @@ namespace PublishITServiceTests
             _publishITEntitiesMock.Setup(call => call.document).Returns(_documentMockSet.Object);
             _publishITEntitiesMock.Setup(call => call.video).Returns(_videoMockSet.Object);
             _publishITEntitiesMock.Setup(call => call.rent).Returns(_rentMockSet.Object);
+            _publishITEntitiesMock.Setup(call => call.genre).Returns(_genreMockSet.Object);
         }
     }
 }

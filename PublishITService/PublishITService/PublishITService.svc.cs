@@ -180,19 +180,20 @@ namespace PublishITService
 					    where r.role_id == 1
 					    select r).FirstOrDefault();
 
-				    entities.user.Add(new user
-				    {
-					    user_id = id,
-					    name = inputUser.name,
-					    user_name = inputUser.username,
-					    password = inputUser.password,
-					    birthday = inputUser.birthday,
-					    email = inputUser.email,
-					    organization_id = inputUser.organization_id,
-					    salt = "salt",
-					    status = "Active",
-					    role = new Collection<role> {new role {role_id = userRole.role_id, role1 = userRole.role1}}
-				    });
+			        var newUser = new user
+			        {
+			            user_id = id,
+			            name = inputUser.name,
+			            user_name = inputUser.username,
+			            password = inputUser.password,
+			            birthday = inputUser.birthday,
+			            email = inputUser.email,
+			            organization_id = inputUser.organization_id,
+			            salt = "salt",
+			            status = "Active"
+			        };
+
+                    userRole.user.Add(newUser);
 
 				    entities.SaveChanges();
 
@@ -286,7 +287,7 @@ namespace PublishITService
         /// </summary>
         /// <param name="request"> A RemoteFileInfo object with the requested upload </param>
         /// <returns> A response message with a boolean value saying if the upload was a success and a message explaining why/why not </returns>
-		public ResponseMessage UploadMedia(RemoteFileInfo request)
+		public void UploadMedia(RemoteFileInfo request)
 		{
 		    IMediaParser mediaParser = null;
 
@@ -298,10 +299,7 @@ namespace PublishITService
 		    {
 		        mediaParser = new DocumentParser();
 		    }
-            else
-            {
-                return new ResponseMessage { IsExecuted = false, Message = "Unknown file format" };
-            }
+
 
 			byte[] buffer = new byte[10000];
 			int bytesRead, totalBytesRead = 0;
@@ -317,9 +315,10 @@ namespace PublishITService
 
 			using (var entities = _publishITEntities ?? new RentIt09Entities())
 			{
+			    if (mediaParser != null)
+			    {
 			        mediaParser.StoreMedia(fileStream, request, entities);
-
-                    return new ResponseMessage {IsExecuted = true, Message = "File successfully uploaded"};
+			    }
 			}
 		}
 
@@ -416,12 +415,11 @@ namespace PublishITService
         }
 
         /// <summary>
-        /// Gets movies of a certain genre
+        /// Gets medias of a certain genre
         /// </summary>
-        /// <param name="genre"> The genre string used to search in the database </param>
+        /// <param name="inputGenre"> The genre string used to search in the database </param>
         /// <returns> Returns a list of media objects containing the information of the media </returns>
-        public List<media> GetMoviesByGenre(string indputGenre)
-
+        public List<media> GetMediaByGenre(string inputGenre)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
@@ -429,7 +427,7 @@ namespace PublishITService
 
                 // Search for genres. Genre contains a collection of medias that represent the specific genre
                 var foundgenre = from genreName in entities.genre
-                                 where genreName.genre1.Contains(indputGenre)
+                                 where genreName.genre1.Contains(inputGenre)
                                  select genreName;
 
 

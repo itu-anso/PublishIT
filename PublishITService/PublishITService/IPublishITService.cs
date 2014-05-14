@@ -39,7 +39,7 @@ namespace PublishITService
 		//[WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
         //bool UploadMedia(MediaInfo mediaInfo, Stream media);
 		[OperationContract]
-		ResponseMessage UploadMedia(RemoteFileInfo request);
+		void UploadMedia(RemoteFileInfo request);
 
         [OperationContract]
         FileStream DownloadMedia(int id);
@@ -51,7 +51,7 @@ namespace PublishITService
         List<media> SearchMedia(string title);
 
         [OperationContract]
-        List<media> GetMoviesByGenre(string genre);
+        List<media> GetMediaByGenre(string inputGenre);
 
         [OperationContract]
         media GetMedia(int id);
@@ -98,34 +98,5 @@ namespace PublishITService
 				FileStream = null;
 			}
 		}
-	}
-
-	[DataContract]
-	public class MediaInfo
-	{
-		[DataMember]
-		public string FileName { get; set; }
-
-		[DataMember]
-		public string Title { get; set; }
-
-		[DataMember]
-		public int UserId { get; set; }
-
-		[DataMember]
-		public string Description { get; set; }
-
-		[DataMember]
-		public string Date { get; set; }
-
-		[DataMember]
-		public string Status { get; set; }
-
-		[DataMember]
-		public string Length { get; set; }
-
-		[DataMember]
-		public int GenreId { get; set; }
-
 	}
 }
