@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
+using PublishITService.DTOs;
 
 namespace PublishITService
 {
@@ -25,7 +26,7 @@ namespace PublishITService
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
-        ResponseMessage DeleteUser(UserDTO user);
+        ResponseMessage DeleteUser(int id);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
@@ -44,7 +45,7 @@ namespace PublishITService
         FileStream DownloadMedia(int id);
 
         [OperationContract]
-		string StreamMedia(int userId, int movieId);
+		string StreamMovie(int userId, int movieId);
 
         [OperationContract]
         List<media> SearchMedia(string title);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace PublishITService
+namespace PublishITService.DTOs
 {
     [DataContract]
     public class UserDTO
