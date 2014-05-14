@@ -461,7 +461,6 @@ namespace PublishITServiceTests
             //Giv Genre til medier
             //lav eventuelt genremock
             Assert.AreEqual(1, 2);
-
         }
 
         [TestMethod]

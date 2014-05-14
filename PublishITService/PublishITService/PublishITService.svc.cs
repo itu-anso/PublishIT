@@ -420,30 +420,37 @@ namespace PublishITService
         /// </summary>
         /// <param name="genre"> The genre string used to search in the database </param>
         /// <returns> Returns a list of media objects containing the information of the media </returns>
-        public List<media> GetMoviesByGenre(string genre)
+        public List<media> GetMoviesByGenre(string indputGenre)
+
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var medias = new List<media>();
 
-                var foundMedia = from mov in entities.video
-                                   join med in entities.media on mov.media_id equals med.media_id
-                                   select med;
+                // Search for genres. Genre contains a collection of medias that represent the specific genre
+                var foundgenre = from genreName in entities.genre
+                                 where genreName.genre1.Contains(indputGenre)
+                                 select genreName;
 
-                foreach (var med in foundMedia)
+
+                foreach (var gen in foundgenre)
                 {
-                    medias.Add(new media
+                    // Traversal of the media collection in the specific genre.
+                    foreach (var med in gen.media)
                     {
-                        media_id = med.media_id,
-                        user_id = med.user_id,
-                        format_id = med.format_id,
-                        title = med.title,
-                        average_rating = med.average_rating,
-                        date = med.date,
-                        description = med.description,
-                        location = med.location,
-                        number_of_downloads = med.number_of_downloads
-                    });
+                        medias.Add(new media
+                        {
+                            media_id = med.media_id,
+                            user_id = med.user_id,
+                            format_id = med.format_id,
+                            title = med.title,
+                            average_rating = med.average_rating,
+                            date = med.date,
+                            description = med.description,
+                            location = med.location,
+                            number_of_downloads = med.number_of_downloads
+                        });
+                    }
                 }
 
                 return medias;
