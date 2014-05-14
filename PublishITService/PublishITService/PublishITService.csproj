@@ -117,9 +117,6 @@
     <Compile Include="profession.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="profession.cs">
-      <DependentUpon>PublishITModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="PublishITModel.Context.cs">
       <DependentUpon>PublishITModel.Context.tt</DependentUpon>
       <DesignTime>True</DesignTime>

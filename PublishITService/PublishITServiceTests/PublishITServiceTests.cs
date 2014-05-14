@@ -359,11 +359,14 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingMoviesByGenre()
         {
+
             //Ændr metode til at gøre det rigtige
             //Lav videomock (hvis det stadig er relevant efter ændring
             //Giv Genre til medier
             //lav eventuelt genremock
-            _publishITService.GetMoviesByGenre("Comedy");
+            List<media> mediaByGenre = _publishITService.GetMoviesByGenre("Comedy");
+
+            Assert.Equals(13, mediaByGenre[0].media_id);
 
         }
 
