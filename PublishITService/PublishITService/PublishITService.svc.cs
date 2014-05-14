@@ -313,11 +313,10 @@ namespace PublishITService
 
         public List<media> SearchMedia(string title)
         {
+			// List for the media titles found in the database
+			List<media> medias = new List<media>();
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                // List for the media titles found in the database
-                List<media> medias = new List<media>();
-
                 // The titles found in the database
                 var foundMovie = from mediaTitle in entities.media
                                  where mediaTitle.title == title
@@ -328,9 +327,8 @@ namespace PublishITService
                     {
                         medias.Add(mediaTitle);
                     }
-
-                return medias;
             }
+			return medias;
         }
 
         public List<media> GetMoviesByGenre(string genre)

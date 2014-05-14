@@ -10,7 +10,7 @@ namespace PublishITService.Resources {
 		public IPublishITEntities _publishITEntities { get; set; }
 
 		public void StoreMedia(byte[] mediaStream, RemoteFileInfo request, IPublishITEntities entities) {
-			string path = @"rentit09/resources/media/video/" + request.FileName;
+			string path = @"\RentItServices\RentIt09\resources\media\video\" + request.FileName;
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 			try {
 				using (var _FileStream = new System.IO.FileStream(path, System.IO.FileMode.Create, System.IO.FileAccess.Write)) {

@@ -8,11 +8,12 @@ using System.Web;
 namespace PublishITService.Resources {
 	public class DocumentParser : IMediaParser {
 
-		public IPublishITEntities _publishITEntities { get; set; }
+		private IPublishITEntities PublishItEntities { get; set; }
 
 		public void StoreMedia(byte[] mediaStream, RemoteFileInfo request, IPublishITEntities entities)
 		{
-			string path = @"rentit09\resources\media\document\" + request.UserId + @"\" + request.FileName;
+			this.PublishItEntities = entities;
+			string path = @"\RentItServices\RentIt09\resources\media\document\" + request.UserId + @"\" + request.FileName;
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 			try
 			{
@@ -26,31 +27,31 @@ namespace PublishITService.Resources {
 				
 				throw;
 			}
+			saveMedia(path, request);
+		}
 
-			if (File.Exists(path))
-			{
+		private void saveMedia(string path, RemoteFileInfo request)
+		{
+			if (File.Exists(path)) {
 				try {
-					media media = new media
-					{
+					media media = new media {
 						title = request.Title,
 						format_id = 1,
 						location = path,
 						user_id = request.UserId
+						
 					};
-					entities.media.Add(media);
-					entities.SaveChanges();
+					PublishItEntities.media.Add(media);
+					PublishItEntities.SaveChanges();
 
-					document document = new document
-					{
+					document document = new document {
 						media_id = media.media_id,
 						status = request.Status
 					};
-					entities.document.Add(document);
-					entities.SaveChanges();
-					
-				}
-				catch (Exception)
-				{
+					PublishItEntities.document.Add(document);
+					PublishItEntities.SaveChanges();
+
+				} catch (Exception) {
 					throw;
 				}
 			}
