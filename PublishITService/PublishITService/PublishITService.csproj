@@ -20,6 +20,8 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -103,9 +105,6 @@
     <Compile Include="media.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="profession.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile> 
     <Compile Include="NAMES.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
@@ -113,6 +112,9 @@
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
     <Compile Include="person.cs">
+      <DependentUpon>PublishITModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="profession.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
     <Compile Include="profession.cs">
@@ -206,6 +208,7 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
