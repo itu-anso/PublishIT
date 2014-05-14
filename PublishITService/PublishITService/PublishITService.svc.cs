@@ -245,11 +245,22 @@ namespace PublishITService
             }
         }
 
-		public void UploadMedia(RemoteFileInfo request)
+		public ResponseMessage UploadMedia(RemoteFileInfo request)
 		{
-			string extension = Path.GetExtension(request.FileName);
+		    IMediaParser mediaParser = null;
 
-			IMediaParser parser = (extension == ".mp4") ? (IMediaParser)new VideoParser() : (IMediaParser) new DocumentParser();
+		    if (Path.GetExtension(request.FileName) == ".mp4")
+		    {
+		        mediaParser = new VideoParser();
+		    }
+            else if (Path.GetExtension(request.FileName) == ".pdf")
+		    {
+		        mediaParser = new DocumentParser();
+		    }
+            else
+            {
+                return new ResponseMessage { IsExecuted = false, Message = "Unknown file format" };
+            }
 
 			byte[] buffer = new byte[10000];
 			int bytesRead, totalBytesRead = 0;
@@ -265,7 +276,9 @@ namespace PublishITService
 
 			using (var entities = _publishITEntities ?? new RentIt09Entities())
 			{
-				parser.StoreMedia(fileStream, request, entities);
+			        mediaParser.StoreMedia(fileStream, request, entities);
+
+                    return new ResponseMessage {IsExecuted = true, Message = "File successfully uploaded"};
 			}
 		}
 
@@ -321,8 +334,8 @@ namespace PublishITService
                 var medias = new List<media>();
 
                 var foundMedia = from m in entities.media
-                    where m.title == title
-                    select m;
+                                 where m.title.Contains(title)
+                                 select m;
 
                 foreach (var med in foundMedia)
                 {
@@ -420,7 +433,7 @@ namespace PublishITService
             }
         }
 
-        public bool PostRating(int rating, int movieId, int userId)
+        public ResponseMessage PostRating(int rating, int movieId, int userId)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
@@ -450,22 +463,15 @@ namespace PublishITService
                     });
 
                     entities.SaveChanges();
+
+                    return new ResponseMessage{IsExecuted = true, Message = "Rating added"};
                 }
-                else
-                {
+
                     foundRating.rating_id = rating;
-                    try
-                    {
+
                         entities.SaveChanges();
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception();
-                    }
 
-                }
-
-                return GetRating(movieId, userId) == rating;
+                        return new ResponseMessage {IsExecuted = true, Message = "Rating changed"};
             }
         }
 

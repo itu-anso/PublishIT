@@ -23,7 +23,8 @@ namespace PublishITServiceTests
         private Mock<IDbSet<media>> _mediaMockSet;
         private Mock<IDbSet<document>> _documentMockSet;
         private Mock<IDbSet<rent>> _rentMockSet;
-            
+        private Mock<IDbSet<video>> _videoMockSet;
+
         [TestInitialize]
         public void InitTests()
         {
@@ -159,9 +160,13 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void UnsuccessfullyRegisterUserDueToSomeFailWithRegistration()
+        public void UnsuccessfullyRegisterUserDueToEmptyUserDTO()
         {
-            Assert.AreEqual(1,2);
+            var responseMessage = _publishITService.RegisterUser(new UserDTO());
+
+            Assert.IsFalse(responseMessage.IsExecuted);
+
+            Assert.AreEqual(responseMessage.Message, "Registration failed");
         }
 
         [TestMethod]
@@ -244,7 +249,7 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void SuccessfullyUploadingMedia()
+        public void SuccessfullyUploadingDocument()
         {
             var remoteFileInfo = new RemoteFileInfo
             {
@@ -257,7 +262,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            _publishITService.UploadMedia(remoteFileInfo);
+            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
 
             _mediaMockSet.Verify(x => x.Add(It.Is<media>(
                                             newMedia =>
@@ -266,22 +271,110 @@ namespace PublishITServiceTests
                                             Times.Once
                                             );
 
-            //Thomas
-            //Should find a way to increment media_id when the id already exists..
             _documentMockSet.Verify(x => x.Add(It.Is<document>(
                                             newDocument =>
                                             newDocument.media_id == 0 &&
                                             newDocument.status.Equals("status"))), 
                                             Times.Once
                                             );
+            
+            _videoMockSet.Verify(x => x.Add(It.Is<video>(
+                                            newVideo =>
+                                            newVideo.media_id == 0)),
+                                            Times.Never
+                                            );
 
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
+
+            Assert.IsTrue(responseMessage.IsExecuted);
+
+            Assert.AreEqual(responseMessage.Message, "File successfully uploaded");
         }
 
         [TestMethod]
-        public void UnsuccessfullyUploadingMedia()
+        public void SuccessfullyUploadingVideo()
         {
-            Assert.AreEqual(1, 2);
+            var remoteFileInfo = new RemoteFileInfo
+            {
+                FileName = "filename.mp4",
+                FileStream = new MemoryStream(),
+                Title = "title",
+                GenreId = 1,
+                Length = 1,
+                Status = "status",
+                UserId = 1
+            };
+
+            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
+
+            _mediaMockSet.Verify(x => x.Add(It.Is<media>(
+                                            newMedia =>
+                                            newMedia.title.Equals("title") &&
+                                            newMedia.user_id == 1)),
+                                            Times.Once
+                                            );
+
+            _videoMockSet.Verify(x => x.Add(It.Is<video>(
+                                            newVideo =>
+                                            newVideo.media_id == 0)),
+                                            Times.Once
+                                            );
+
+            _documentMockSet.Verify(x => x.Add(It.Is<document>(
+                                            newDocument =>
+                                            newDocument.media_id == 0 &&
+                                            newDocument.status.Equals("status"))),
+                                            Times.Never
+                                            );
+
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
+
+            Assert.IsTrue(responseMessage.IsExecuted);
+
+            Assert.AreEqual(responseMessage.Message, "File successfully uploaded");
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyUploadingMediaDoToUnknownFileFormat()
+        {
+            var remoteFileInfo = new RemoteFileInfo
+            {
+                FileName = "filename.mp3",
+                FileStream = new MemoryStream(),
+                Title = "title",
+                GenreId = 1,
+                Length = 1,
+                Status = "status",
+                UserId = 1
+            };
+
+            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
+
+            _mediaMockSet.Verify(x => x.Add(It.Is<media>(
+                                            newMedia =>
+                                            newMedia.title.Equals("title") &&
+                                            newMedia.user_id == 1)),
+                                            Times.Never
+                                            );
+
+            _videoMockSet.Verify(x => x.Add(It.Is<video>(
+                                            newVideo =>
+                                            newVideo.media_id == 0)),
+                                            Times.Never
+                                            );
+
+            _documentMockSet.Verify(x => x.Add(It.Is<document>(
+                                            newDocument =>
+                                            newDocument.media_id == 0 &&
+                                            newDocument.status.Equals("status"))),
+                                            Times.Never
+                                            );
+
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Never);
+
+            Assert.IsFalse(responseMessage.IsExecuted);
+
+            Assert.AreEqual(responseMessage.Message, "Unknown file format");
         }
 
         //Thomas
@@ -302,10 +395,10 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyStreamMedia()
         {
-            var movie = _publishITService.StreamMovie(1,0);
+            var movie = _publishITService.StreamMovie(1,4);
 
             Assert.AreEqual(movie, "<video width='320' heigth='240' controls>" +
-                                        "<source src='location 0' type='video/mp4'>" +
+                                        "<source src='location 4' type='video/mp4'>" +
                                         "<source='movie.ogg' type='video/ogg'>" +
                                     "</video>");
         }
@@ -342,18 +435,22 @@ namespace PublishITServiceTests
             Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
         }
 
-        //Thomas
         [TestMethod]
         public void SuccessfullySearchMedia()
         {
-            Assert.AreEqual(1, 2);
+            var listOfMedia = _publishITService.SearchMedia("title");
+
+            Assert.AreEqual(listOfMedia.Count, 4);
+
+            Assert.AreEqual(listOfMedia[0].title, "title 1");
         }
 
-        //Thomas
         [TestMethod]
         public void UnsuccessfullySearchMedia()
         {
-            Assert.AreEqual(1, 2);
+            var listOfMedia = _publishITService.SearchMedia("No media");
+
+            Assert.AreEqual(listOfMedia.Count, 0);
         }
 
         [TestMethod]
@@ -363,7 +460,7 @@ namespace PublishITServiceTests
             //Lav videomock (hvis det stadig er relevant efter ændring
             //Giv Genre til medier
             //lav eventuelt genremock
-            _publishITService.GetMoviesByGenre("Comedy");
+            Assert.AreEqual(1, 2);
 
         }
 
@@ -376,13 +473,17 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingMedia()
         {
-            Assert.AreEqual(1, 2);
+            var gottenMedia = _publishITService.GetMedia(1);
+
+            Assert.AreEqual(gottenMedia.title, "title 1");
         }
 
         [TestMethod]
         public void UnsuccessfullyGettingMedia()
         {
-            Assert.AreEqual(1, 2);
+            var gottenMedia = _publishITService.GetMedia(5);
+
+            Assert.AreEqual(gottenMedia.title, "No media found");
         }
 
         [TestMethod]
@@ -403,17 +504,43 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void SuccessfullyPostingRating()
+        public void SuccessfullyPostingNewRating()
         {
-            var posted = _publishITService.PostRating(1, 1, 1);
+            var posted = _publishITService.PostRating(3, 4, 1);
 
-            Assert.IsTrue(posted);
+            _ratingMockSet.Verify(x =>x.Add(It.Is<rating>(newRating => 
+                                                            newRating.media_id == 4 && 
+                                                            newRating.rating1 == 3 && 
+                                                            newRating.user_id == 1 &&
+                                                            newRating.rating_id == 4)),
+                                                            Times.Once);
+
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Once);
+
+            Assert.IsTrue(posted.IsExecuted);
+
+            Assert.AreEqual(posted.Message, "Rating added");
         }
 
-        public void UnsuccessfullyPostingRating()
+        [TestMethod]
+        public void SuccessfullyChangingRating()
         {
-            Assert.AreEqual(1,2);
+            var posted = _publishITService.PostRating(1, 2, 1);
+
+            _ratingMockSet.Verify(x => x.Add(It.Is<rating>(newRating =>
+                                                            newRating.media_id == 2 &&
+                                                            newRating.rating1 == 1 &&
+                                                            newRating.user_id == 1 &&
+                                                            newRating.rating_id == 4)),
+                                                            Times.Never);
+
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Once);
+
+            Assert.IsTrue(posted.IsExecuted);
+
+            Assert.AreEqual(posted.Message, "Rating changed");
         }
+
 
         private IQueryable<user> InitUserData()
         {
@@ -532,15 +659,6 @@ namespace PublishITServiceTests
             {
                 new media
                 {
-                    media_id = 0,
-                    user_id = 1,
-                    format_id = 1,
-                    title = "title 0",
-                    location = "location 0"
-                },
-
-                new media
-                {
                     media_id = 1,
                     user_id = 1,
                     format_id = 1,
@@ -555,7 +673,26 @@ namespace PublishITServiceTests
                     format_id = 2,
                     title = "title 2",
                     location = "location 2"
+                },
+
+                new media
+                {
+                    media_id = 3,
+                    user_id = 1,
+                    format_id = 1,
+                    title = "title 3",
+                    location = "location 3"
+                },
+
+                new media
+                {
+                    media_id = 4,
+                    user_id = 1,
+                    format_id = 2,
+                    title = "title 4",
+                    location = "location 4"
                 }
+
             }.AsQueryable();
         }
 
@@ -565,13 +702,30 @@ namespace PublishITServiceTests
             {
                 new document
                 {
-                    media_id = 0
+                    media_id = 1
                 },
 
                 new document
                 {
-                    media_id = 1
+                    media_id = 3
                 }
+            }.AsQueryable();
+        }
+
+        private IQueryable<video> InitVideoData()
+        {
+            return new List<video>
+            {
+                new video
+                {
+                    media_id = 2,
+                },
+
+                new video
+                {
+                    media_id = 4
+                }
+
             }.AsQueryable();
         }
 
@@ -604,7 +758,16 @@ namespace PublishITServiceTests
                     user_id = 2,
                     start_date = DateTime.Parse("10-05-2050 00:00:00"),
                     end_date = DateTime.MaxValue
-                }
+                },
+
+                new rent
+                {
+                    rent_id = 4,
+                    media_id = 4,
+                    user_id = 1,
+                    start_date = DateTime.MinValue,
+                    end_date = DateTime.MaxValue
+                },
             }.AsQueryable();
         }
 
@@ -648,6 +811,14 @@ namespace PublishITServiceTests
             _documentMockSet.As<IQueryable<document>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
         }
 
+        private void SetupVideoMockSet(IQueryable<video> data)
+        {
+            _videoMockSet.As<IQueryable<video>>().Setup(m => m.Provider).Returns(data.Provider);
+            _videoMockSet.As<IQueryable<video>>().Setup(m => m.Expression).Returns(data.Expression);
+            _videoMockSet.As<IQueryable<video>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _videoMockSet.As<IQueryable<video>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+        }
+
         private void SetupRentMockSet(IQueryable<rent> data)
         {
             _rentMockSet.As<IQueryable<rent>>().Setup(m => m.Provider).Returns(data.Provider);
@@ -675,6 +846,9 @@ namespace PublishITServiceTests
             _documentMockSet = new Mock<IDbSet<document>>();
             SetupDocumentMockSet(InitDocumentData());
 
+            _videoMockSet = new Mock<IDbSet<video>>();
+            SetupVideoMockSet(InitVideoData());
+
             _rentMockSet = new Mock<IDbSet<rent>>();
             SetupRentMockSet(InitRentData());
         }
@@ -687,6 +861,7 @@ namespace PublishITServiceTests
             _publishITEntitiesMock.Setup(call => call.rating).Returns(_ratingMockSet.Object);
             _publishITEntitiesMock.Setup(call => call.media).Returns(_mediaMockSet.Object);
             _publishITEntitiesMock.Setup(call => call.document).Returns(_documentMockSet.Object);
+            _publishITEntitiesMock.Setup(call => call.video).Returns(_videoMockSet.Object);
             _publishITEntitiesMock.Setup(call => call.rent).Returns(_rentMockSet.Object);
         }
 
