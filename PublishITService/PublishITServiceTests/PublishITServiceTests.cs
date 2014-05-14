@@ -864,6 +864,5 @@ namespace PublishITServiceTests
             _publishITEntitiesMock.Setup(call => call.video).Returns(_videoMockSet.Object);
             _publishITEntitiesMock.Setup(call => call.rent).Returns(_rentMockSet.Object);
         }
-
     }
 }

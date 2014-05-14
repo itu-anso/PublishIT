@@ -8,6 +8,10 @@ using PublishITService.Parsers;
 
 namespace PublishITService
 {
+    /// <summary>
+    /// Service class to upload and download different kinds of media and 
+    /// getting and registering users
+    /// </summary>
     public class PublishITService : IPublishITService
     {
         private readonly IPublishITEntities _publishITEntities;
@@ -19,6 +23,11 @@ namespace PublishITService
             _publishITEntities = publishITEntities;
         }
 
+        /// <summary>
+        /// Gets information on a user given the user's id
+        /// </summary>
+        /// <param name="id"> The integer id to compare with when searching in the database </param>
+        /// <returns> Returns a UserDTO with all information on a user </returns>
 		public UserDTO GetUserById(int id) {
 			using (var entities = _publishITEntities ?? new RentIt09Entities()) {
 				var foundUser = (from u in entities.user
@@ -58,6 +67,13 @@ namespace PublishITService
 			}
 		}
 
+        /// <summary>
+        /// Gets information on a user by giving a user name string and
+        /// a password string
+        /// </summary>
+        /// <param name="username"> user's user name </param>
+        /// <param name="password"> user's password </param>
+        /// <returns> Returns a UserDTO with all information on a user </returns>
         public UserDTO SignIn(string username, string password)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -96,6 +112,11 @@ namespace PublishITService
             }
         }
 
+        /// <summary>
+        /// Gets information on a user by given the user name
+        /// </summary>
+        /// <param name="username"> User's user name </param>
+        /// <returns> Returns a UserDTO with all information on a user </returns>
         public UserDTO GetUserByUserName(string username) {
 			using (var entities = _publishITEntities ?? new RentIt09Entities()) {
 				var foundUser = (from u in entities.user
@@ -135,6 +156,11 @@ namespace PublishITService
 			}
 		}
 
+        /// <summary>
+        /// Adds a user to the database
+        /// </summary>
+        /// <param name="inputUser"> UserDTO containing information on the user to be added </param>
+        /// <returns> A response message with a boolean value saying if the registration was a success and a message explaining why/why not </returns>
 	    public ResponseMessage RegisterUser(UserDTO inputUser)
 	    {
 		    using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -181,6 +207,11 @@ namespace PublishITService
 		    }
 	    }
 
+        /// <summary>
+        /// Soft deletes a user by changing its status to "Deleted"
+        /// </summary>
+        /// <param name="id"> The integer id to compare with when searching in the database </param>
+        /// <returns> A response message with a boolean value saying if the deletion was a success and a message explaining why/why not </returns>
 	    public ResponseMessage DeleteUser(int id)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -208,6 +239,11 @@ namespace PublishITService
             }
         }
 
+        /// <summary>
+        /// Changes the information on a user to be the same information as given in the input
+        /// </summary>
+        /// <param name="inputUser"> UserDTO with the user information </param>
+        /// <returns> A response message with a boolean value saying if the editing was a success and a message explaining why/why not </returns>
         public ResponseMessage EditUser(UserDTO inputUser)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -245,6 +281,11 @@ namespace PublishITService
             }
         }
 
+        /// <summary>
+        /// Uploads a media of some format to the database
+        /// </summary>
+        /// <param name="request"> A RemoteFileInfo object with the requested upload </param>
+        /// <returns> A response message with a boolean value saying if the upload was a success and a message explaining why/why not </returns>
 		public ResponseMessage UploadMedia(RemoteFileInfo request)
 		{
 		    IMediaParser mediaParser = null;
@@ -282,6 +323,11 @@ namespace PublishITService
 			}
 		}
 
+        /// <summary>
+        /// Downloads a media given the media's integer id
+        /// </summary>
+        /// <param name="id"> The id used to search in the database </param>
+        /// <returns> Returns a FileStream of the found media </returns>
 		public FileStream DownloadMedia(int id)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -298,6 +344,13 @@ namespace PublishITService
             }
         }
 
+        /// <summary>
+        /// Streams a movie by providing an HTML source code containing the path to the movie and 
+        /// a screen to show the movie on
+        /// </summary>
+        /// <param name="userId"> The user's id used to check if he can rent the movie wanted </param>
+        /// <param name="movieId"> The movie's id used to search in the database </param>
+        /// <returns> Returns a string with the source code </returns>
 		public string StreamMovie(int userId, int movieId)
 		{
 			string mediaStreamed;
@@ -327,6 +380,11 @@ namespace PublishITService
 			return mediaStreamed;
 		}
 
+        /// <summary>
+        /// Gets a list of medias with a title containing the input string
+        /// </summary>
+        /// <param name="title"> The title string used to search in the database </param>
+        /// <returns> Returns a list of media objects containing the information of the media </returns>
         public List<media> SearchMedia(string title)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -357,6 +415,11 @@ namespace PublishITService
             }
         }
 
+        /// <summary>
+        /// Gets movies of a certain genre
+        /// </summary>
+        /// <param name="genre"> The genre string used to search in the database </param>
+        /// <returns> Returns a list of media objects containing the information of the media </returns>
         public List<media> GetMoviesByGenre(string genre)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -387,6 +450,11 @@ namespace PublishITService
             }
         }
 
+        /// <summary>
+        /// Gets a certain media by given the media's integer id
+        /// </summary>
+        /// <param name="id"> The id used to search in the database </param>
+        /// <returns> Returns a media object with all its information </returns>
         public media GetMedia(int id)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -418,6 +486,12 @@ namespace PublishITService
             }
         }
 
+        /// <summary>
+        /// Gets a rating on a certain movie by a certain user by given the two integer id's
+        /// </summary>
+        /// <param name="movieId"> The movie's id used to search in the database </param>
+        /// <param name="userId"> The user's id used to search in the database </param>
+        /// <returns> Returns the rating as an integer </returns>
         public int GetRating(int movieId, int userId)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -433,6 +507,13 @@ namespace PublishITService
             }
         }
 
+        /// <summary>
+        /// Adds or changes a certain user's integer rating to a certain movie
+        /// </summary>
+        /// <param name="rating"> The rating of the movie </param>
+        /// <param name="movieId"> The id of the movie to be rated </param>
+        /// <param name="userId"> The id of the user giving the rating </param>
+        /// <returns> A response message with a boolean value saying if the rating was a success and a message explaining why/why not </returns>
         public ResponseMessage PostRating(int rating, int movieId, int userId)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -475,6 +556,12 @@ namespace PublishITService
             }
         }
 
+        /// <summary>
+        /// Checks if a user has the authority to rent a movie
+        /// </summary>
+        /// <param name="userId"> The id of the user wanting to rent the movie </param>
+        /// <param name="movieId"> The movie to be rented </param>
+        /// <returns> Returns a boolean saying if the movie can be rented by the user </returns>
 		private bool RentExist(int userId, int movieId)
 		{
 			var date = DateTime.Now;
