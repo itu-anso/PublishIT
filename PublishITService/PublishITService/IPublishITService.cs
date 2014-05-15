@@ -54,6 +54,9 @@ namespace PublishITService
         List<media> GetMoviesByGenre(string genre);
 
         [OperationContract]
+        List<media> GetMoviesByAuthor(int id);
+
+        [OperationContract]
         media GetMedia(int id);
 
 

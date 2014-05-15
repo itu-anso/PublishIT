@@ -382,7 +382,7 @@ namespace PublishITService
 
 
 
-        public List<media> GetMediaByAuther(int id)
+        public List<media> GetMediaByAuthor(int id)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
