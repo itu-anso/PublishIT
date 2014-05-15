@@ -12,7 +12,7 @@ using PublishITService.DTOs;
 namespace PublishITServiceTests
 {
     [TestClass]
-    public class PublishITServiceTests
+    public class PublishITServiceUnitTests
     {
         private PublishITService.PublishITService _publishITService;
         private Mock<IPublishITEntities> _publishITEntitiesMock;
@@ -105,11 +105,11 @@ namespace PublishITServiceTests
 
         [UnitTest]
         [TestMethod]
-        public void SuccessfullyRegisterUser()
+        public void CheckingIfRegisterUserMethodSavesChangesOnceWhenAttemptingToAddNewUser()
         {
             Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
             
-            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            _publishITService.RegisterUser(new UserDTO
             {
                 birthday = DateTime.MinValue,
                 email = "newEmail@email.com",
@@ -121,10 +121,6 @@ namespace PublishITServiceTests
 
 
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Once);
-
-            //Assert.AreEqual(responseMessage.Message, "User registered");
-
-            //Assert.IsTrue(responseMessage.IsExecuted);
         }
 
         [UnitTest]

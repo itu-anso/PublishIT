@@ -58,7 +58,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="PublishITServiceTests.cs" />
+    <Compile Include="PublishITServiceIntegrationTests.cs" />
+    <Compile Include="PublishITServiceUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
