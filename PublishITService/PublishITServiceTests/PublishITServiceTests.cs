@@ -37,7 +37,7 @@ namespace PublishITServiceTests
             _publishITService = new PublishITService.PublishITService(_publishITEntitiesMock.Object);
         }
 
-
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyGettingUserById()
         {
@@ -48,6 +48,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(user.username, "userName 1");
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyGettingUserById()
         {
@@ -60,6 +61,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(user.user_id, 0);
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullySigningIn()
         {
@@ -68,6 +70,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(user.user_id, 1);
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullySigningIn()
         {
@@ -78,6 +81,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(user.user_id, 0);
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyGettingUserByName()
         {
@@ -88,6 +92,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(user.username, "userName 1");
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyGettingUserByUserName()
         {
@@ -98,6 +103,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(user.user_id, 0);
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyRegisterUser()
         {
@@ -121,6 +127,7 @@ namespace PublishITServiceTests
             //Assert.IsTrue(responseMessage.IsExecuted);
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyRegisterUserDueToExistingUserName()
         {
@@ -152,6 +159,7 @@ namespace PublishITServiceTests
             Assert.IsFalse(responseMessage.IsExecuted);
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyRegisterUserDueToEmptyUserDTO()
         {
@@ -162,6 +170,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(responseMessage.Message, "Registration failed");
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyDeletingUser()
         {
@@ -174,6 +183,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(responseMessage.Message, "Deletion completed");
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyDeletingUserDoToUnknownUserId()
         {
@@ -184,6 +194,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(responseMessage.Message, "Deletion failed");
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyEditingUsersInformation()
         {
@@ -214,6 +225,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(responseMessage.Message, "User edited");
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyEditingUsersInformationByChangingUserId()
         {
@@ -241,6 +253,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(responseMessage.Message, "Editing failed");
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyUploadingDocument()
         {
@@ -280,6 +293,7 @@ namespace PublishITServiceTests
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyUploadingVideo()
         {
@@ -319,6 +333,7 @@ namespace PublishITServiceTests
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyUploadingMediaDoToUnknownFileFormat()
         {
@@ -358,7 +373,7 @@ namespace PublishITServiceTests
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Never);
         }
 
-        //Thomas
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyDownloadMedia()
         {
@@ -366,7 +381,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(1, 2);
         }
 
-        //Thomas
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyDownloadMedia()
         {
@@ -384,6 +399,7 @@ namespace PublishITServiceTests
                                     "</video>");
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyStreamMediaDoToNoFoundUserId()
         {
@@ -392,6 +408,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyStreamMediaDoToNoFoundMovieId()
         {
@@ -400,6 +417,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyStreamMediaDoToDateExpired()
         {
@@ -408,6 +426,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyStreamMediaDoToDateNotStarted()
         {
@@ -416,6 +435,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullySearchMedia()
         {
@@ -426,6 +446,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(listOfMedia[0].title, "title 1");
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullySearchMedia()
         {
@@ -434,6 +455,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(listOfMedia.Count, 0);
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyGettingMoviesByGenre()
         {
@@ -444,6 +466,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(movies[0].title, "title 2");
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyGettingMoviesByGenreDoToNoMoviesInTheGenre()
         {
@@ -452,6 +475,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(movies.Count, 0);
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyGettingMedia()
         {
@@ -460,6 +484,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(gottenMedia.title, "title 1");
         }
 
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyGettingMedia()
         {
@@ -468,6 +493,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(gottenMedia.title, "No media found");
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyGettingRating()
         {
@@ -476,7 +502,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(rating, 5);
         }
 
-
+        [UnitTest]
         [TestMethod]
         public void UnsuccessfullyGettingRating()
         {
@@ -485,6 +511,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(rating, -1);
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyPostingNewRating()
         {
@@ -504,6 +531,7 @@ namespace PublishITServiceTests
             Assert.AreEqual(posted.Message, "Rating added");
         }
 
+        [UnitTest]
         [TestMethod]
         public void SuccessfullyChangingRating()
         {
@@ -898,6 +926,7 @@ namespace PublishITServiceTests
         private void SetupEntitiesReturnValue()
         {
             _publishITEntitiesMock = new Mock<IPublishITEntities>();
+
             _publishITEntitiesMock.Setup(call => call.user).Returns(_userMockSet.Object);
             _publishITEntitiesMock.Setup(call => call.role).Returns(_roleMockSet.Object);
             _publishITEntitiesMock.Setup(call => call.rating).Returns(_ratingMockSet.Object);
@@ -906,6 +935,22 @@ namespace PublishITServiceTests
             _publishITEntitiesMock.Setup(call => call.video).Returns(_videoMockSet.Object);
             _publishITEntitiesMock.Setup(call => call.rent).Returns(_rentMockSet.Object);
             _publishITEntitiesMock.Setup(call => call.genre).Returns(_genreMockSet.Object);
+        }
+    }
+
+    public class UnitTestAttribute : TestCategoryBaseAttribute
+    {
+        public override IList<string> TestCategories
+        {
+            get { return new List<string> { "UnitTest" }; }
+        }
+    }
+
+    public class IntegrationTestAttribute : TestCategoryBaseAttribute
+    {
+        public override IList<string> TestCategories
+        {
+            get { return new List<string> { "IntegrationTest" }; }
         }
     }
 }
