@@ -231,7 +231,38 @@ namespace PublishITService
             return _repository.FindMoviesByGenre(inputGenre);
         }
 
-        /// <summary>
+
+        public List<media> GetMediaByAuthor(int id)
+        {
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
+            {
+                List<media> medias = new List<media>();
+
+                var foundMedia = from med in entities.media
+                                 where med.user_id == id
+                                 select med;
+
+                foreach (media med in foundMedia)
+                {
+                    medias.Add(new media
+                    {
+                        media_id = med.media_id,
+                        user_id = med.user_id,
+                        format_id = med.format_id,
+                        title = med.title,
+                        average_rating = med.average_rating,
+                        date = med.date,
+                        description = med.description,
+                        location = med.location,
+                        number_of_downloads = med.number_of_downloads
+                    });
+                }
+                return medias;
+            }
+        }        
+        
+        
+		/// <summary>
         /// Gets a certain media by given the media's integer id
         /// </summary>
         /// <param name="id"> The id used to search in the database </param>
