@@ -14,7 +14,10 @@ namespace PublishITService
     {
         private readonly IRepository _repository;
 
-		public PublishITService(){}
+        public PublishITService()
+        {
+            _repository = new Repository();
+        }
 
         public PublishITService(IRepository repository = null)
         {
