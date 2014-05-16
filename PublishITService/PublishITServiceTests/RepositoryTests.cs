@@ -7,14 +7,16 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PublishITService;
+using PublishITService.Parsers;
+using PublishITService.Repositories;
 using PublishITService.DTOs;
 
 namespace PublishITServiceTests
 {
     [TestClass]
-    public class PublishITServiceTests
+    public class RepositoryTests
     {
-        private PublishITService.PublishITService _publishITService;
+        private IRepository _repository;
         private Mock<IPublishITEntities> _publishITEntitiesMock;
 
         private Mock<IDbSet<user>> _userMockSet;
@@ -33,14 +35,14 @@ namespace PublishITServiceTests
             SetupEntitiesReturnValue();
 
 
-            _publishITService = new PublishITService.PublishITService(_publishITEntitiesMock.Object);
+            _repository = new Repository(_publishITEntitiesMock.Object);
         }
 
 
         [TestMethod]
         public void SuccessfullyGettingUserById()
         {
-            var user = _publishITService.GetUserById(1);
+            var user = _repository.FindUserById(1);
 
             Assert.AreEqual(user.user_id, 1);
 
@@ -50,7 +52,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullyGettingUserById()
         {
-            var user = _publishITService.GetUserById(1337);
+            var user = _repository.FindUserById(1337);
 
             Assert.AreEqual(user.name, "No user found");
 
@@ -60,17 +62,17 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void SuccessfullySigningIn()
+        public void SuccessfullyGettingUserByUsernameAndPassword()
         {
-            var user = _publishITService.SignIn("userName 1", "password 1");
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
 
             Assert.AreEqual(user.user_id, 1);
         }
 
         [TestMethod]
-        public void UnsuccessfullySigningIn()
+        public void UnsuccessfullyGettingUserByUsernameAndPassword()
         {
-            var user = _publishITService.SignIn("Not existing userName", "Some password");
+            var user = _repository.FindUserByUsernameAndPassword("Not existing userName", "Some password");
 
             Assert.AreEqual(user.name, "Sign in failed");
 
@@ -78,9 +80,9 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void SuccessfullyGettingUserByName()
+        public void SuccessfullyGettingUserByUserName()
         {
-            var user = _publishITService.GetUserByUserName("userName 1");
+            var user = _repository.FindUserByUsername("userName 1");
 
             Assert.AreEqual(user.user_id, 1);
 
@@ -90,7 +92,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullyGettingUserByUserName()
         {
-            var user = _publishITService.GetUserByUserName("Not existing userName");
+            var user = _repository.FindUserByUsername("Not existing userName");
 
             Assert.AreEqual(user.username, "No user found");
 
@@ -98,11 +100,9 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void SuccessfullyRegisterUser()
+        public void CheckingIfAddIsCalledOnceWhenAddingNewUser()
         {
-            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
-            
-            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            _repository.AddUser(new UserDTO
             {
                 birthday = DateTime.MinValue,
                 email = "newEmail@email.com",
@@ -122,79 +122,28 @@ namespace PublishITServiceTests
                                                         newUser.organization_id == 1)), 
                                                         Times.Once
                                                         );
-
-            //Assert.AreEqual(responseMessage.Message, "User registered");
-
-            //Assert.IsTrue(responseMessage.IsExecuted);
         }
 
-        [TestMethod]
-        public void UnsuccessfullyRegisterUserDueToExistingUserName()
-        {
-            Assert.AreEqual(_publishITService.GetUserByUserName("userName 1").username, "userName 1");
-
-            var responseMessage = _publishITService.RegisterUser(new UserDTO
-            {
-                birthday = DateTime.MinValue,
-                email = "newEmail@email.com",
-                name = "newName",
-                username = "userName 1",
-                password = "newPassword",
-                organization_id = 1
-            });
-
-            _userMockSet.Verify(x => x.Add(It.Is<user>(
-                                                        newUser => 
-                                                        newUser.birthday == DateTime.MinValue && 
-                                                        newUser.email.Equals("newEmail@email.com") && 
-                                                        newUser.name.Equals("newName") && 
-                                                        newUser.user_name.Equals("userName 1") && 
-                                                        newUser.password.Equals("newPassword") && 
-                                                        newUser.organization_id == 1)), 
-                                                        Times.Never
-                                                        );
-
-            Assert.AreEqual(responseMessage.Message, "Username already exists");
-
-            Assert.IsFalse(responseMessage.IsExecuted);
-        }
+        
 
         [TestMethod]
         public void UnsuccessfullyRegisterUserDueToEmptyUserDTO()
         {
-            var responseMessage = _publishITService.RegisterUser(new UserDTO());
-
-            Assert.IsFalse(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "Registration failed");
+            _repository.AddUser(new UserDTO());
         }
 
         [TestMethod]
-        public void SuccessfullyDeletingUser()
+        public void CheckingIfSaveChangesIsCalledOnceWhenRemovingUserById()
         {
-            var responseMessage = _publishITService.DeleteUser(1);
+            _repository.DeleteUser(1);
 
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Once);
-
-            Assert.IsTrue(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "Deletion completed");
         }
 
         [TestMethod]
-        public void UnsuccessfullyDeletingUserDoToUnknownUserId()
+        public void CheckingIfSaveChangesIsCalledOnceWhenEditingUser()
         {
-            var responseMessage = _publishITService.DeleteUser(5);
-
-            Assert.IsFalse(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "Deletion failed");
-        }
-
-        [TestMethod]
-        public void SuccessfullyEditingUsersInformation()
-        {
-            var responseMessage = _publishITService.EditUser(new UserDTO
+            _repository.EditUser(new UserDTO
             {
                     birthday = DateTime.Now,
                     email = "ChangedEmail@email.com",
@@ -215,16 +164,12 @@ namespace PublishITServiceTests
             });
 
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Once);
-
-            Assert.IsTrue(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "User edited");
         }
 
         [TestMethod]
-        public void UnsuccessfullyEditingUsersInformationByChangingUserId()
+        public void CheckingThatSaveChangesIsNeverCalledWhenEditingUser()
         {
-            var responseMessage = _publishITService.EditUser(new UserDTO
+            _repository.EditUser(new UserDTO
             {
                 email = "ChangedEmail@email.com",
                 name = "ChangedName",
@@ -243,14 +188,14 @@ namespace PublishITServiceTests
                     }
             });
 
-            Assert.IsFalse(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "Editing failed");
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Never);
         }
 
         [TestMethod]
-        public void SuccessfullyUploadingDocument()
+        public void CheckingIfAddIsCalledCorrectlyWhenUploadingDocument()
         {
+            var mediaParser = new DocumentParser();
+
             var remoteFileInfo = new RemoteFileInfo
             {
                 FileName = "filename.pdf",
@@ -262,7 +207,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
+            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
 
             _mediaMockSet.Verify(x => x.Add(It.Is<media>(
                                             newMedia =>
@@ -285,15 +230,15 @@ namespace PublishITServiceTests
                                             );
 
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
-
-            Assert.IsTrue(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "File successfully uploaded");
         }
 
+        
+
         [TestMethod]
-        public void SuccessfullyUploadingVideo()
+        public void CheckingIfAddIsCalledCorrectlyWhenUploadingVideo()
         {
+            var mediaParser = new VideoParser();
+
             var remoteFileInfo = new RemoteFileInfo
             {
                 FileName = "filename.mp4",
@@ -305,7 +250,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
+            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
 
             _mediaMockSet.Verify(x => x.Add(It.Is<media>(
                                             newMedia =>
@@ -328,60 +273,13 @@ namespace PublishITServiceTests
                                             );
 
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
-
-            Assert.IsTrue(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "File successfully uploaded");
-        }
-
-        [TestMethod]
-        public void UnsuccessfullyUploadingMediaDoToUnknownFileFormat()
-        {
-            var remoteFileInfo = new RemoteFileInfo
-            {
-                FileName = "filename.mp3",
-                FileStream = new MemoryStream(),
-                Title = "title",
-                GenreId = 1,
-                Length = 1,
-                Status = "status",
-                UserId = 1
-            };
-
-            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
-
-            _mediaMockSet.Verify(x => x.Add(It.Is<media>(
-                                            newMedia =>
-                                            newMedia.title.Equals("title") &&
-                                            newMedia.user_id == 1)),
-                                            Times.Never
-                                            );
-
-            _videoMockSet.Verify(x => x.Add(It.Is<video>(
-                                            newVideo =>
-                                            newVideo.media_id == 0)),
-                                            Times.Never
-                                            );
-
-            _documentMockSet.Verify(x => x.Add(It.Is<document>(
-                                            newDocument =>
-                                            newDocument.media_id == 0 &&
-                                            newDocument.status.Equals("status"))),
-                                            Times.Never
-                                            );
-
-            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Never);
-
-            Assert.IsFalse(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "Unknown file format");
         }
 
         //Thomas
         [TestMethod]
         public void SuccessfullyDownloadMedia()
         {
-            //var downloadedMedia = _publishITService.DownloadMedia(1);
+            //var downloadedMedia = _repository.DownloadMedia(1);
             Assert.AreEqual(1, 2);
         }
 
@@ -393,52 +291,27 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void SuccessfullyStreamMedia()
+        public void SuccessfullyGettingTheRightPath()
         {
-            var movie = _publishITService.StreamMovie(1,4);
+            var path = _repository.GetMediaPath(4);
 
-            Assert.AreEqual(movie, "<video width='320' heigth='240' controls>" +
-                                        "<source src='location 4' type='video/mp4'>" +
-                                        "<source='movie.ogg' type='video/ogg'>" +
-                                    "</video>");
+            Assert.AreEqual(path, "location 4");
         }
+
 
         [TestMethod]
-        public void UnsuccessfullyStreamMediaDoToNoFoundUserId()
+        public void UnsuccessfullyGettingPathDoToNoFoundMovieId()
         {
-            var movie = _publishITService.StreamMovie(9, 0);
+            var movie = _repository.GetMediaPath(9);
 
-            Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
+            Assert.IsNull(movie);
         }
 
-        [TestMethod]
-        public void UnsuccessfullyStreamMediaDoToNoFoundMovieId()
-        {
-            var movie = _publishITService.StreamMovie(1, 9);
-
-            Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
-        }
-
-        [TestMethod]
-        public void UnsuccessfullyStreamMediaDoToDateExpired()
-        {
-            var movie = _publishITService.StreamMovie(2, 1);
-
-            Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
-        }
-
-        [TestMethod]
-        public void UnsuccessfullyStreamMediaDoToDateNotStarted()
-        {
-            var movie = _publishITService.StreamMovie(2, 0);
-
-            Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
-        }
 
         [TestMethod]
         public void SuccessfullySearchMedia()
         {
-            var listOfMedia = _publishITService.SearchMedia("title");
+            var listOfMedia = _repository.FindMediaByTitle("title");
 
             Assert.AreEqual(listOfMedia.Count, 4);
 
@@ -448,7 +321,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullySearchMedia()
         {
-            var listOfMedia = _publishITService.SearchMedia("No media");
+            var listOfMedia = _repository.FindMediaByTitle("No media");
 
             Assert.AreEqual(listOfMedia.Count, 0);
         }
@@ -472,7 +345,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingMedia()
         {
-            var gottenMedia = _publishITService.GetMedia(1);
+            var gottenMedia = _repository.FindMediaById(1);
 
             Assert.AreEqual(gottenMedia.title, "title 1");
         }
@@ -480,7 +353,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullyGettingMedia()
         {
-            var gottenMedia = _publishITService.GetMedia(5);
+            var gottenMedia = _repository.FindMediaById(5);
 
             Assert.AreEqual(gottenMedia.title, "No media found");
         }
@@ -488,24 +361,24 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingRating()
         {
-            var rating = _publishITService.GetRating(1, 1);
+            var rating = _repository.FindRating(1, 1);
 
-            Assert.AreEqual(rating, 5);
+            Assert.AreEqual(rating.rating1, 5);
         }
 
 
         [TestMethod]
         public void UnsuccessfullyGettingRating()
         {
-            var rating = _publishITService.GetRating(80085, 666);
+            var rating = _repository.FindRating(80085, 666);
 
-            Assert.AreEqual(rating, -1);
+            Assert.IsNull(rating);
         }
 
         [TestMethod]
         public void SuccessfullyPostingNewRating()
         {
-            var posted = _publishITService.PostRating(3, 4, 1);
+            var posted = _repository.PostRating(3, 4, 1);
 
             _ratingMockSet.Verify(x =>x.Add(It.Is<rating>(newRating => 
                                                             newRating.media_id == 4 && 
@@ -524,7 +397,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyChangingRating()
         {
-            var posted = _publishITService.PostRating(1, 2, 1);
+            var posted = _repository.PostRating(1, 2, 1);
 
             _ratingMockSet.Verify(x => x.Add(It.Is<rating>(newRating =>
                                                             newRating.media_id == 2 &&

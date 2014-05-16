@@ -116,3 +116,5 @@ PublishITService/PublishITService/App_Data/PublishIT_log.ldf
 PublishITService/PublishITService/NAMES.cs
 PublishITService/PublishITService/PublishITModel.Context.cs
 PublishITService/PublishITService/PublishITModel.Designer.cs
+PublishITService/PublishITServiceTests/Properties/Settings.Designer.cs
+PublishITService/PublishITServiceTests/Properties/Settings.settings

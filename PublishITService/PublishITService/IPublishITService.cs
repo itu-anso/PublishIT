@@ -51,7 +51,7 @@ namespace PublishITService
         List<media> SearchMedia(string title);
 
         [OperationContract]
-        List<media> GetMoviesByGenre(string genre);
+        List<media> GetMoviesByGenre(string inputGenre);
 
         [OperationContract]
         media GetMedia(int id);
