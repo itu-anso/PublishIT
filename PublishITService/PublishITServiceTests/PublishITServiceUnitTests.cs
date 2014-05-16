@@ -17,14 +17,14 @@ namespace PublishITServiceTests
         private PublishITService.PublishITService _publishITService;
         private Mock<IPublishITEntities> _publishITEntitiesMock;
 
-        private Mock<IDbSet<user>> _userMockSet;
-        private Mock<IDbSet<role>> _roleMockSet;
-        private Mock<IDbSet<rating>> _ratingMockSet;
-        private Mock<IDbSet<media>> _mediaMockSet;
-        private Mock<IDbSet<document>> _documentMockSet;
-        private Mock<IDbSet<rent>> _rentMockSet;
-        private Mock<IDbSet<video>> _videoMockSet;
-        private Mock<IDbSet<genre>> _genreMockSet;
+        private Mock<IDbSet<PublishITService.user>> _userMockSet;
+        private Mock<IDbSet<PublishITService.role>> _roleMockSet;
+        private Mock<IDbSet<PublishITService.rating>> _ratingMockSet;
+        private Mock<IDbSet<PublishITService.media>> _mediaMockSet;
+        private Mock<IDbSet<PublishITService.document>> _documentMockSet;
+        private Mock<IDbSet<PublishITService.rent>> _rentMockSet;
+        private Mock<IDbSet<PublishITService.video>> _videoMockSet;
+        private Mock<IDbSet<PublishITService.genre>> _genreMockSet;
 
         [TestInitialize]
         public void InitTests()
@@ -52,13 +52,13 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullyGettingUserById()
         {
-            var user = _publishITService.GetUserById(1337);
+            var foundUser = _publishITService.GetUserById(1337);
 
-            Assert.AreEqual(user.name, "No user found");
+            Assert.AreEqual(foundUser.username, "No user found");
 
-            Assert.AreEqual(user.username, null);
+            Assert.AreEqual(foundUser.name, "");
 
-            Assert.AreEqual(user.user_id, 0);
+            Assert.AreEqual(foundUser.user_id, 0);
         }
 
         [UnitTest]
@@ -139,7 +139,7 @@ namespace PublishITServiceTests
                 organization_id = 1
             });
 
-            _userMockSet.Verify(x => x.Add(It.Is<user>(
+            _userMockSet.Verify(x => x.Add(It.Is<PublishITService.user>(
                                                         newUser => 
                                                         newUser.birthday == DateTime.MinValue && 
                                                         newUser.email.Equals("newEmail@email.com") && 
@@ -223,34 +223,6 @@ namespace PublishITServiceTests
 
         [UnitTest]
         [TestMethod]
-        public void UnsuccessfullyEditingUsersInformationByChangingUserId()
-        {
-            var responseMessage = _publishITService.EditUser(new UserDTO
-            {
-                email = "ChangedEmail@email.com",
-                name = "ChangedName",
-                user_id = 1337,
-                username = "ChangedUserName 1",
-                password = "Changedpassword 1",
-                status = "Active",
-                organization_id = 1,
-                roles = new List<RoleDTO>
-                    {
-                        new RoleDTO
-                        {
-                            Id = 1,
-                            Title = "role 1"
-                        }
-                    }
-            });
-
-            Assert.IsFalse(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "Editing failed");
-        }
-
-        [UnitTest]
-        [TestMethod]
         public void SuccessfullyUploadingDocument()
         {
             var remoteFileInfo = new RemoteFileInfo
@@ -266,21 +238,21 @@ namespace PublishITServiceTests
 
             _publishITService.UploadMedia(remoteFileInfo);
 
-            _mediaMockSet.Verify(x => x.Add(It.Is<media>(
+            _mediaMockSet.Verify(x => x.Add(It.Is<PublishITService.media>(
                                             newMedia =>
                                             newMedia.title.Equals("title") && 
                                             newMedia.user_id == 1)),
                                             Times.Once
                                             );
 
-            _documentMockSet.Verify(x => x.Add(It.Is<document>(
+            _documentMockSet.Verify(x => x.Add(It.Is<PublishITService.document>(
                                             newDocument =>
                                             newDocument.media_id == 0 &&
                                             newDocument.status.Equals("status"))), 
                                             Times.Once
                                             );
             
-            _videoMockSet.Verify(x => x.Add(It.Is<video>(
+            _videoMockSet.Verify(x => x.Add(It.Is<PublishITService.video>(
                                             newVideo =>
                                             newVideo.media_id == 0)),
                                             Times.Never
@@ -306,20 +278,20 @@ namespace PublishITServiceTests
 
             _publishITService.UploadMedia(remoteFileInfo);
 
-            _mediaMockSet.Verify(x => x.Add(It.Is<media>(
+            _mediaMockSet.Verify(x => x.Add(It.Is<PublishITService.media>(
                                             newMedia =>
                                             newMedia.title.Equals("title") &&
                                             newMedia.user_id == 1)),
                                             Times.Once
                                             );
 
-            _videoMockSet.Verify(x => x.Add(It.Is<video>(
+            _videoMockSet.Verify(x => x.Add(It.Is<PublishITService.video>(
                                             newVideo =>
                                             newVideo.media_id == 0)),
                                             Times.Once
                                             );
 
-            _documentMockSet.Verify(x => x.Add(It.Is<document>(
+            _documentMockSet.Verify(x => x.Add(It.Is<PublishITService.document>(
                                             newDocument =>
                                             newDocument.media_id == 0 &&
                                             newDocument.status.Equals("status"))),
@@ -346,20 +318,20 @@ namespace PublishITServiceTests
 
             _publishITService.UploadMedia(remoteFileInfo);
 
-            _mediaMockSet.Verify(x => x.Add(It.Is<media>(
+            _mediaMockSet.Verify(x => x.Add(It.Is<PublishITService.media>(
                                             newMedia =>
                                             newMedia.title.Equals("title") &&
                                             newMedia.user_id == 1)),
                                             Times.Never
                                             );
 
-            _videoMockSet.Verify(x => x.Add(It.Is<video>(
+            _videoMockSet.Verify(x => x.Add(It.Is<PublishITService.video>(
                                             newVideo =>
                                             newVideo.media_id == 0)),
                                             Times.Never
                                             );
 
-            _documentMockSet.Verify(x => x.Add(It.Is<document>(
+            _documentMockSet.Verify(x => x.Add(It.Is<PublishITService.document>(
                                             newDocument =>
                                             newDocument.media_id == 0 &&
                                             newDocument.status.Equals("status"))),
@@ -513,7 +485,7 @@ namespace PublishITServiceTests
         {
             var posted = _publishITService.PostRating(3, 4, 1);
 
-            _ratingMockSet.Verify(x =>x.Add(It.Is<rating>(newRating => 
+            _ratingMockSet.Verify(x =>x.Add(It.Is<PublishITService.rating>(newRating => 
                                                             newRating.media_id == 4 && 
                                                             newRating.rating1 == 3 && 
                                                             newRating.user_id == 1 &&
@@ -533,7 +505,7 @@ namespace PublishITServiceTests
         {
             var posted = _publishITService.PostRating(1, 2, 1);
 
-            _ratingMockSet.Verify(x => x.Add(It.Is<rating>(newRating =>
+            _ratingMockSet.Verify(x => x.Add(It.Is<PublishITService.rating>(newRating =>
                                                             newRating.media_id == 2 &&
                                                             newRating.rating1 == 1 &&
                                                             newRating.user_id == 1 &&
@@ -548,11 +520,11 @@ namespace PublishITServiceTests
         }
 
 
-        private IQueryable<user> InitUserData()
+        private IQueryable<PublishITService.user> InitUserData()
         {
-            return new List<user>
+            return new List<PublishITService.user>
             {
-                new user
+                new PublishITService.user
                 {
                     email = "email@email.com",
                     name = "name 1",
@@ -561,12 +533,12 @@ namespace PublishITServiceTests
                     password = "password 1",
                     status = "Active",
                     organization_id = 1,
-                    role = new Collection<role>(new List<role>
+                    role = new Collection<PublishITService.role>(new List<PublishITService.role>
                     {
-                        new role {role_id = 1, role1 = "role 1"}
+                        new PublishITService.role {role_id = 1, role1 = "role 1"}
                     })
                 },
-                new user
+                new PublishITService.user
                 {
                     email = "email2@email.com",
                     name = "name 2",
@@ -575,13 +547,13 @@ namespace PublishITServiceTests
                     password = "password 2",
                     status = "Active",
                     organization_id = 2,
-                    role = new Collection<role>(new List<role>
+                    role = new Collection<PublishITService.role>(new List<PublishITService.role>
                     {
-                        new role {role_id = 1, role1 = "role 1"},
-                        new role {role_id = 2, role1 = "role 2"}
+                        new PublishITService.role {role_id = 1, role1 = "role 1"},
+                        new PublishITService.role {role_id = 2, role1 = "role 2"}
                     })
                 },
-                new user
+                new PublishITService.user
                 {
                     email = "email3@email.com",
                     name = "name 3",
@@ -590,40 +562,40 @@ namespace PublishITServiceTests
                     password = "password 3",
                     status = "Deleted",
                     organization_id = 1,
-                    role = new Collection<role>(new List<role>
+                    role = new Collection<PublishITService.role>(new List<PublishITService.role>
                     {
-                        new role {role_id = 1, role1 = "role 1"}
+                        new PublishITService.role {role_id = 1, role1 = "role 1"}
                     })
                 }
             }.AsQueryable();
         }
 
-        public IQueryable<role> InitRoleData()
+        public IQueryable<PublishITService.role> InitRoleData()
         {
-            return new List<role>
+            return new List<PublishITService.role>
             {
-                new role
+                new PublishITService.role
                 {
                     role_id = 1,
                     role1 = "role 1",
-                    user = new Collection<user>(new List<user>
+                    user = new Collection<PublishITService.user>(new List<PublishITService.user>
                     {
-                        new user
+                        new PublishITService.user
                         {
                             user_id = 1
                         },
-                        new user
+                        new PublishITService.user
                         {
                             user_id = 2
                         },
-                        new user
+                        new PublishITService.user
                         {
                             user_id = 3
                         }
                     })
                 },
                 
-                new role
+                new PublishITService.role
                 {
                     role_id = 2,
                     role1 = "role 2"
@@ -631,25 +603,25 @@ namespace PublishITServiceTests
             }.AsQueryable();
         }
 
-        private IQueryable<rating> InitRatingData()
+        private IQueryable<PublishITService.rating> InitRatingData()
         {
-            return new List<rating>
+            return new List<PublishITService.rating>
             {
-                new rating
+                new PublishITService.rating
                 {
                     rating_id = 1,
                     rating1 = 5,
                     media_id = 1,
                     user_id = 1
                 },
-                new rating
+                new PublishITService.rating
                 {
                     rating_id = 2,
                     rating1 = 7,
                     media_id = 2,
                     user_id = 1
                 },
-                new rating
+                new PublishITService.rating
                 {
                     rating_id = 3,
                     rating1 = 1,
@@ -659,11 +631,11 @@ namespace PublishITServiceTests
             }.AsQueryable();
         }
 
-        private IQueryable<media> InitMediaData()
+        private IQueryable<PublishITService.media> InitMediaData()
         {
-            return new List<media>
+            return new List<PublishITService.media>
             {
-                new media
+                new PublishITService.media
                 {
                     media_id = 1,
                     user_id = 1,
@@ -672,7 +644,7 @@ namespace PublishITServiceTests
                     location = "location 1"
                 },
                 
-                new media
+                new PublishITService.media
                 {
                     media_id = 2,
                     user_id = 2,
@@ -681,7 +653,7 @@ namespace PublishITServiceTests
                     location = "location 2"
                 },
 
-                new media
+                new PublishITService.media
                 {
                     media_id = 3,
                     user_id = 1,
@@ -690,7 +662,7 @@ namespace PublishITServiceTests
                     location = "location 3"
                 },
 
-                new media
+                new PublishITService.media
                 {
                     media_id = 4,
                     user_id = 1,
@@ -702,17 +674,17 @@ namespace PublishITServiceTests
             }.AsQueryable();
         }
 
-        private IQueryable<genre> InitGenreData()
+        private IQueryable<PublishITService.genre> InitGenreData()
         {
-            return new List<genre>
+            return new List<PublishITService.genre>
             {
-                new genre
+                new PublishITService.genre
                 {
                     genre_id = 1,
                     genre1 = "Comedy",
-                    media = new Collection<media>(new List<media>
+                    media = new Collection<PublishITService.media>(new List<PublishITService.media>
                     {
-                        new media
+                        new PublishITService.media
                         {
                             media_id = 2,
                             user_id = 2,
@@ -721,7 +693,7 @@ namespace PublishITServiceTests
                             location = "location 2"
                         },
 
-                        new media
+                        new PublishITService.media
                         {
                             media_id = 4,
                             user_id = 1,
@@ -732,13 +704,13 @@ namespace PublishITServiceTests
                     })
                 },
 
-                new genre
+                new PublishITService.genre
                 {
                     genre_id = 2,
                     genre1 = "Biography",
-                    media = new Collection<media>(new List<media>
+                    media = new Collection<PublishITService.media>(new List<PublishITService.media>
                     {
-                        new media
+                        new PublishITService.media
                         {
                             media_id = 1,
                             user_id = 1,
@@ -751,32 +723,32 @@ namespace PublishITServiceTests
             }.AsQueryable();
         }
 
-        private IQueryable<document> InitDocumentData()
+        private IQueryable<PublishITService.document> InitDocumentData()
         {
-            return new List<document>
+            return new List<PublishITService.document>
             {
-                new document
+                new PublishITService.document
                 {
                     media_id = 1
                 },
 
-                new document
+                new PublishITService.document
                 {
                     media_id = 3
                 }
             }.AsQueryable();
         }
 
-        private IQueryable<video> InitVideoData()
+        private IQueryable<PublishITService.video> InitVideoData()
         {
-            return new List<video>
+            return new List<PublishITService.video>
             {
-                new video
+                new PublishITService.video
                 {
                     media_id = 2,
                 },
 
-                new video
+                new PublishITService.video
                 {
                     media_id = 4
                 }
@@ -784,11 +756,11 @@ namespace PublishITServiceTests
             }.AsQueryable();
         }
 
-        private IQueryable<rent> InitRentData()
+        private IQueryable<PublishITService.rent> InitRentData()
         {
-            return new List<rent>
+            return new List<PublishITService.rent>
             {
-                new rent
+                new PublishITService.rent
                 {
                     rent_id = 1,
                     media_id = 0,
@@ -797,7 +769,7 @@ namespace PublishITServiceTests
                     end_date = DateTime.MaxValue
                 },
 
-                new rent
+                new PublishITService.rent
                 {
                     rent_id = 2,
                     media_id = 1,
@@ -806,7 +778,7 @@ namespace PublishITServiceTests
                     end_date = DateTime.Parse("10-05-1991 00:00:00")
                 },
 
-                new rent
+                new PublishITService.rent
                 {
                     rent_id = 3,
                     media_id = 0,
@@ -815,7 +787,7 @@ namespace PublishITServiceTests
                     end_date = DateTime.MaxValue
                 },
 
-                new rent
+                new PublishITService.rent
                 {
                     rent_id = 4,
                     media_id = 4,
@@ -826,96 +798,96 @@ namespace PublishITServiceTests
             }.AsQueryable();
         }
 
-        private void SetupUserMockSet(IQueryable<user> data)
+        private void SetupUserMockSet(IQueryable<PublishITService.user> data)
         {
-            _userMockSet.As<IQueryable<user>>().Setup(m => m.Provider).Returns(data.Provider);
-            _userMockSet.As<IQueryable<user>>().Setup(m => m.Expression).Returns(data.Expression);
-            _userMockSet.As<IQueryable<user>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            _userMockSet.As<IQueryable<user>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            _userMockSet.As<IQueryable<PublishITService.user>>().Setup(m => m.Provider).Returns(data.Provider);
+            _userMockSet.As<IQueryable<PublishITService.user>>().Setup(m => m.Expression).Returns(data.Expression);
+            _userMockSet.As<IQueryable<PublishITService.user>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _userMockSet.As<IQueryable<PublishITService.user>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
         }
 
-        private void SetupRoleMockSet(IQueryable<role> data)
+        private void SetupRoleMockSet(IQueryable<PublishITService.role> data)
         {
-            _roleMockSet.As<IQueryable<role>>().Setup(m => m.Provider).Returns(data.Provider);
-            _roleMockSet.As<IQueryable<role>>().Setup(m => m.Expression).Returns(data.Expression);
-            _roleMockSet.As<IQueryable<role>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            _roleMockSet.As<IQueryable<role>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            _roleMockSet.As<IQueryable<PublishITService.role>>().Setup(m => m.Provider).Returns(data.Provider);
+            _roleMockSet.As<IQueryable<PublishITService.role>>().Setup(m => m.Expression).Returns(data.Expression);
+            _roleMockSet.As<IQueryable<PublishITService.role>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _roleMockSet.As<IQueryable<PublishITService.role>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
         }
 
-        private void SetupRatingMockSet(IQueryable<rating> data)
+        private void SetupRatingMockSet(IQueryable<PublishITService.rating> data)
         {
-            _ratingMockSet.As<IQueryable<rating>>().Setup(m => m.Provider).Returns(data.Provider);
-            _ratingMockSet.As<IQueryable<rating>>().Setup(m => m.Expression).Returns(data.Expression);
-            _ratingMockSet.As<IQueryable<rating>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            _ratingMockSet.As<IQueryable<rating>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            _ratingMockSet.As<IQueryable<PublishITService.rating>>().Setup(m => m.Provider).Returns(data.Provider);
+            _ratingMockSet.As<IQueryable<PublishITService.rating>>().Setup(m => m.Expression).Returns(data.Expression);
+            _ratingMockSet.As<IQueryable<PublishITService.rating>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _ratingMockSet.As<IQueryable<PublishITService.rating>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
         }
 
-        private void SetupMediaMockSet(IQueryable<media> data)
+        private void SetupMediaMockSet(IQueryable<PublishITService.media> data)
         {
-            _mediaMockSet.As<IQueryable<media>>().Setup(m => m.Provider).Returns(data.Provider);
-            _mediaMockSet.As<IQueryable<media>>().Setup(m => m.Expression).Returns(data.Expression);
-            _mediaMockSet.As<IQueryable<media>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            _mediaMockSet.As<IQueryable<media>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            _mediaMockSet.As<IQueryable<PublishITService.media>>().Setup(m => m.Provider).Returns(data.Provider);
+            _mediaMockSet.As<IQueryable<PublishITService.media>>().Setup(m => m.Expression).Returns(data.Expression);
+            _mediaMockSet.As<IQueryable<PublishITService.media>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _mediaMockSet.As<IQueryable<PublishITService.media>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
         }
 
-        private void SetupDocumentMockSet(IQueryable<document> data)
+        private void SetupDocumentMockSet(IQueryable<PublishITService.document> data)
         {
-            _documentMockSet.As<IQueryable<document>>().Setup(m => m.Provider).Returns(data.Provider);
-            _documentMockSet.As<IQueryable<document>>().Setup(m => m.Expression).Returns(data.Expression);
-            _documentMockSet.As<IQueryable<document>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            _documentMockSet.As<IQueryable<document>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            _documentMockSet.As<IQueryable<PublishITService.document>>().Setup(m => m.Provider).Returns(data.Provider);
+            _documentMockSet.As<IQueryable<PublishITService.document>>().Setup(m => m.Expression).Returns(data.Expression);
+            _documentMockSet.As<IQueryable<PublishITService.document>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _documentMockSet.As<IQueryable<PublishITService.document>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
         }
 
-        private void SetupVideoMockSet(IQueryable<video> data)
+        private void SetupVideoMockSet(IQueryable<PublishITService.video> data)
         {
-            _videoMockSet.As<IQueryable<video>>().Setup(m => m.Provider).Returns(data.Provider);
-            _videoMockSet.As<IQueryable<video>>().Setup(m => m.Expression).Returns(data.Expression);
-            _videoMockSet.As<IQueryable<video>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            _videoMockSet.As<IQueryable<video>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            _videoMockSet.As<IQueryable<PublishITService.video>>().Setup(m => m.Provider).Returns(data.Provider);
+            _videoMockSet.As<IQueryable<PublishITService.video>>().Setup(m => m.Expression).Returns(data.Expression);
+            _videoMockSet.As<IQueryable<PublishITService.video>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _videoMockSet.As<IQueryable<PublishITService.video>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
         }
 
-        private void SetupGenreMockSet(IQueryable<genre> data)
+        private void SetupGenreMockSet(IQueryable<PublishITService.genre> data)
         {
-            _genreMockSet.As<IQueryable<genre>>().Setup(m => m.Provider).Returns(data.Provider);
-            _genreMockSet.As<IQueryable<genre>>().Setup(m => m.Expression).Returns(data.Expression);
-            _genreMockSet.As<IQueryable<genre>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            _genreMockSet.As<IQueryable<genre>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            _genreMockSet.As<IQueryable<PublishITService.genre>>().Setup(m => m.Provider).Returns(data.Provider);
+            _genreMockSet.As<IQueryable<PublishITService.genre>>().Setup(m => m.Expression).Returns(data.Expression);
+            _genreMockSet.As<IQueryable<PublishITService.genre>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _genreMockSet.As<IQueryable<PublishITService.genre>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
         }
 
-        private void SetupRentMockSet(IQueryable<rent> data)
+        private void SetupRentMockSet(IQueryable<PublishITService.rent> data)
         {
-            _rentMockSet.As<IQueryable<rent>>().Setup(m => m.Provider).Returns(data.Provider);
-            _rentMockSet.As<IQueryable<rent>>().Setup(m => m.Expression).Returns(data.Expression);
-            _rentMockSet.As<IQueryable<rent>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            _rentMockSet.As<IQueryable<rent>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            _rentMockSet.As<IQueryable<PublishITService.rent>>().Setup(m => m.Provider).Returns(data.Provider);
+            _rentMockSet.As<IQueryable<PublishITService.rent>>().Setup(m => m.Expression).Returns(data.Expression);
+            _rentMockSet.As<IQueryable<PublishITService.rent>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            _rentMockSet.As<IQueryable<PublishITService.rent>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
         }
 
 
 
         private void SetupMockSets()
         {
-            _userMockSet = new Mock<IDbSet<user>>();
+            _userMockSet = new Mock<IDbSet<PublishITService.user>>();
             SetupUserMockSet(InitUserData());
 
-            _roleMockSet = new Mock<IDbSet<role>>();
+            _roleMockSet = new Mock<IDbSet<PublishITService.role>>();
             SetupRoleMockSet(InitRoleData());
 
-            _ratingMockSet = new Mock<IDbSet<rating>>();
+            _ratingMockSet = new Mock<IDbSet<PublishITService.rating>>();
             SetupRatingMockSet(InitRatingData());
 
-            _mediaMockSet = new Mock<IDbSet<media>>();
+            _mediaMockSet = new Mock<IDbSet<PublishITService.media>>();
             SetupMediaMockSet(InitMediaData());
 
-            _documentMockSet = new Mock<IDbSet<document>>();
+            _documentMockSet = new Mock<IDbSet<PublishITService.document>>();
             SetupDocumentMockSet(InitDocumentData());
 
-            _videoMockSet = new Mock<IDbSet<video>>();
+            _videoMockSet = new Mock<IDbSet<PublishITService.video>>();
             SetupVideoMockSet(InitVideoData());
 
-            _rentMockSet = new Mock<IDbSet<rent>>();
+            _rentMockSet = new Mock<IDbSet<PublishITService.rent>>();
             SetupRentMockSet(InitRentData());
 
-            _genreMockSet = new Mock<IDbSet<genre>>();
+            _genreMockSet = new Mock<IDbSet<PublishITService.genre>>();
             SetupGenreMockSet(InitGenreData());
         }
 

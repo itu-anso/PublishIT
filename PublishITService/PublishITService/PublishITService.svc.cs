@@ -16,7 +16,10 @@ namespace PublishITService
     {
         private readonly IPublishITEntities _publishITEntities;
 
-		public PublishITService(){}
+        public PublishITService()
+        {
+            
+        }
 
         public PublishITService(IPublishITEntities publishITEntities = null)
         {
@@ -27,7 +30,8 @@ namespace PublishITService
         /// Gets information on a user given the user's id
         /// </summary>
         /// <param name="id"> The integer id to compare with when searching in the database </param>
-        /// <returns> Returns a UserDTO with all information on a user </returns>
+        /// <returns> Returns a UserDTO with all information on a user,
+        /// or one with username "No user found" and status "Not a user"</returns>
 		public UserDTO GetUserById(int id) {
 			using (var entities = _publishITEntities ?? new RentIt09Entities()) {
 				var foundUser = (from u in entities.user
@@ -61,7 +65,11 @@ namespace PublishITService
 
 				return new UserDTO
 				{
-				    name = "No user found",
+                    birthday = DateTime.MinValue,
+                    email = "no@email.com",
+                    name = "",
+                    password = "",
+				    username = "No user found",
                     status = "Not a user"
 				};
 			}
@@ -116,7 +124,8 @@ namespace PublishITService
         /// Gets information on a user by given the user name
         /// </summary>
         /// <param name="username"> User's user name </param>
-        /// <returns> Returns a UserDTO with all information on a user </returns>
+        /// <returns> Returns a UserDTO with all information on a user,
+        /// or one with username "No user found" and status "Not a user"</returns>
         public UserDTO GetUserByUserName(string username) {
 			using (var entities = _publishITEntities ?? new RentIt09Entities()) {
 				var foundUser = (from u in entities.user
@@ -150,6 +159,10 @@ namespace PublishITService
 
 				return new UserDTO
 				{
+                                        birthday = DateTime.MinValue,
+                    email = "no@email.com",
+                    name = "",
+                    password = "",
 				    username = "No user found",
 				    status = "Not a user"
 				};
