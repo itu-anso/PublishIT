@@ -181,7 +181,7 @@ namespace PublishITService.Repositories
 
         public void StoreMedia(byte[] mediaStream, RemoteFileInfo mediaInfo, IMediaParser mediaParser)
         {
-            throw new NotImplementedException();
+            string success = "let's say it has been stored";
         }
 
         public string GetMediaPath(int id)
@@ -320,9 +320,8 @@ namespace PublishITService.Repositories
         public bool CheckingIfRentExists(int userId, int movieId)
         {
             var date = DateTime.Now;
-            using (var entities = _publishITEntities ?? new RentIt09Entities())
-            {
-                var q = from r in entities.rent
+            
+                var q = from r in _rentSet
                         where (r.media_id == movieId && r.user_id == userId && (r.start_date <= date && r.end_date >= date))
                         select r;
 
@@ -330,8 +329,34 @@ namespace PublishITService.Repositories
                 {
                     return true;
                 }
-            }
+            
             return false;
+        }
+
+        public List<media> FindMediasByAuthorId(int id)
+        {
+            List<media> medias = new List<media>();
+
+            var foundMedia = from med in _mediaSet
+                             where med.user_id == id
+                             select med;
+
+            foreach (media med in foundMedia)
+            {
+                medias.Add(new media
+                {
+                    media_id = med.media_id,
+                    user_id = med.user_id,
+                    format_id = med.format_id,
+                    title = med.title,
+                    average_rating = med.average_rating,
+                    date = med.date,
+                    description = med.description,
+                    location = med.location,
+                    number_of_downloads = med.number_of_downloads
+                });
+            }
+            return medias;
         }
     }
 }

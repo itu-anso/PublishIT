@@ -37,5 +37,7 @@ namespace PublishITService.Repositories
         ResponseMessage PostRating(int rating, int movieId, int userId);
 
         bool CheckingIfRentExists(int userId, int movieId);
+
+        List<media> FindMediasByAuthorId(int id);
     }
 }

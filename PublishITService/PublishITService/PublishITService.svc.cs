@@ -63,18 +63,27 @@ namespace PublishITService
         /// <returns> A response message with a boolean value saying if the registration was a success and a message explaining why/why not </returns>
 	    public ResponseMessage RegisterUser(UserDTO inputUser)
 	    {
-			    if (GetUserByUserName(inputUser.username).username.Equals("No user found"))
-			    {
-				    _repository.AddUser(inputUser);
+            if (inputUser.name != null && 
+                inputUser.username != null && 
+                inputUser.password != null && 
+                inputUser.email != null &&
+                inputUser.organization_id != 0 &&
+                inputUser.birthday != null)
+            {
+                if (GetUserByUserName(inputUser.username).username.Equals("No user found"))
+                {
+                    _repository.AddUser(inputUser);
 
-				    if (GetUserByUserName(inputUser.username).username.Equals(inputUser.username))
-				    {
-					    return new ResponseMessage {IsExecuted = true, Message = "User registered"};
-				    }
+                    if (GetUserByUserName(inputUser.username).username.Equals(inputUser.username))
+                    {
+                        return new ResponseMessage {IsExecuted = true, Message = "User registered"};
+                    }
 
-				    return new ResponseMessage {IsExecuted = false, Message = "Registration failed"};
-			    }
-			    return new ResponseMessage {IsExecuted = false, Message = "Username already exists"};
+                    return new ResponseMessage {IsExecuted = false, Message = "Registration failed"};
+                }
+                return new ResponseMessage {IsExecuted = false, Message = "Username already exists"};
+            }
+            return new ResponseMessage {IsExecuted = false, Message = "For registration to be performed Name, Username, Password, Email, Birthday and Organization id has to be added"};
 	    }
 
         /// <summary>
@@ -92,7 +101,7 @@ namespace PublishITService
             }
             else
             {
-                return new ResponseMessage {IsExecuted = false, Message = "No user found"};
+                return new ResponseMessage {IsExecuted = false, Message = "No user found. Deletion failed"};
             }
                 if (GetUserById(id).status.Equals("Deleted"))
                 {
@@ -192,7 +201,7 @@ namespace PublishITService
             if (RentExist(userId, movieId))
             {
 
-                var mediaPath = _repository.FindMediaById(movieId);
+                var mediaPath = _repository.GetMediaPath(movieId);
 
                 // Set mediastreamed  with a video xml tag witch provide a screen with the requested video
                 mediaStreamed = "<video width='320' heigth='240' controls>" +
@@ -234,31 +243,7 @@ namespace PublishITService
 
         public List<media> GetMediaByAuthor(int id)
         {
-            using (var entities = _publishITEntities ?? new RentIt09Entities())
-            {
-                List<media> medias = new List<media>();
-
-                var foundMedia = from med in entities.media
-                                 where med.user_id == id
-                                 select med;
-
-                foreach (media med in foundMedia)
-                {
-                    medias.Add(new media
-                    {
-                        media_id = med.media_id,
-                        user_id = med.user_id,
-                        format_id = med.format_id,
-                        title = med.title,
-                        average_rating = med.average_rating,
-                        date = med.date,
-                        description = med.description,
-                        location = med.location,
-                        number_of_downloads = med.number_of_downloads
-                    });
-                }
-                return medias;
-            }
+            return _repository.FindMediasByAuthorId(id);
         }        
         
         
