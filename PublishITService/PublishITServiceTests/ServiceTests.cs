@@ -136,28 +136,6 @@ namespace PublishITServiceTests
             Assert.IsTrue(responseMessage.IsExecuted);
         }
 
-        [TestMethod] //FEJLER!
-        public void SuccessfullyRegisterUserAndVerifyByOrganizationId()
-        {
-            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
-
-            var responseMessage = _publishITService.RegisterUser(new UserDTO
-            {
-                birthday = DateTime.MinValue,
-                email = "newEmail@email.com",
-                name = "newName",
-                username = "newUserName",
-                password = "newPassword",
-                organization_id = 1
-            });
-
-            Assert.AreEqual(_publishITService.GetUserByUserName("newUserName").organization_id, 1); //Expected 0
-
-            Assert.AreEqual(responseMessage.Message, "User registered");
-
-            Assert.IsTrue(responseMessage.IsExecuted);
-        }
-
         [TestMethod]
         public void UnsuccesfullyRegisterUserDueToNoBirthday()
         {

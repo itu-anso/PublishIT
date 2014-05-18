@@ -162,53 +162,53 @@ namespace PublishITService.Repositories
 
                 if (foundUser == null)
                 {
-                int id;
-                if (!entities.user.Any())
-                {
-                    id = 1;
-                }
-                else
-                {
-                    id = entities.user.Max(u => u.user_id) + 1;
-                }
-                var userRole = (from r in entities.role
-                    where r.role_id == 1
-                    select r).FirstOrDefault();
+                    int id;
+                    if (!entities.user.Any())
+                    {
+                        id = 1;
+                    }
+                    else
+                    {
+                        id = entities.user.Max(u => u.user_id) + 1;
+                    }
+                    var userRole = (from r in entities.role
+                        where r.role_id == 1
+                        select r).FirstOrDefault();
 
-                entities.user.Add(new user
-                {
-                    user_id = id,
-                    name = newUser.name,
-                    user_name = newUser.username,
-                    password = newUser.password,
-                    birthday = newUser.birthday,
-                    email = newUser.email,
-                    organization_id = newUser.organization_id,
-                    salt = "salt",
-                    status = "Active",
-                    role = new Collection<role> {new role {role_id = userRole.role_id, role1 = userRole.role1}}
-                });
+                    entities.user.Add(new user
+                    {
+                        user_id = id,
+                        name = newUser.name,
+                        user_name = newUser.username,
+                        password = newUser.password,
+                        birthday = newUser.birthday,
+                        email = newUser.email,
+                        organization_id = newUser.organization_id,
+                        salt = "salt",
+                        status = "Active",
+                        role = new Collection<role> {new role {role_id = userRole.role_id, role1 = userRole.role1}}
+                    });
 
-                entities.SaveChanges();
+                    entities.SaveChanges();
 
-                foundUser = (from u in entities.user
-                             where u.user_name == newUser.username
-                             select new UserDTO
-                             {
-                                 name = u.name,
-                                 username = u.user_name,
-                                 birthday = u.birthday,
-                                 status = u.status,
-                                 email = u.email,
-                                 user_id = u.user_id,
-                                 password = u.password
-                             }).FirstOrDefault();
+                    foundUser = (from u in entities.user
+                        where u.user_name == newUser.username
+                        select new UserDTO
+                        {
+                            name = u.name,
+                            username = u.user_name,
+                            birthday = u.birthday,
+                            status = u.status,
+                            email = u.email,
+                            user_id = u.user_id,
+                            password = u.password
+                        }).FirstOrDefault();
 
-                if (foundUser != null && foundUser.username.Equals(newUser.username))
-                {
-                    return new ResponseMessage { IsExecuted = true, Message = "User registered" };
-                }
-                return new ResponseMessage { IsExecuted = false, Message = "Registration failed" };
+                    if (foundUser != null && foundUser.username.Equals(newUser.username))
+                    {
+                        return new ResponseMessage {IsExecuted = true, Message = "User registered"};
+                    }
+                    return new ResponseMessage {IsExecuted = false, Message = "Registration failed"};
                 }
                 return new ResponseMessage {IsExecuted = false, Message = "Username already exists"};
             }
