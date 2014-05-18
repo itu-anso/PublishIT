@@ -152,68 +152,6 @@ namespace PublishITServiceTests
             Assert.AreEqual(responseMessage.Message, "Editing failed");
         }
 
-        [TestMethod]
-        public void SuccessfullySelectingDocumentParserForUpload()
-        {
-            var remoteFileInfo = new RemoteFileInfo
-            {
-                FileName = "filename.pdf",
-                FileStream = new MemoryStream(),
-                Title = "title",
-                GenreId = 1,
-                Length = 1,
-                Status = "status",
-                UserId = 1
-            };
-
-            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
-
-            Assert.IsTrue(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "File successfully uploaded");
-        }
-
-        [TestMethod]
-        public void SuccessfullySelectingVideoParserForUpload()
-        {
-            var remoteFileInfo = new RemoteFileInfo
-            {
-                FileName = "filename.mp4",
-                FileStream = new MemoryStream(),
-                Title = "title",
-                GenreId = 1,
-                Length = 1,
-                Status = "status",
-                UserId = 1
-            };
-
-            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
-            
-            Assert.IsTrue(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "File successfully uploaded");
-        }
-
-        [TestMethod]
-        public void UnsuccessfullyUploadingMediaDoToUnknownFileFormat()
-        {
-            var remoteFileInfo = new RemoteFileInfo
-            {
-                FileName = "filename.mp3",
-                FileStream = new MemoryStream(),
-                Title = "title",
-                GenreId = 1,
-                Length = 1,
-                Status = "status",
-                UserId = 1
-            };
-
-            var responseMessage = _publishITService.UploadMedia(remoteFileInfo);
-
-            Assert.IsFalse(responseMessage.IsExecuted);
-
-            Assert.AreEqual(responseMessage.Message, "Unknown file format");
-        }
 
         [TestMethod]
         public void SuccessfullyStreamMedia()
