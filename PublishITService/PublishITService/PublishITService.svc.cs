@@ -135,7 +135,7 @@ namespace PublishITService
         /// </summary>
         /// <param name="request"> A RemoteFileInfo object with the requested upload </param>
         /// <returns> A response message with a boolean value saying if the upload was a success and a message explaining why/why not </returns>
-		public ResponseMessage UploadMedia(RemoteFileInfo request)
+		public void UploadMedia(RemoteFileInfo request)
 		{
 		    IMediaParser mediaParser = null;
 
@@ -147,10 +147,6 @@ namespace PublishITService
 		    {
 		        mediaParser = new DocumentParser();
 		    }
-            else
-            {
-                return new ResponseMessage { IsExecuted = false, Message = "Unknown file format" };
-            }
 
 			byte[] buffer = new byte[10000];
 			int bytesRead, totalBytesRead = 0;
@@ -164,11 +160,7 @@ namespace PublishITService
 			byte[] fileStream = new byte[totalBytesRead];
 			request.FileStream.Read(fileStream, 0, fileStream.Length);
 
-            
-                _repository.StoreMedia(fileStream, request, mediaParser);
-            
-            return new ResponseMessage {IsExecuted = true, Message = "File successfully uploaded"};
-			
+			_repository.StoreMedia(fileStream, request, mediaParser);
 		}
 
         /// <summary>

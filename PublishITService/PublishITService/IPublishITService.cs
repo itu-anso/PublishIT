@@ -39,7 +39,7 @@ namespace PublishITService
 		//[WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
         //bool UploadMedia(MediaInfo mediaInfo, Stream media);
 		[OperationContract]
-		ResponseMessage UploadMedia(RemoteFileInfo request);
+		void UploadMedia(RemoteFileInfo request);
 
         [OperationContract]
         FileStream DownloadMedia(int id);
