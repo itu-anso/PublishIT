@@ -143,10 +143,25 @@ namespace PublishITService.Repositories
             }
         }
 
-        public void AddUser(UserDTO newUser)
+        public ResponseMessage AddUser(UserDTO newUser)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
+                var foundUser = (from u in entities.user
+                                 where u.user_name == newUser.username
+                                 select new UserDTO
+                                 {
+                                     name = u.name,
+                                     username = u.user_name,
+                                     birthday = u.birthday,
+                                     status = u.status,
+                                     email = u.email,
+                                     user_id = u.user_id,
+                                     password = u.password
+                                 }).FirstOrDefault();
+
+                if (foundUser == null)
+                {
                 int id;
                 if (!entities.user.Any())
                 {
@@ -175,6 +190,27 @@ namespace PublishITService.Repositories
                 });
 
                 entities.SaveChanges();
+
+                foundUser = (from u in entities.user
+                             where u.user_name == newUser.username
+                             select new UserDTO
+                             {
+                                 name = u.name,
+                                 username = u.user_name,
+                                 birthday = u.birthday,
+                                 status = u.status,
+                                 email = u.email,
+                                 user_id = u.user_id,
+                                 password = u.password
+                             }).FirstOrDefault();
+
+                if (foundUser != null && foundUser.username.Equals(newUser.username))
+                {
+                    return new ResponseMessage { IsExecuted = true, Message = "User registered" };
+                }
+                return new ResponseMessage { IsExecuted = false, Message = "Registration failed" };
+                }
+                return new ResponseMessage {IsExecuted = false, Message = "Username already exists"};
             }
         }
 

@@ -13,6 +13,7 @@ namespace PublishITServiceTests
     public class ServiceTests
     {
         private IPublishITService _publishITService;
+
         private TestRepository _repository;
 
         [TestInitialize]
@@ -26,7 +27,73 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void SuccessfullyRegisterUser()
+        public void SuccessfullyRegisterUserAndVerifyByBirthday()
+        {
+            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
+
+            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            {
+                birthday = DateTime.MinValue,
+                email = "newEmail@email.com",
+                name = "newName",
+                username = "newUserName",
+                password = "newPassword",
+                organization_id = 1
+            });
+
+            Assert.AreEqual(_publishITService.GetUserByUserName("newUserName").birthday, DateTime.MinValue);
+
+            Assert.AreEqual(responseMessage.Message, "User registered");
+
+            Assert.IsTrue(responseMessage.IsExecuted);
+        }
+
+        [TestMethod]
+        public void SuccessfullyRegisterUserAndVerifyByEmail()
+        {
+            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
+
+            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            {
+                birthday = DateTime.MinValue,
+                email = "newEmail@email.com",
+                name = "newName",
+                username = "newUserName",
+                password = "newPassword",
+                organization_id = 1
+            });
+
+            Assert.AreEqual(_publishITService.GetUserByUserName("newUserName").email, "newEmail@email.com");
+
+            Assert.AreEqual(responseMessage.Message, "User registered");
+
+            Assert.IsTrue(responseMessage.IsExecuted);
+        }
+
+        [TestMethod]
+        public void SuccessfullyRegisterUserAndVerifyByName()
+        {
+            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
+
+            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            {
+                birthday = DateTime.MinValue,
+                email = "newEmail@email.com",
+                name = "newName",
+                username = "newUserName",
+                password = "newPassword",
+                organization_id = 1
+            });
+
+            Assert.AreEqual(_publishITService.GetUserByUserName("newUserName").name, "newName");
+
+            Assert.AreEqual(responseMessage.Message, "User registered");
+
+            Assert.IsTrue(responseMessage.IsExecuted);
+        }
+
+        [TestMethod]
+        public void SuccessfullyRegisterUserAndVerifyByUsername()
         {
             Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
 
@@ -45,6 +112,145 @@ namespace PublishITServiceTests
             Assert.AreEqual(responseMessage.Message, "User registered");
 
             Assert.IsTrue(responseMessage.IsExecuted);
+         }
+
+        [TestMethod]
+        public void SuccessfullyRegisterUserAndVerifyByPassword()
+        {
+            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
+
+            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            {
+                birthday = DateTime.MinValue,
+                email = "newEmail@email.com",
+                name = "newName",
+                username = "newUserName",
+                password = "newPassword",
+                organization_id = 1
+            });
+
+            Assert.AreEqual(_publishITService.GetUserByUserName("newUserName").password, "newPassword");
+
+            Assert.AreEqual(responseMessage.Message, "User registered");
+
+            Assert.IsTrue(responseMessage.IsExecuted);
+        }
+
+        [TestMethod] //FEJLER!
+        public void SuccessfullyRegisterUserAndVerifyByOrganizationId()
+        {
+            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
+
+            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            {
+                birthday = DateTime.MinValue,
+                email = "newEmail@email.com",
+                name = "newName",
+                username = "newUserName",
+                password = "newPassword",
+                organization_id = 1
+            });
+
+            Assert.AreEqual(_publishITService.GetUserByUserName("newUserName").organization_id, 1); //Expected 0
+
+            Assert.AreEqual(responseMessage.Message, "User registered");
+
+            Assert.IsTrue(responseMessage.IsExecuted);
+        }
+
+        [TestMethod]
+        public void UnsuccesfullyRegisterUserDueToNoBirthday()
+        {
+            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
+
+            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            {
+                email = "newEmail@email.com",
+                name = "newName",
+                username = "newUserName",
+                password = "newPassword",
+                organization_id = 1
+            });
+
+            Assert.IsFalse(responseMessage.IsExecuted);
+
+            Assert.AreEqual(responseMessage.Message, "For registration to be performed Name, Username, Password, Email, Birthday, and Organization id has to be added");
+        }
+        
+        [TestMethod]
+        public void UnsuccesfullyRegisterUserDueToNoEmail()
+        {
+            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
+
+            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            {
+                birthday = DateTime.MinValue,
+                name = "newName",
+                username = "newUserName",
+                password = "newPassword",
+                organization_id = 1
+            });
+
+            Assert.IsFalse(responseMessage.IsExecuted);
+
+            Assert.AreEqual(responseMessage.Message, "For registration to be performed Name, Username, Password, Email, Birthday, and Organization id has to be added");
+        }
+
+        [TestMethod]
+        public void UnsuccesfullyRegisterUserDueToNoUsername()
+        {
+            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
+
+            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            {
+                birthday = DateTime.MinValue,
+                email = "newEmail@email.com",
+                name = "newName",
+                password = "newPassword",
+                organization_id = 1
+            });
+
+            Assert.IsFalse(responseMessage.IsExecuted);
+
+            Assert.AreEqual(responseMessage.Message, "For registration to be performed Name, Username, Password, Email, Birthday, and Organization id has to be added");
+        }
+
+        [TestMethod]
+        public void UnsuccesfullyRegisterUserDueToNoPassWord()
+        {
+            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
+
+            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            {
+                birthday = DateTime.MinValue,
+                email = "newEmail@email.com",
+                name = "newName",
+                username = "newUserName",
+                organization_id = 1
+            });
+
+            Assert.IsFalse(responseMessage.IsExecuted);
+
+            Assert.AreEqual(responseMessage.Message, "For registration to be performed Name, Username, Password, Email, Birthday, and Organization id has to be added");
+        }
+
+        [TestMethod]
+        public void UnsuccesfullyRegisterUserDueToNoOrganizationId()
+        {
+            Assert.AreNotEqual(_publishITService.GetUserByUserName("newUserName").username, "newUserName");
+
+            var responseMessage = _publishITService.RegisterUser(new UserDTO
+            {
+                birthday = DateTime.MinValue,
+                email = "newEmail@email.com",
+                name = "newName",
+                username = "newUserName",
+                password = "newPassword",
+            });
+
+            Assert.IsFalse(responseMessage.IsExecuted);
+
+            Assert.AreEqual(responseMessage.Message, "For registration to be performed Name, Username, Password, Email, Birthday, and Organization id has to be added");
         }
 
         [TestMethod]
@@ -74,21 +280,21 @@ namespace PublishITServiceTests
 
             Assert.IsFalse(responseMessage.IsExecuted);
 
-            Assert.AreEqual(responseMessage.Message, "For registration to be performed Name, Username, Password, Email, Birthday and Organization id has to be added");
+            Assert.AreEqual(responseMessage.Message, "For registration to be performed Name, Username, Password, Email, Birthday, and Organization id has to be added");
         }
 
         [TestMethod]
-        public void DeleteUser()
-        {
+        public void SuccessfullyDeletedUser()
+        {  
             var responseMessage = _publishITService.DeleteUser(1);
 
             Assert.IsTrue(responseMessage.IsExecuted);
 
             Assert.AreEqual(responseMessage.Message, "Deletion completed");
         }
-
+      
         [TestMethod]
-        public void UnsuccessfullyDeletingUserDoToUnknownUserId()
+        public void UnsuccessfullyDeletingUserDueToUnknownUserId()
         {
             var responseMessage = _publishITService.DeleteUser(5);
 
@@ -152,9 +358,8 @@ namespace PublishITServiceTests
             Assert.AreEqual(responseMessage.Message, "Editing failed");
         }
 
-
         [TestMethod]
-        public void SuccessfullyStreamMedia()
+        public void SuccessfullyStreamMovie()
         {
             var movie = _publishITService.StreamMovie(1, 4);
 
@@ -189,14 +394,12 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void UnsuccessfullyStreamMediaDoToDateNotStarted()
+        public void UnsuccessfullyStreamMediaDueToDateNotStarted()
         {
             var movie = _publishITService.StreamMovie(2, 0);
 
             Assert.AreEqual(movie, "" + "<div>" + "<span>Sorry.. It appears you did not rent this title. </span>" + "</div>");
         }
-
-
 
         private void SetupSets()
         {

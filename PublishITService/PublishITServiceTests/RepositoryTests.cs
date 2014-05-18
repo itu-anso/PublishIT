@@ -39,31 +39,254 @@ namespace PublishITServiceTests
             _repository = new Repository(_publishITEntitiesMock.Object);
         }
 
+        //FindUserById test
 
         [TestMethod]
-        public void SuccessfullyGettingUserById()
+        public void SuccessfullyGettingUserByIdVerifyByEmail()
+        {
+            var user = _repository.FindUserById(1);
+
+            Assert.AreEqual(user.email, "email@email.com");
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByIdVerifyByName()
+        {
+            var user = _repository.FindUserById(1);
+
+            Assert.AreEqual(user.name, "name 1");
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByIdVerifyByUserId()
         {
             var user = _repository.FindUserById(1);
 
             Assert.AreEqual(user.user_id, 1);
+        }
+
+       [TestMethod]
+        public void SuccessfullyGettingUserByIdVerifyByUsername()
+        {
+            var user = _repository.FindUserById(1);
 
             Assert.AreEqual(user.username, "userName 1");
         }
 
+       [TestMethod]
+       public void SuccessfullyGettingUserByIdVerifyByPassword()
+       {
+           var user = _repository.FindUserById(1);
+
+           Assert.AreEqual(user.password, "password 1");
+       }
+
+       [TestMethod]
+       public void SuccessfullyGettingUserByIdVerifyByStatus()
+       {
+           var user = _repository.FindUserById(1);
+
+           Assert.AreEqual(user.status, "Active");
+       }
+
+       [TestMethod] 
+       public void SuccessfullyGettingUserByIdVerifyByOrganizationId()
+       {
+           var user = _repository.FindUserById(1);
+
+           Assert.AreEqual(user.organization_id, 1);
+       }
+
+       [TestMethod] 
+       public void SuccessfullyGettingUserByIdVerifyByRoleCount()
+       {
+           var user = _repository.FindUserById(1);
+
+           Assert.AreEqual(user.roles.Count, 1);
+       }
+
+       [TestMethod]
+       public void SuccessfullyGettingUserByIdVerifyByRoleId()
+       {
+           var user = _repository.FindUserById(1);
+
+           Assert.AreEqual(user.roles[0].Id, 1);
+       }
+        
         [TestMethod]
-        public void UnsuccessfullyGettingUserById()
+        public void UnsuccessfullyGettingUserByIdVerifyByName()
         {
             var user = _repository.FindUserById(1337);
 
             Assert.AreEqual(user.name, "No user found");
+        }
 
-            Assert.AreEqual(user.username, null);
+        [TestMethod]
+        public void UnsuccessfullyGettingUserByIdVerifyByUserId()
+        {
+            var user = _repository.FindUserById(1337);
 
             Assert.AreEqual(user.user_id, 0);
         }
 
         [TestMethod]
-        public void SuccessfullyGettingUserByUsernameAndPassword()
+        public void UnsuccessfullyGettingUserByIdVerifyByStatus()
+        {
+            var user = _repository.FindUserById(1337);
+
+            Assert.AreEqual(user.status, "Not a user");
+        }
+
+        //FindUserByUsername test
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUserNameVerifyByUserEmail()
+        {
+            var user = _repository.FindUserByUsername("userName 1");
+
+            Assert.AreEqual(user.email, "email@email.com");
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUserNameVerifyByUserName()
+        {
+            var user = _repository.FindUserByUsername("userName 1");
+
+            Assert.AreEqual(user.name, "name1");
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUserNameVerifyByUserId()
+        {
+            var user = _repository.FindUserByUsername("userName 1");
+
+            Assert.AreEqual(user.user_id, 1);
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUserNameVerifyByUsername()
+        {
+            var user = _repository.FindUserByUsername("userName 1");
+
+            Assert.AreEqual(user.username, "userName 1");
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUserNameVerifyByUserPassword()
+        {
+            var user = _repository.FindUserByUsername("userName 1");
+
+            Assert.AreEqual(user.password, "password 1");
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUserNameVerifyByUserStatus()
+        {
+            var user = _repository.FindUserByUsername("userName 1");
+
+            Assert.AreEqual(user.status, "Active");
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUserNameVerifyByUserOrganizationId()
+        {
+            var user = _repository.FindUserByUsername("userName 1");
+
+            Assert.AreEqual(user.organization_id, 1);
+        }
+
+        [TestMethod] 
+        public void SuccessfullyGettingUserByUserNameVerifyByRoleCount()
+        {
+            var user = _repository.FindUserByUsername("userName 1");
+
+            Assert.AreEqual(user.roles.Count, 1);
+        }
+
+        [TestMethod] 
+        public void SuccessfullyGettingUserByUserNameVerifyByRoleId()
+        {
+            var user = _repository.FindUserByUsername("userName 1");
+
+            Assert.AreEqual(user.roles[0].Id, 1);
+        }
+
+        [TestMethod] 
+        public void UnsuccessfullyGettingUserByUserNameWithCapitalVerifyByUserId()
+        {
+            var user = _repository.FindUserByUsername("USERNAME 1");
+
+            Assert.AreNotEqual(user.user_id, 1);
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyGettingUserByUsernameVerifyByName()
+        {
+            var user = _repository.FindUserByUsername("Not existing userName");
+
+            Assert.AreEqual(user.name, "No user found");
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyGettingUserByUsernameVerifyByUserId()
+        {
+            var user = _repository.FindUserByUsername("Not existing userName");
+
+            Assert.AreEqual(user.user_id, 0);
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyGettingUserByUsernameVerifyByStatus()
+        {
+            var user = _repository.FindUserByUsername("Not existing userName");
+
+            Assert.AreEqual(user.status, "Not a user");
+        }
+
+        //FindUserByUsernameAndPassword test
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByName()
+        {
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+
+            Assert.AreEqual(user.name, "name 1");
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByUsername()
+        {
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+
+            Assert.AreEqual(user.username, "userName 1");
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByBirthday()
+        {
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+
+            Assert.AreEqual(user.birthday, DateTime.MinValue);
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByStatus()
+        {
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+
+            Assert.AreEqual(user.status, "Active");
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByEmail()
+        {
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+
+            Assert.AreEqual(user.email, "email@email.com");
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByUserId()
         {
             var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
 
@@ -71,34 +294,62 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void UnsuccessfullyGettingUserByUsernameAndPassword()
+        public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByRoleCount()
+        {
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+
+            Assert.AreEqual(user.roles.Count, 1);
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByRoleId()
+        {
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+
+            Assert.AreEqual(user.roles[0].Id, 1);
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyGettingUserByUsernameAndPasswordVerifyByName()
         {
             var user = _repository.FindUserByUsernameAndPassword("Not existing userName", "Some password");
 
             Assert.AreEqual(user.name, "Sign in failed");
+        }
+
+        [TestMethod]
+        public void UnsuccessfullyGettingUserByUsernameAndPasswordVerifyByUserId()
+        {
+            var user = _repository.FindUserByUsernameAndPassword("Not existing userName", "Some password");
 
             Assert.AreEqual(user.user_id, 0);
         }
 
         [TestMethod]
-        public void SuccessfullyGettingUserByUserName()
+        public void UnsuccessfullyGettingUserByUsernameAndPasswordVerifyByStatus()
         {
-            var user = _repository.FindUserByUsername("userName 1");
+            var user = _repository.FindUserByUsernameAndPassword("Not existing userName", "Some password");
 
-            Assert.AreEqual(user.user_id, 1);
-
-            Assert.AreEqual(user.username, "userName 1");
+            Assert.AreEqual(user.status, "Not a user");
         }
 
         [TestMethod]
-        public void UnsuccessfullyGettingUserByUserName()
+        public void UnsuccessfullyGettingUserByUsernAndPasswordameWithOnlyCapitalVerifyByUserId()
         {
-            var user = _repository.FindUserByUsername("Not existing userName");
+            var user = _repository.FindUserByUsernameAndPassword("USERNAME 1", "SOME PASSWORD");
 
-            Assert.AreEqual(user.username, "No user found");
-
-            Assert.AreEqual(user.user_id, 0);
+            Assert.AreNotEqual(user.user_id, 1);
         }
+
+        [TestMethod]
+        public void UnsuccessfullyGettingUserByUsernAndPasswordameWithCapitalUsernameVerifyByUserId()
+        {
+            var user = _repository.FindUserByUsernameAndPassword("USERNAME 1", "SOME PASSWORD");
+
+            Assert.AreNotEqual(user.user_id, 1);
+        }
+
+        //AddUser test
 
         [TestMethod]
         public void CheckingIfAddIsCalledOnceWhenAddingNewUser()
@@ -124,8 +375,6 @@ namespace PublishITServiceTests
                                                         Times.Once
                                                         );
         }
-
-        
 
         [TestMethod]
         public void UnsuccessfullyRegisterUserDueToEmptyUserDTO()
@@ -193,7 +442,7 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void CheckingIfAddIsCalledCorrectlyWhenUploadingDocument()
+        public void CheckingIfAddIsCalledCorrectlyWhenUploadingDocumentVerifyByMedia()
         {
             var mediaParser = new DocumentParser();
 
@@ -217,13 +466,56 @@ namespace PublishITServiceTests
                                             Times.Once
                                             );
 
+
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public void CheckingIfAddIsCalledCorrectlyWhenUploadingDocumentVerifyByDocument()
+        {
+            var mediaParser = new DocumentParser();
+
+            var remoteFileInfo = new RemoteFileInfo
+            {
+                FileName = "filename.pdf",
+                FileStream = new MemoryStream(),
+                Title = "title",
+                GenreId = 1,
+                Length = 1,
+                Status = "status",
+                UserId = 1
+            };
+
+            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
+
             _documentMockSet.Verify(x => x.Add(It.Is<document>(
                                             newDocument =>
                                             newDocument.media_id == 0 &&
-                                            newDocument.status.Equals("status"))), 
+                                            newDocument.status.Equals("status"))),
                                             Times.Once
                                             );
-            
+
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public void CheckingIfAddIsCalledCorrectlyWhenUploadingDocumentVerifyByVideo()
+        {
+            var mediaParser = new DocumentParser();
+
+            var remoteFileInfo = new RemoteFileInfo
+            {
+                FileName = "filename.pdf",
+                FileStream = new MemoryStream(),
+                Title = "title",
+                GenreId = 1,
+                Length = 1,
+                Status = "status",
+                UserId = 1
+            };
+
+            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
+          
             _videoMockSet.Verify(x => x.Add(It.Is<video>(
                                             newVideo =>
                                             newVideo.media_id == 0)),
@@ -233,10 +525,8 @@ namespace PublishITServiceTests
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
         }
 
-        
-
         [TestMethod]
-        public void CheckingIfAddIsCalledCorrectlyWhenUploadingVideo()
+        public void CheckingIfAddIsCalledCorrectlyWhenUploadingVideoVerifyByMedia()
         {
             var mediaParser = new VideoParser();
 
@@ -260,11 +550,53 @@ namespace PublishITServiceTests
                                             Times.Once
                                             );
 
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public void CheckingIfAddIsCalledCorrectlyWhenUploadingVideoVerifyByVideo()
+        {
+            var mediaParser = new VideoParser();
+
+            var remoteFileInfo = new RemoteFileInfo
+            {
+                FileName = "filename.mp4",
+                FileStream = new MemoryStream(),
+                Title = "title",
+                GenreId = 1,
+                Length = 1,
+                Status = "status",
+                UserId = 1
+            };
+
+            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
+
             _videoMockSet.Verify(x => x.Add(It.Is<video>(
                                             newVideo =>
                                             newVideo.media_id == 0)),
                                             Times.Once
                                             );
+
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public void CheckingIfAddIsCalledCorrectlyWhenUploadingVideoVerifyByDocument()
+        {
+            var mediaParser = new VideoParser();
+
+            var remoteFileInfo = new RemoteFileInfo
+            {
+                FileName = "filename.mp4",
+                FileStream = new MemoryStream(),
+                Title = "title",
+                GenreId = 1,
+                Length = 1,
+                Status = "status",
+                UserId = 1
+            };
+
+            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
 
             _documentMockSet.Verify(x => x.Add(It.Is<document>(
                                             newDocument =>
@@ -277,7 +609,7 @@ namespace PublishITServiceTests
         }
 
         //Thomas
-        [TestMethod]
+        [TestMethod] //FEJLER!
         public void SuccessfullyDownloadMedia()
         {
             //var downloadedMedia = _repository.DownloadMedia(1);
@@ -285,7 +617,7 @@ namespace PublishITServiceTests
         }
 
         //Thomas
-        [TestMethod]
+        [TestMethod] //FEJLER!
         public void UnsuccessfullyDownloadMedia()
         {
             Assert.AreEqual(1, 2);
@@ -310,11 +642,17 @@ namespace PublishITServiceTests
 
 
         [TestMethod]
-        public void SuccessfullySearchMedia()
+        public void SuccessfullySearchMediaVerifyByCount()
         {
             var listOfMedia = _repository.FindMediaByTitle("title");
 
             Assert.AreEqual(listOfMedia.Count, 4);
+        }
+
+        [TestMethod]
+        public void SuccessfullySearchMediaVerifyByTitle()
+        {
+            var listOfMedia = _repository.FindMediaByTitle("title");
 
             Assert.AreEqual(listOfMedia[0].title, "title 1");
         }
@@ -328,11 +666,17 @@ namespace PublishITServiceTests
         }
 
         [TestMethod]
-        public void SuccessfullyGettingMoviesByGenre()
+        public void SuccessfullyGettingMoviesByGenreVerifyByCount()
         {
             var movies = _repository.FindMoviesByGenre("Comedy");
 
             Assert.AreEqual(movies.Count, 2);
+        }
+
+        [TestMethod]
+        public void SuccessfullyGettingMoviesByGenreVerifyByTitle()
+        {
+            var movies = _repository.FindMoviesByGenre("Comedy");
 
             Assert.AreEqual(movies[0].title, "title 2");
         }
@@ -463,7 +807,8 @@ namespace PublishITServiceTests
                     {
                         new role {role_id = 1, role1 = "role 1"}
                     })
-                }
+               }
+
             }.AsQueryable();
         }
 

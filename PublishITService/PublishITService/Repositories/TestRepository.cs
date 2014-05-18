@@ -134,7 +134,7 @@ namespace PublishITService.Repositories
             return new UserDTO { name = "Sign in failed" };
         }
 
-        public void AddUser(UserDTO newUser)
+        public ResponseMessage AddUser(UserDTO newUser)
         {
             int id = 4;
 
@@ -151,6 +151,7 @@ namespace PublishITService.Repositories
                 status = "Active",
                 role = new Collection<role> { new role { role_id = 1, role1 = "Role 1" } }
             });
+            return new ResponseMessage();
         }
 
         public void DeleteUser(int id)
