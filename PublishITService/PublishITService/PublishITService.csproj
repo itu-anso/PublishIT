@@ -143,6 +143,9 @@
     <Compile Include="rent.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\Repository.cs" />
+    <Compile Include="Repositories\TestRepository.cs" />
     <Compile Include="ResponseMessage.cs" />
     <Compile Include="role.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
