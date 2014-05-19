@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Web;
 using PublishITService.DTOs;
 using PublishITService.Parsers;
 using PublishITService.Repositories;
@@ -168,16 +171,26 @@ namespace PublishITService
         /// </summary>
         /// <param name="id"> The id used to search in the database </param>
         /// <returns> Returns a FileStream of the found media </returns>
-        public FileStream DownloadMedia(int id)
-        {
-            // Get the path for the requested file
-            var path = _repository.GetMediaPath(id);
 
-            // Create a new FileStream with the path, how to open the file and access rights.
-            FileStream stream = new FileStream(@path, FileMode.Open, FileAccess.Read);
+		public byte[] DownloadMedia(int id)
+		{
+			// Get the path for the requested file
+			//var path = _repository.GetMediaPath(id);
+	        //byte[] bytes;
+			// Create a new FileStream with the path, how to open the file and access rights.
+			// FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+	       
+			//bytes = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath("~/") + "/resources/media/document/1/publishit.pdf");
+	        //bytes[0] = HttpContext.Current.Server.MapPath("~/");
+	        
+			return System.IO.File.ReadAllBytes("/resources/media/document/1/publishit.pdf");
+	        
+		}
 
-            return stream;
-        }
+	    public string Test()
+	    {
+			return "test";
+	    }
 
         /// <summary>
         /// Streams a movie by providing an HTML source code containing the path to the movie and 

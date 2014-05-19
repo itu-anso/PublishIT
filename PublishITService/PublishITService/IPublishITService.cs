@@ -42,7 +42,10 @@ namespace PublishITService
 		void UploadMedia(RemoteFileInfo request);
 
         [OperationContract]
-        FileStream DownloadMedia(int id);
+		byte[] DownloadMedia(int id);
+
+	    [OperationContract]
+	    string Test();
 
         [OperationContract]
 		string StreamMovie(int userId, int movieId);
@@ -101,6 +104,13 @@ namespace PublishITService
 				FileStream = null;
 			}
 		}
+	}
+
+	[DataContract]
+	public class FileContent
+	{
+		[DataMember]
+		public byte[] Content { get; set; }
 	}
 
 	[DataContract]
