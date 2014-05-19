@@ -6,17 +6,31 @@ namespace PublishITService.Parsers {
 
 		public IPublishITEntities _publishITEntities { get; set; }
 
-		public void StoreMedia(byte[] mediaStream, RemoteFileInfo request, IPublishITEntities entities) {
+		public void StoreMedia(Stream mediaStream, RemoteFileInfo request, IPublishITEntities entities) {
 			string path = @"\RentItServices\RentIt09\resources\media\video\" + request.FileName;
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
-			try {
-				using (var _FileStream = new System.IO.FileStream(path, System.IO.FileMode.Create, System.IO.FileAccess.Write)) {
-					_FileStream.Write(mediaStream, 0, mediaStream.Length);
-				}
-			} catch (Exception) {
+			
+			FileStream targetStream = null;
+			Stream sourceStream = request.FileStream;
 
-				throw;
-			}
+			string uploadFolder = @"C:\RentItServices\RentIt09\resources\media\document\1\";
+
+			string filePath = Path.Combine(uploadFolder, request.FileName);
+
+			using (targetStream = new FileStream(filePath, FileMode.Create,
+								  FileAccess.Write, FileShare.None)) {
+				//read from the input stream in 65000 byte chunks
+
+				const int bufferLen = 65000;
+				byte[] buffer = new byte[bufferLen];
+				int count = 0;
+				while ((count = sourceStream.Read(buffer, 0, bufferLen)) > 0) {
+					// save to output stream
+					targetStream.Write(buffer, 0, count);
+				}
+				targetStream.Close();
+				sourceStream.Close();
+			} 
 
 			if (File.Exists(path)) {
 				try {

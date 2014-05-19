@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using PublishITService.DTOs;
 using PublishITService.Parsers;
@@ -215,7 +216,7 @@ namespace PublishITService.Repositories
             }
         }
 
-        public void StoreMedia(byte[] mediaStream, RemoteFileInfo mediaInfo, IMediaParser mediaParser)
+        public void StoreMedia(Stream mediaStream, RemoteFileInfo mediaInfo, IMediaParser mediaParser)
         {
             string success = "let's say it has been stored";
         }

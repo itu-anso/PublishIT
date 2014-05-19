@@ -80,7 +80,7 @@ namespace PublishITService
 		public string FileName;
 
 		[MessageHeader(MustUnderstand = true)]
-		public int Length;
+		public long Length;
 
 		[MessageHeader(MustUnderstand = true)]
 		public int UserId;
@@ -95,7 +95,7 @@ namespace PublishITService
 		public string Status;
 
 		[MessageBodyMember(Order = 1)] 
-		public Stream FileStream;
+		public System.IO.Stream FileStream;
 
 		public void Dispose()
 		{

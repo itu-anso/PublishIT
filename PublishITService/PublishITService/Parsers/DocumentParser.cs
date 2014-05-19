@@ -6,27 +6,35 @@ namespace PublishITService.Parsers {
 
 		private IPublishITEntities PublishItEntities { get; set; }
 
-		public void StoreMedia(byte[] mediaStream, RemoteFileInfo request, IPublishITEntities entities)
+		public void StoreMedia(Stream mediaStream, RemoteFileInfo request, IPublishITEntities entities)
 		{
 			this.PublishItEntities = entities;
-			string path = @"\RentItServices\RentIt09\resources\media\document\" + request.UserId + @"\" + request.FileName;
+			string path = @"\RentItServices\RentIt09\resources\media\document\" + request.UserId + @"\";
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
-			try
-			{
-				using (var _FileStream =  new System.IO.FileStream(path, System.IO.FileMode.Create, System.IO.FileAccess.Write))
-				{
-					_FileStream.Write(mediaStream, 0, mediaStream.Length);
+
+			FileStream targetStream = null;
+			Stream sourceStream = request.FileStream;
+
+			string filePath = Path.Combine(path, request.FileName);
+
+			using (targetStream = new FileStream(filePath, FileMode.Create,
+								  FileAccess.Write, FileShare.None)) {
+				//read from the input stream in 65000 byte chunks
+
+				const int bufferLen = 65000;
+				byte[] buffer = new byte[bufferLen];
+				int count = 0;
+				while ((count = sourceStream.Read(buffer, 0, bufferLen)) > 0) {
+					// save to output stream
+					targetStream.Write(buffer, 0, count);
 				}
-			}
-			catch (Exception)
-			{
-				
-				throw;
-			}
-			saveMedia(path, request);
+				targetStream.Close();
+				sourceStream.Close();
+			} 
+			SaveMedia(filePath, request);
 		}
 
-		private void saveMedia(string path, RemoteFileInfo request)
+		private void SaveMedia(string path, RemoteFileInfo request)
 		{
 			if (File.Exists(path)) {
 				try {

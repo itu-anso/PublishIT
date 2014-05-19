@@ -20,7 +20,7 @@ namespace PublishITService.Repositories
 
         void EditUser(UserDTO inputUser);
 
-        void StoreMedia(byte[] mediaStream, RemoteFileInfo mediaInfo, IMediaParser mediaParser);
+        void StoreMedia(Stream mediaStream, RemoteFileInfo mediaInfo, IMediaParser mediaParser);
 
         string GetMediaPath(int id);
 

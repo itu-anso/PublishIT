@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using PublishITService.DTOs;
 using PublishITService.Parsers;
@@ -264,7 +265,7 @@ namespace PublishITService.Repositories
             }
         }
 
-        public void StoreMedia(byte[] fileStream, RemoteFileInfo request, IMediaParser mediaParser)
+        public void StoreMedia(Stream fileStream, RemoteFileInfo request, IMediaParser mediaParser)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {

@@ -449,7 +449,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
+            _repository.StoreMedia(new MemoryStream(), remoteFileInfo, mediaParser);
 
             _mediaMockSet.Verify(x => x.Add(It.Is<media>(
                                             newMedia =>
@@ -478,7 +478,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
+			_repository.StoreMedia(new MemoryStream(), remoteFileInfo, mediaParser);
 
             _documentMockSet.Verify(x => x.Add(It.Is<document>(
                                             newDocument =>
@@ -506,7 +506,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
+			_repository.StoreMedia(new MemoryStream(), remoteFileInfo, mediaParser);
           
             _videoMockSet.Verify(x => x.Add(It.Is<video>(
                                             newVideo =>
@@ -533,7 +533,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
+			_repository.StoreMedia(new MemoryStream(), remoteFileInfo, mediaParser);
 
             _mediaMockSet.Verify(x => x.Add(It.Is<media>(
                                             newMedia =>
@@ -561,7 +561,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
+			_repository.StoreMedia(new MemoryStream(), remoteFileInfo, mediaParser);
 
             _videoMockSet.Verify(x => x.Add(It.Is<video>(
                                             newVideo =>
@@ -588,7 +588,7 @@ namespace PublishITServiceTests
                 UserId = 1
             };
 
-            _repository.StoreMedia(new byte[1], remoteFileInfo, mediaParser);
+			_repository.StoreMedia(new MemoryStream(), remoteFileInfo, mediaParser);
 
             _documentMockSet.Verify(x => x.Add(It.Is<document>(
                                             newDocument =>

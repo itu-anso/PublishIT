@@ -129,30 +129,18 @@ namespace PublishITService
         /// <returns> A response message with a boolean value saying if the upload was a success and a message explaining why/why not </returns>
 		public void UploadMedia(RemoteFileInfo request)
 		{
-		    IMediaParser mediaParser = null;
+			IMediaParser mediaParser = null;
 
-		    if (Path.GetExtension(request.FileName) == ".mp4")
-		    {
-		        mediaParser = new VideoParser();
-		    }
-            else if (Path.GetExtension(request.FileName) == ".pdf")
-		    {
-		        mediaParser = new DocumentParser();
-		    }
-
-			byte[] buffer = new byte[10000];
-			int bytesRead, totalBytesRead = 0;
-
-			do
+			if (Path.GetExtension(request.FileName) == ".mp4")
 			{
-				bytesRead = request.FileStream.Read(buffer, 0, buffer.Length);
-				totalBytesRead += bytesRead;
-			} while (bytesRead > 0);
-			
-			byte[] fileStream = new byte[totalBytesRead];
-			request.FileStream.Read(fileStream, 0, fileStream.Length);
-
-			_repository.StoreMedia(fileStream, request, mediaParser);
+				mediaParser = new VideoParser();
+				_repository.StoreMedia(request.FileStream, request, mediaParser);
+			}
+			else if (Path.GetExtension(request.FileName) == ".pdf")
+			{
+				mediaParser = new DocumentParser();
+				_repository.StoreMedia(request.FileStream, request, mediaParser);
+			}
 		}
 
         /// <summary>
@@ -164,16 +152,14 @@ namespace PublishITService
 		public byte[] DownloadMedia(int id)
 		{
 			// Get the path for the requested file
-			//var path = _repository.GetMediaPath(id);
-	        //byte[] bytes;
+			var path = _repository.GetMediaPath(id);
+	        byte[] bytes;
 			// Create a new FileStream with the path, how to open the file and access rights.
 			// FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-	       
-			//bytes = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath("~/") + "/resources/media/document/1/publishit.pdf");
+
+			bytes = System.IO.File.ReadAllBytes(path);
 	        //bytes[0] = HttpContext.Current.Server.MapPath("~/");
-	        
-			return System.IO.File.ReadAllBytes("/resources/media/document/1/publishit.pdf");
-	        
+			return bytes;
 		}
 
 	    public string Test()
