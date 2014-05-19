@@ -73,24 +73,13 @@ namespace PublishITService
                 inputUser.organization_id != 0 &&
                 inputUser.birthday != null)
             {
-                if (GetUserByUserName(inputUser.username).username.Equals("No user found"))
-                {
-                    _repository.AddUser(inputUser);
-
-                    if (GetUserByUserName(inputUser.username).username.Equals(inputUser.username))
-                    {
-                        return new ResponseMessage {IsExecuted = true, Message = "User registered"};
-                    }
-
-                    return new ResponseMessage {IsExecuted = false, Message = "Registration failed"};
-                }
-                return new ResponseMessage {IsExecuted = false, Message = "Username already exists"};
+                    return _repository.AddUser(inputUser);
             }
-            return new ResponseMessage {IsExecuted = false, Message = "For registration to be performed Name, Username, Password, Email, Birthday and Organization id has to be added"};
+            return new ResponseMessage {IsExecuted = false, Message = "For registration to be performed Name, Username, Password, Email, Birthday, and Organization id has to be added"};
 	    }
 
         /// <summary>
-        /// Soft deletes a user by changing its status to "Deleted"
+        /// Softly deletes a user by changing its status to "Deleted"
         /// </summary>
         /// <param name="id"> The integer id to compare with when searching in the database </param>
         /// <returns> A response message with a boolean value saying if the deletion was a success and a message explaining why/why not </returns>

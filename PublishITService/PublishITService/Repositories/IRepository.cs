@@ -14,7 +14,7 @@ namespace PublishITService.Repositories
 
         UserDTO FindUserByUsernameAndPassword(string username, string password);
 
-        void AddUser(UserDTO newUser);
+        ResponseMessage AddUser(UserDTO newUser);
 
         void DeleteUser(int id);
 

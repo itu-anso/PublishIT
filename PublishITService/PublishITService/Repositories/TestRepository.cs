@@ -56,7 +56,7 @@ namespace PublishITService.Repositories
                 name = "No user found",
                 status = "Not a user"
             };
-        }
+        } 
 
         public UserDTO FindUserByUsername(string username)
         {
@@ -97,7 +97,7 @@ namespace PublishITService.Repositories
                 username = "No user found",
                 status = "Not a user"
             };
-        }
+        } 
 
         public UserDTO FindUserByUsernameAndPassword(string username, string password)
         {
@@ -132,25 +132,61 @@ namespace PublishITService.Repositories
                 return foundUser;
             }
             return new UserDTO { name = "Sign in failed" };
-        }
+        } 
 
-        public void AddUser(UserDTO newUser)
+        public ResponseMessage AddUser(UserDTO newUser)
         {
-            int id = 4;
+            var foundUser = (from u in _userSet
+                                 where u.user_name == newUser.username
+                                 select new UserDTO
+                                 {
+                                     name = u.name,
+                                     username = u.user_name,
+                                     birthday = u.birthday,
+                                     status = u.status,
+                                     email = u.email,
+                                     user_id = u.user_id,
+                                     password = u.password
+                                 }).FirstOrDefault();
 
-            _userSet.Add(new user
+            if (foundUser == null)
             {
-                user_id = id,
-                name = newUser.name,
-                user_name = newUser.username,
-                password = newUser.password,
-                birthday = newUser.birthday,
-                email = newUser.email,
-                organization_id = newUser.organization_id,
-                salt = "salt",
-                status = "Active",
-                role = new Collection<role> { new role { role_id = 1, role1 = "Role 1" } }
-            });
+                int id = 4;
+
+                _userSet.Add(new user
+                {
+                    user_id = id,
+                    name = newUser.name,
+                    user_name = newUser.username,
+                    password = newUser.password,
+                    birthday = newUser.birthday,
+                    email = newUser.email,
+                    organization_id = newUser.organization_id,
+                    salt = "salt",
+                    status = "Active",
+                    role = new Collection<role> {new role {role_id = 1, role1 = "Role 1"}}
+                });
+
+                foundUser = (from u in _userSet
+                             where u.user_name == newUser.username
+                             select new UserDTO
+                             {
+                                 name = u.name,
+                                 username = u.user_name,
+                                 birthday = u.birthday,
+                                 status = u.status,
+                                 email = u.email,
+                                 user_id = u.user_id,
+                                 password = u.password
+                             }).FirstOrDefault();
+
+                if (foundUser != null && foundUser.username.Equals(newUser.username))
+                {
+                    return new ResponseMessage { IsExecuted = true, Message = "User registered" };
+                }
+                return new ResponseMessage { IsExecuted = false, Message = "Registration failed" };
+            }
+            return new ResponseMessage { IsExecuted = false, Message = "Username already exists" };
         }
 
         public void DeleteUser(int id)
@@ -191,33 +227,7 @@ namespace PublishITService.Repositories
                     select med.location).FirstOrDefault();
         }
 
-        public media FindMediaById(int id)
-        {
-            var foundMedia = (from med in _mediaSet
-                              where med.media_id == id
-                              select med).FirstOrDefault();
-
-            if (foundMedia != null)
-            {
-                var theMedia = new media
-                {
-                    media_id = foundMedia.media_id,
-                    user_id = foundMedia.user_id,
-                    format_id = foundMedia.format_id,
-                    title = foundMedia.title,
-                    average_rating = foundMedia.average_rating,
-                    date = foundMedia.date,
-                    description = foundMedia.description,
-                    location = foundMedia.location,
-                    number_of_downloads = foundMedia.number_of_downloads
-                };
-                return theMedia;
-            }
-            return new media
-            {
-                title = "No media found"
-            };
-        }
+       
 
         public List<media> FindMediaByTitle(string title)
         {
@@ -244,7 +254,35 @@ namespace PublishITService.Repositories
             }
 
             return medias;
-        }
+        } 
+
+        public media FindMediaById(int id)
+        {
+            var foundMedia = (from med in _mediaSet
+                              where med.media_id == id
+                              select med).FirstOrDefault();
+
+            if (foundMedia != null)
+            {
+                var theMedia = new media
+                {
+                    media_id = foundMedia.media_id,
+                    user_id = foundMedia.user_id,
+                    format_id = foundMedia.format_id,
+                    title = foundMedia.title,
+                    average_rating = foundMedia.average_rating,
+                    date = foundMedia.date,
+                    description = foundMedia.description,
+                    location = foundMedia.location,
+                    number_of_downloads = foundMedia.number_of_downloads
+                };
+                return theMedia;
+            }
+            return new media
+            {
+                title = "No media found"
+            };
+        } 
 
         public List<media> FindMoviesByGenre(string inputGenre)
         {
@@ -275,7 +313,7 @@ namespace PublishITService.Repositories
             }
 
             return medias;
-        }
+        } 
 
         public IQueryable<genre> FindRelatedGenres(string inputGenre)
         {
@@ -290,7 +328,7 @@ namespace PublishITService.Repositories
                     _ratingSet.SingleOrDefault(rate => rate.media_id == movieId && rate.user_id == userId);
 
             return foundRating;
-        }
+        } 
 
         public ResponseMessage PostRating(int rating, int movieId, int userId)
         {
@@ -315,7 +353,7 @@ namespace PublishITService.Repositories
             foundRating.rating_id = rating;
 
             return new ResponseMessage { IsExecuted = true, Message = "Rating changed" };
-        }
+        } 
 
         public bool CheckingIfRentExists(int userId, int movieId)
         {
@@ -331,7 +369,7 @@ namespace PublishITService.Repositories
                 }
             
             return false;
-        }
+        } 
 
         public List<media> FindMediasByAuthorId(int id)
         {
@@ -357,6 +395,6 @@ namespace PublishITService.Repositories
                 });
             }
             return medias;
-        }
+        } 
     }
 }
