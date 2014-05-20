@@ -5,6 +5,9 @@ using System.Runtime.Serialization;
 
 namespace PublishITService.DTOs
 {
+    /// <summary>
+    /// UserDTO functions as the data type for a user of the system. 
+    /// </summary>
     [DataContract]
     public class UserDTO
     {

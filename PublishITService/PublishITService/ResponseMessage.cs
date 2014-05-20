@@ -2,6 +2,9 @@
 
 namespace PublishITService
 {
+    /// <summary>
+    /// ResponseMessage object containing a boolean for IsExecuted and explaning message.
+    /// </summary>
     [DataContract]
     public class ResponseMessage
     {

@@ -2,6 +2,10 @@
 
 namespace PublishITService.DTOs
 {
+        
+    /// <summary>
+    /// RoleDTO functions as the data type for roles.
+    /// </summary>
     [DataContract]
     public class RoleDTO
     {

@@ -5,6 +5,9 @@ using PublishITService.Parsers;
 
 namespace PublishITService.Repositories
 {
+    /// <summary>
+    /// Interface for repository class.
+    /// </summary>
     public interface IRepository
     {
         UserDTO FindUserById(int id);
@@ -19,7 +22,7 @@ namespace PublishITService.Repositories
 
         void EditUser(UserDTO inputUser);
 
-        void StoreMedia(Stream mediaStream, RemoteFileInfo mediaInfo, IMediaParser mediaParser);
+        void StoreMedia(RemoteFileInfo mediaInfo, IMediaParser mediaParser);
 
         string GetMediaPath(int id);
 

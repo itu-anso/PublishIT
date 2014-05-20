@@ -7,6 +7,10 @@ using PublishITService.Parsers;
 
 namespace PublishITService.Repositories
 {
+    /// <summary>
+    /// Class for finding, delete, and edit users. Furthermore,
+    /// it gives opportunity to find media based on different criteria. 
+    /// </summary>
     public class Repository : IRepository
     {
         private readonly IPublishITEntities _publishITEntities;
@@ -19,6 +23,11 @@ namespace PublishITService.Repositories
             _publishITEntities = publishITEntities;
         }
 
+        /// <summary>
+        /// Find a user by his or hers ID.
+        /// </summary>
+        /// <param name="id">ID of a user.</param>
+        /// <returns>User by the found ID.</returns>
         public UserDTO FindUserById(int id)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -61,6 +70,11 @@ namespace PublishITService.Repositories
             }
         }
 
+        /// <summary>
+        /// Find a user by his or hers username.
+        /// </summary>
+        /// <param name="username">Username of a user.</param>
+        /// <returns>A user with the found username.</returns>
         public UserDTO FindUserByUsername(string username)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -105,7 +119,16 @@ namespace PublishITService.Repositories
             }
         }
 
+
+        /// <summary>
+        /// Find a user by his or hers username and password. 
+        /// </summary>
+        /// <param name="username">Username of a user.</param>
+        /// <param name="password">Password of a user.</param>
+        /// <returns>The user returned based on the username and password.</returns>
+
         public UserDTO FindUserByUsernameAndPassword(string username, string password, int organizationId)
+
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
@@ -143,6 +166,11 @@ namespace PublishITService.Repositories
             }
         }
 
+        /// <summary>
+        /// Adds a user to the database.
+        /// </summary>
+        /// <param name="newUser">The user to be added.</param>
+        /// <returns>A message indicating whether the adding was an success.</returns>
         public ResponseMessage AddUser(UserDTO newUser)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -205,6 +233,12 @@ namespace PublishITService.Repositories
             }
         }
 
+        /// <summary>
+        /// Softly deletes a user from the database by changing his or hers status from 
+        /// "Active" to "Deleted".
+        /// </summary>
+        /// <param name="id">Id of the user to be deleted.</param>
+        /// <returns>A message indicating wheter the deletion was an success.</returns>
         public ResponseMessage DeleteUser(int id)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -243,6 +277,10 @@ namespace PublishITService.Repositories
             }
         }
 
+        /// <summary>
+        /// Method to edit a user and its information.
+        /// </summary>
+        /// <param name="inputUser">The user to be edited.</param>
         public void EditUser(UserDTO inputUser)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -272,14 +310,24 @@ namespace PublishITService.Repositories
             }
         }
 
-        public void StoreMedia(Stream fileStream, RemoteFileInfo request, IMediaParser mediaParser)
+        /// <summary>
+        /// Stores a media into the database.
+        /// </summary>
+        /// <param name="request">An object containing info about the media.</param>
+        /// <param name="mediaParser">MediaParser responsible for saving a media into the database.</param>
+        public void StoreMedia(RemoteFileInfo request, IMediaParser mediaParser)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                mediaParser.StoreMedia(fileStream, request, entities);
+                mediaParser.StoreMedia(request, entities);
             }
         }
 
+        /// <summary>
+        /// Gets a media path.
+        /// </summary>
+        /// <param name="id">The ID of the media.</param>
+        /// <returns>A path for the found media.</returns>
         public string GetMediaPath(int id)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -305,6 +353,11 @@ namespace PublishITService.Repositories
             }
         }
 
+        /// <summary>
+        /// Find a media by its ID.
+        /// </summary>
+        /// <param name="id">ID of the media to search for.</param>
+        /// <returns>The found media data type.</returns>
         public MediaDTO FindMediaById(int id)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -368,6 +421,12 @@ namespace PublishITService.Repositories
             }
         }
 
+        /// <summary>
+        /// Find a media by its title and organization ID.
+        /// </summary>
+        /// <param name="title">Title of the media.</param>
+        /// <param name="organizationId">Organization ID of the media.</param>
+        /// <returns>A list of found medias based on title and organization ID.</returns>
         public List<MediaDTO> FindMediaByTitle(string title, int organizationId)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -432,6 +491,12 @@ namespace PublishITService.Repositories
             }
         }
 
+        /// <summary>
+        /// Find movies based on genre and organization ID.
+        /// </summary>
+        /// <param name="inputGenre">Genre to search for.</param>
+        /// <param name="organizationId">Organization ID to search for.</param>
+        /// <returns>A list of found movies as mediaDTOs.</returns>
         public List<MediaDTO> FindMoviesByGenre(string inputGenre, int organizationId)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -481,6 +546,12 @@ namespace PublishITService.Repositories
 
         }
 
+        /// <summary>
+        /// Find a rating for a movie given by a user.
+        /// </summary>
+        /// <param name="movieId">ID for a movie.</param>
+        /// <param name="userId">ID for a user.</param>
+        /// <returns>Rating object found for a movie.</returns>
         public rating FindRating(int movieId, int userId)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -492,6 +563,13 @@ namespace PublishITService.Repositories
             }
         }
 
+        /// <summary>
+        /// Posts a rating for a movie.
+        /// </summary>
+        /// <param name="rating">Rating value to be posted.</param>
+        /// <param name="movieId">Movie object for a which a rating belongs.</param>
+        /// <param name="userId">User object for which a rating belongs.</param>
+        /// <returns>A message indicating whether the rating was a success.</returns>
         public ResponseMessage PostRating(int rating, int movieId, int userId)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -533,6 +611,11 @@ namespace PublishITService.Repositories
             }
         }
 
+        /// <summary>
+        /// Find a media(s) by a author's ID.
+        /// </summary>
+        /// <param name="userId">ID to search by.</param>
+        /// <returns>A list of medias by a user/author.</returns>
         public List<MediaDTO> FindMediasByAuthorId(int userId)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
@@ -716,6 +799,12 @@ namespace PublishITService.Repositories
             }
         }
 
+        /// <summary>
+        /// Check whether a rent exists.
+        /// </summary>
+        /// <param name="userId">User to search by.</param>
+        /// <param name="movieId">Movie to search by.</param>
+        /// <returns>Boolean indicating whether the renting exists.</returns>
         public bool CheckingIfRentExists(int userId, int movieId)
         {
 
