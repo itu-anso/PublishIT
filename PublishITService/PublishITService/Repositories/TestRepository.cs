@@ -233,7 +233,7 @@ namespace PublishITService.Repositories
             }
         }
 
-        public void StoreMedia(Stream mediaStream, RemoteFileInfo mediaInfo, IMediaParser mediaParser)
+        public void StoreMedia(RemoteFileInfo mediaInfo, IMediaParser mediaParser)
         {
             string success = "let's say it has been stored";
         }

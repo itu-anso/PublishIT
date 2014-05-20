@@ -116,12 +116,12 @@ namespace PublishITService
 			if (Path.GetExtension(request.FileName) == ".mp4")
 			{
 				mediaParser = new VideoParser();
-				_repository.StoreMedia(request.FileStream, request, mediaParser);
+				_repository.StoreMedia(request, mediaParser);
 			}
 			else if (Path.GetExtension(request.FileName) == ".pdf")
 			{
 				mediaParser = new DocumentParser();
-				_repository.StoreMedia(request.FileStream, request, mediaParser);
+				_repository.StoreMedia(request, mediaParser);
 			}
 		}
 
