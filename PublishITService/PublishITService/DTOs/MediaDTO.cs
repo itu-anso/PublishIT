@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace PublishITService.DTOs
 {
@@ -7,22 +8,35 @@ namespace PublishITService.DTOs
     /// </summary>
     public class MediaDTO
     {
-        public int MediaId { get; set; }
-        public int UserId { get; set; }
-        public int FormatId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public DateTime? Date { get; set; }
-        public string Location { get; set; }
-        public double? AvgRating { get; set; }
-        public int? NumberOfDownloads { get; set; }
+        [DataMember]
+        public int media_id { get; set; }
+        [DataMember]
+        public int user_id { get; set; }
+        [DataMember]
+        public int format_id { get; set; }
+        [DataMember]
+        public string title { get; set; }
+        [DataMember]
+        public string description { get; set; }
+        [DataMember]
+        public DateTime? date { get; set; }
+        [DataMember]
+        public string location { get; set; }
+        [DataMember]
+        public double? average_rating { get; set; }
+        [DataMember]
+        public int? number_of_downloads { get; set; }
 
         //For video
-        public double? Length { get; set; }
-        public int? NumberOfRents { get; set; }
-        public int? NumberOfTrailerViews { get; set; }
+        [DataMember]
+        public double? length { get; set; }
+        [DataMember]
+        public int? number_of_rents { get; set; }
+        [DataMember]
+        public int? number_of_trailer_views { get; set; }
 
         //For document
-        public string Status { get; set; }
+        [DataMember]
+        public string status { get; set; }
     }
 }

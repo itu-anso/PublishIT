@@ -20,7 +20,7 @@ namespace PublishITService
         UserDTO GetUserById(int id);
 
         [OperationContract]
-        UserDTO SignIn(string username, string password);
+        UserDTO SignIn(string username, string password, int organization);
 
         [OperationContract]
         UserDTO GetUserByUserName(string username);
@@ -39,10 +39,7 @@ namespace PublishITService
 
         // Operation contracts for media
 
-        //[OperationContract]
-		//[WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
-        //bool UploadMedia(MediaInfo mediaInfo, Stream media);
-		[OperationContract]
+        [OperationContract]
 		void UploadMedia(RemoteFileInfo request);
 
         [OperationContract]
@@ -61,10 +58,16 @@ namespace PublishITService
         List<MediaDTO> GetMoviesByGenre(string inputGenre, int organizationId);
 
         [OperationContract]
-        List<MediaDTO> GetMediaByAuthor(int userId);
+        List<MediaDTO> GetMediaByAuthorId(int userId);
+
+        [OperationContract]
+        List<MediaDTO> GetMediaByAuthorName(string username, int organizationId);
 
         [OperationContract]
         MediaDTO GetMedia(int id);
+
+        [OperationContract]
+        void AddAdminRole(int userId);
 
 
         // Operation contracts for rating
