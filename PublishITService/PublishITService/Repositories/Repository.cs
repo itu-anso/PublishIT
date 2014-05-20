@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using PublishITService.DTOs;
 using PublishITService.Parsers;
 
@@ -107,12 +105,12 @@ namespace PublishITService.Repositories
             }
         }
 
-        public UserDTO FindUserByUsernameAndPassword(string username, string password)
+        public UserDTO FindUserByUsernameAndPassword(string username, string password, int organizationId)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
             var foundUser = (from u in entities.user
-                    where u.user_name == username && u.password == password
+                    where u.user_name == username && u.password == password && u.organization_id == organizationId
                     select new UserDTO
                     {
                         name = u.name,
@@ -177,35 +175,27 @@ namespace PublishITService.Repositories
                         where r.role_id == 1
                         select r).FirstOrDefault();
 
-                    userRole.user.Add(new user
-                    {
-                        user_id = id,
-                        name = newUser.name,
-                        user_name = newUser.username,
-                        password = newUser.password,
-                        birthday = newUser.birthday,
-                        email = newUser.email,
-                        organization_id = newUser.organization_id,
-                        salt = "salt",
-                        status = "Active"
-                    });
+                    if (userRole != null)
+                        userRole.user.Add(new user
+                        {
+                            user_id = id,
+                            name = newUser.name,
+                            user_name = newUser.username,
+                            password = newUser.password,
+                            birthday = newUser.birthday,
+                            email = newUser.email,
+                            organization_id = newUser.organization_id,
+                            salt = "salt",
+                            status = "Active"
+                        });
 
                     entities.SaveChanges();
 
-                    foundUser = (from u in entities.user
+                    var addedUser = (from u in entities.user
                         where u.user_name == newUser.username
-                        select new UserDTO
-                        {
-                            name = u.name,
-                            username = u.user_name,
-                            birthday = u.birthday,
-                            status = u.status,
-                            email = u.email,
-                            user_id = u.user_id,
-                            password = u.password
-                        }).FirstOrDefault();
+                        select u).FirstOrDefault();
 
-                    if (foundUser != null && foundUser.username.Equals(newUser.username))
+                    if (addedUser != null && addedUser.user_name.Equals(newUser.username))
                     {
                         return new ResponseMessage {IsExecuted = true, Message = "User registered"};
                     }

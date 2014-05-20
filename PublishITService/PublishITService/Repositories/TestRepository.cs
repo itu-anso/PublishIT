@@ -100,7 +100,7 @@ namespace PublishITService.Repositories
             };
         } 
 
-        public UserDTO FindUserByUsernameAndPassword(string username, string password)
+        public UserDTO FindUserByUsernameAndPassword(string username, string password, int organizationId)
         {
             var foundUser = (from u in _userSet
                              where u.user_name == username && u.password == password

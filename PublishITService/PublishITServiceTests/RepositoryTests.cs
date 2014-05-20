@@ -232,7 +232,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByName()
         {
-            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1", 1);
 
             Assert.AreEqual(user.name, "name 1");
         }
@@ -240,7 +240,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByUsername()
         {
-            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1", 1);
 
             Assert.AreEqual(user.username, "userName 1");
         }
@@ -248,7 +248,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByBirthday()
         {
-            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1",1);
 
             Assert.AreEqual(user.birthday, null);
         }
@@ -256,7 +256,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByStatus()
         {
-            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1",1);
 
             Assert.AreEqual(user.status, "Active");
         }
@@ -264,7 +264,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByEmail()
         {
-            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1",1);
 
             Assert.AreEqual(user.email, "email@email.com");
         }
@@ -272,7 +272,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByUserId()
         {
-            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1",1);
 
             Assert.AreEqual(user.user_id, 1);
         }
@@ -280,7 +280,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByRoleCount()
         {
-            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1",1);
 
             Assert.AreEqual(user.roles.Count, 1);
         }
@@ -288,15 +288,23 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingUserByUsernameAndPasswordVerifyByRoleId()
         {
-            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1");
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1",1);
 
             Assert.AreEqual(user.roles[0].Id, 1);
         }
 
         [TestMethod]
+        public void UnsuccessfullyGetingUserByUsernameAndPasswordDueToWrongOrganizationId()
+        {
+            var user = _repository.FindUserByUsernameAndPassword("userName 1", "password 1", 2);
+
+            Assert.AreEqual(user.name, "Sign in failed");
+        }
+
+        [TestMethod]
         public void UnsuccessfullyGettingUserByUsernameAndPasswordVerifyByName()
         {
-            var user = _repository.FindUserByUsernameAndPassword("Not existing userName", "Some password");
+            var user = _repository.FindUserByUsernameAndPassword("Not existing userName", "Some password",1);
 
             Assert.AreEqual(user.name, "Sign in failed");
         }
@@ -304,7 +312,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullyGettingUserByUsernameAndPasswordVerifyByUserId()
         {
-            var user = _repository.FindUserByUsernameAndPassword("Not existing userName", "Some password");
+            var user = _repository.FindUserByUsernameAndPassword("Not existing userName", "Some password",1);
 
             Assert.AreEqual(user.user_id, 0);
         }
@@ -312,7 +320,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullyGettingUserByUserAndPasswordWithOnlyCapitalLettersVerifyByUserId()
         {
-            var user = _repository.FindUserByUsernameAndPassword("USERNAME 1", "SOME PASSWORD");
+            var user = _repository.FindUserByUsernameAndPassword("USERNAME 1", "SOME PASSWORD",1);
 
             Assert.AreNotEqual(user.user_id, 1);
         }
@@ -320,7 +328,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullyGettingUserByUserAndPasswordWithCapitalUsernameVerifyByUserId()
         {
-            var user = _repository.FindUserByUsernameAndPassword("USERNAME 1", "some password");
+            var user = _repository.FindUserByUsernameAndPassword("USERNAME 1", "some password",1);
 
             Assert.AreNotEqual(user.user_id, 1);
         }
@@ -328,7 +336,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullyGettingUserByUserAndPasswordWithCapitalPasswordVerifyByUserId()
         {
-            var user = _repository.FindUserByUsernameAndPassword("username 1", "SOME PASSWORD");
+            var user = _repository.FindUserByUsernameAndPassword("username 1", "SOME PASSWORD",1);
 
             Assert.AreNotEqual(user.user_id, 1);
         }
@@ -336,7 +344,7 @@ namespace PublishITServiceTests
         //AddUser test
 
         [TestMethod]
-        public void CheckingIfAddIsCalledOnceWhenAddingNewUser()
+        public void CheckingIfSaveChangesIsCalledOnceWhenAddingNewUser()
         {
             _repository.AddUser(new UserDTO
             {
@@ -348,16 +356,7 @@ namespace PublishITServiceTests
                 organization_id = 1
             });
 
-            _userMockSet.Verify(x => x.Add(It.Is<user>(
-                                                        newUser =>
-                                                        newUser.birthday == DateTime.MinValue &&
-                                                        newUser.email.Equals("newEmail@email.com") &&
-                                                        newUser.name.Equals("newName") &&
-                                                        newUser.user_name.Equals("newUserName") &&
-                                                        newUser.password.Equals("newPassword") &&
-                                                        newUser.organization_id == 1)),
-                                                        Times.Once
-                                                        );
+            _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Once);
         }
 
         //RegisterUser test

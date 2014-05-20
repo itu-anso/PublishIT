@@ -12,7 +12,7 @@ namespace PublishITService.Repositories
 
         UserDTO FindUserByUsername(string username);
 
-        UserDTO FindUserByUsernameAndPassword(string username, string password);
+        UserDTO FindUserByUsernameAndPassword(string username, string password, int organizationId);
 
         ResponseMessage AddUser(UserDTO newUser);
 

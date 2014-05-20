@@ -16,7 +16,7 @@ namespace PublishITService
         UserDTO GetUserById(int id);
 
         [OperationContract]
-        UserDTO SignIn(string username, string password);
+        UserDTO SignIn(string username, string password, int organization);
 
         [OperationContract]
         UserDTO GetUserByUserName(string username);

@@ -41,9 +41,9 @@ namespace PublishITService
         /// <param name="username"> user's user name </param>
         /// <param name="password"> user's password </param>
         /// <returns> Returns a UserDTO with all information on a user </returns>
-        public UserDTO SignIn(string username, string password)
+        public UserDTO SignIn(string username, string password, int organizationId)
         {
-                return _repository.FindUserByUsernameAndPassword(username, password);
+                return _repository.FindUserByUsernameAndPassword(username, password, organizationId);
         }
 
         /// <summary>
