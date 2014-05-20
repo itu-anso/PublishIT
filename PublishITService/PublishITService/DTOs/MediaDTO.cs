@@ -6,34 +6,34 @@ namespace PublishITService.DTOs
     public class MediaDTO
     {
         [DataMember]
-        public int MediaId { get; set; }
+        public int media_id { get; set; }
         [DataMember]
-        public int UserId { get; set; }
+        public int user_id { get; set; }
         [DataMember]
-        public int FormatId { get; set; }
+        public int format_id { get; set; }
         [DataMember]
-        public string Title { get; set; }
+        public string title { get; set; }
         [DataMember]
-        public string Description { get; set; }
+        public string description { get; set; }
         [DataMember]
-        public DateTime? Date { get; set; }
+        public DateTime? date { get; set; }
         [DataMember]
-        public string Location { get; set; }
+        public string location { get; set; }
         [DataMember]
-        public double? AvgRating { get; set; }
+        public double? average_rating { get; set; }
         [DataMember]
-        public int? NumberOfDownloads { get; set; }
+        public int? number_of_downloads { get; set; }
 
         //For video
         [DataMember]
-        public double? Length { get; set; }
+        public double? length { get; set; }
         [DataMember]
-        public int? NumberOfRents { get; set; }
+        public int? number_of_rents { get; set; }
         [DataMember]
-        public int? NumberOfTrailerViews { get; set; }
+        public int? number_of_trailer_views { get; set; }
 
         //For document
         [DataMember]
-        public string Status { get; set; }
+        public string status { get; set; }
     }
 }

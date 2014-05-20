@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using PublishITService.DTOs;
@@ -267,16 +266,16 @@ namespace PublishITService.Repositories
                 {
                     medias.Add(new MediaDTO
                     {
-                        MediaId = med.med.media_id,
-                        UserId = med.med.user_id,
-                        FormatId = med.med.format_id,
-                        Title = med.med.title,
-                        AvgRating = med.med.average_rating,
-                        Date = med.med.date,
-                        Description = med.med.description,
-                        Location = med.med.location,
-                        NumberOfDownloads = med.med.number_of_downloads,
-                        Status = med.doc.status
+                        media_id = med.med.media_id,
+                        user_id = med.med.user_id,
+                        format_id = med.med.format_id,
+                        title = med.med.title,
+                        average_rating = med.med.average_rating,
+                        date = med.med.date,
+                        description = med.med.description,
+                        location = med.med.location,
+                        number_of_downloads = med.med.number_of_downloads,
+                        status = med.doc.status
                     });
                 }
             }
@@ -286,18 +285,18 @@ namespace PublishITService.Repositories
                 {
                     medias.Add(new MediaDTO
                     {
-                        MediaId = med.med.media_id,
-                        UserId = med.med.user_id,
-                        FormatId = med.med.format_id,
-                        Title = med.med.title,
-                        AvgRating = med.med.average_rating,
-                        Date = med.med.date,
-                        Description = med.med.description,
-                        Location = med.med.location,
-                        NumberOfDownloads = med.med.number_of_downloads,
-                        Length = med.vid.length,
-                        NumberOfRents = med.vid.number_of_rents,
-                        NumberOfTrailerViews = med.vid.number_of_trailer_views
+                        media_id = med.med.media_id,
+                        user_id = med.med.user_id,
+                        format_id = med.med.format_id,
+                        title = med.med.title,
+                        average_rating = med.med.average_rating,
+                        date = med.med.date,
+                        description = med.med.description,
+                        location = med.med.location,
+                        number_of_downloads = med.med.number_of_downloads,
+                        length = med.vid.length,
+                        number_of_rents = med.vid.number_of_rents,
+                        number_of_trailer_views = med.vid.number_of_trailer_views
                     });
                 }
             }
@@ -314,18 +313,18 @@ namespace PublishITService.Repositories
                               join doc in _documentSet on med.media_id equals doc.media_id
                               select new MediaDTO
                               {
-                                  MediaId = med.media_id,
-                                  UserId = med.user_id,
-                                  FormatId = med.format_id,
-                                  Title = med.title,
-                                  AvgRating = med.average_rating,
-                                  Date = med.date,
-                                  Description = med.description,
-                                  Location = med.location,
-                                  NumberOfDownloads = med.number_of_downloads,
-                                  Length = vid.length,
-                                  NumberOfRents = vid.number_of_rents,
-                                  NumberOfTrailerViews = vid.number_of_trailer_views
+                                  media_id = med.media_id,
+                                  user_id = med.user_id,
+                                  format_id = med.format_id,
+                                  title = med.title,
+                                  average_rating = med.average_rating,
+                                  date = med.date,
+                                  description = med.description,
+                                  location = med.location,
+                                  number_of_downloads = med.number_of_downloads,
+                                  length = vid.length,
+                                  number_of_rents = vid.number_of_rents,
+                                  number_of_trailer_views = vid.number_of_trailer_views
                               }).FirstOrDefault();
 
             if (foundMedia != null)
@@ -334,7 +333,7 @@ namespace PublishITService.Repositories
             }
             return new MediaDTO
             {
-                Title = "No media found"
+                title = "No media found"
             };
         } 
 
@@ -352,19 +351,19 @@ namespace PublishITService.Repositories
                         join doc in _documentSet on med.media_id equals doc.media_id
                         select new MediaDTO
                         {
-                            MediaId = med.media_id,
-                            UserId = med.user_id,
-                            FormatId = med.format_id,
-                            Title = med.title,
-                            AvgRating = med.average_rating,
-                            Date = med.date,
-                            Description = med.description,
-                            Location = med.location,
-                            NumberOfDownloads = med.number_of_downloads,
-                            Length = vid.length,
-                            NumberOfRents = vid.number_of_rents,
-                            NumberOfTrailerViews = vid.number_of_trailer_views,
-                            Status = doc.status
+                            media_id = med.media_id,
+                            user_id = med.user_id,
+                            format_id = med.format_id,
+                            title = med.title,
+                            average_rating = med.average_rating,
+                            date = med.date,
+                            description = med.description,
+                            location = med.location,
+                            number_of_downloads = med.number_of_downloads,
+                            length = vid.length,
+                            number_of_rents = vid.number_of_rents,
+                            number_of_trailer_views = vid.number_of_trailer_views,
+                            status = doc.status
                         }).ToList();
                     return medias;
                 }
@@ -454,34 +453,34 @@ namespace PublishITService.Repositories
                     {
                         medias.Add(new MediaDTO
                         {
-                            MediaId = med.med.media_id,
-                            UserId = med.med.user_id,
-                            FormatId = med.med.format_id,
-                            Title = med.med.title,
-                            AvgRating = med.med.average_rating,
-                            Date = med.med.date,
-                            Description = med.med.description,
-                            Location = med.med.location,
-                            NumberOfDownloads = med.med.number_of_downloads,
-                            Status = med.doc.status
+                            media_id = med.med.media_id,
+                            user_id = med.med.user_id,
+                            format_id = med.med.format_id,
+                            title = med.med.title,
+                            average_rating = med.med.average_rating,
+                            date = med.med.date,
+                            description = med.med.description,
+                            location = med.med.location,
+                            number_of_downloads = med.med.number_of_downloads,
+                            status = med.doc.status
                         });
                     }
                     if (med.doc == null)
                     {
                         medias.Add(new MediaDTO
                         {
-                            MediaId = med.med.media_id,
-                            UserId = med.med.user_id,
-                            FormatId = med.med.format_id,
-                            Title = med.med.title,
-                            AvgRating = med.med.average_rating,
-                            Date = med.med.date,
-                            Description = med.med.description,
-                            Location = med.med.location,
-                            NumberOfDownloads = med.med.number_of_downloads,
-                            Length = med.vid.length,
-                            NumberOfRents = med.vid.number_of_rents,
-                            NumberOfTrailerViews = med.vid.number_of_trailer_views
+                            media_id = med.med.media_id,
+                            user_id = med.med.user_id,
+                            format_id = med.med.format_id,
+                            title = med.med.title,
+                            average_rating = med.med.average_rating,
+                            date = med.med.date,
+                            description = med.med.description,
+                            location = med.med.location,
+                            number_of_downloads = med.med.number_of_downloads,
+                            length = med.vid.length,
+                            number_of_rents = med.vid.number_of_rents,
+                            number_of_trailer_views = med.vid.number_of_trailer_views
                         });
                     }
                 }
@@ -525,34 +524,34 @@ namespace PublishITService.Repositories
                         {
                             medias.Add(new MediaDTO
                             {
-                                MediaId = med.med.media_id,
-                                UserId = med.med.user_id,
-                                FormatId = med.med.format_id,
-                                Title = med.med.title,
-                                AvgRating = med.med.average_rating,
-                                Date = med.med.date,
-                                Description = med.med.description,
-                                Location = med.med.location,
-                                NumberOfDownloads = med.med.number_of_downloads,
-                                Status = med.doc.status
+                                media_id = med.med.media_id,
+                                user_id = med.med.user_id,
+                                format_id = med.med.format_id,
+                                title = med.med.title,
+                                average_rating = med.med.average_rating,
+                                date = med.med.date,
+                                description = med.med.description,
+                                location = med.med.location,
+                                number_of_downloads = med.med.number_of_downloads,
+                                status = med.doc.status
                             });
                         }
                         if (med.doc == null)
                         {
                             medias.Add(new MediaDTO
                             {
-                                MediaId = med.med.media_id,
-                                UserId = med.med.user_id,
-                                FormatId = med.med.format_id,
-                                Title = med.med.title,
-                                AvgRating = med.med.average_rating,
-                                Date = med.med.date,
-                                Description = med.med.description,
-                                Location = med.med.location,
-                                NumberOfDownloads = med.med.number_of_downloads,
-                                Length = med.vid.length,
-                                NumberOfRents = med.vid.number_of_rents,
-                                NumberOfTrailerViews = med.vid.number_of_trailer_views
+                                media_id = med.med.media_id,
+                                user_id = med.med.user_id,
+                                format_id = med.med.format_id,
+                                title = med.med.title,
+                                average_rating = med.med.average_rating,
+                                date = med.med.date,
+                                description = med.med.description,
+                                location = med.med.location,
+                                number_of_downloads = med.med.number_of_downloads,
+                                length = med.vid.length,
+                                number_of_rents = med.vid.number_of_rents,
+                                number_of_trailer_views = med.vid.number_of_trailer_views
                             });
                         }
                     }
