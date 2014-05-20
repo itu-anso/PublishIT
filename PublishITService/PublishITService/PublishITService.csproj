@@ -93,6 +93,7 @@
     <Compile Include="document.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="DTOs\MediaDTO.cs" />
     <Compile Include="Parsers\DocumentParser.cs" />
     <Compile Include="format.cs">
       <DependentUpon>PublishITModel.tt</DependentUpon>

@@ -51,16 +51,16 @@ namespace PublishITService
 		string StreamMovie(int userId, int movieId);
 
         [OperationContract]
-        List<media> SearchMedia(string title);
+        List<MediaDTO> SearchMedia(string title, int organizationId);
 
         [OperationContract]
-        List<media> GetMoviesByGenre(string inputGenre);
+        List<MediaDTO> GetMoviesByGenre(string inputGenre, int organizationId);
 
         [OperationContract]
-        List<media> GetMediaByAuthor(int id);
+        List<MediaDTO> GetMediaByAuthor(int userId);
 
         [OperationContract]
-        media GetMedia(int id);
+        MediaDTO GetMedia(int id);
 
 
         // Operation contracts for rating

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Web;
 using PublishITService.DTOs;
 using PublishITService.Parsers;
 using PublishITService.Repositories;
@@ -204,9 +201,9 @@ namespace PublishITService
         /// </summary>
         /// <param name="title"> The title string used to search in the database </param>
         /// <returns> Returns a list of media objects containing the information of the media </returns>
-        public List<media> SearchMedia(string title)
+        public List<MediaDTO> SearchMedia(string title, int organizationId)
         {
-            return _repository.FindMediaByTitle(title);
+            return _repository.FindMediaByTitle(title, organizationId);
         }
 
         /// <summary>
@@ -214,16 +211,16 @@ namespace PublishITService
         /// </summary>
         /// <param name="inputGenre"> The genre string used to search in the database </param>
         /// <returns> Returns a list of media objects containing the information of the media </returns>
-        public List<media> GetMoviesByGenre(string inputGenre)
+        public List<MediaDTO> GetMoviesByGenre(string inputGenre, int organizationId)
 
         {
-            return _repository.FindMoviesByGenre(inputGenre);
+            return _repository.FindMoviesByGenre(inputGenre, organizationId);
         }
 
 
-        public List<media> GetMediaByAuthor(int id)
+        public List<MediaDTO> GetMediaByAuthor(int userId)
         {
-            return _repository.FindMediasByAuthorId(id);
+            return _repository.FindMediasByAuthorId(userId);
         }        
         
         /// <summary>
@@ -231,7 +228,7 @@ namespace PublishITService
         /// </summary>
         /// <param name="id"> The id used to search in the database </param>
         /// <returns> Returns a media object with all its information </returns>
-        public media GetMedia(int id)
+        public MediaDTO GetMedia(int id)
         {
             return _repository.FindMediaById(id);
         }

@@ -24,13 +24,11 @@ namespace PublishITService.Repositories
 
         string GetMediaPath(int id);
 
-        media FindMediaById(int id);
+        MediaDTO FindMediaById(int id);
 
-        List<media> FindMediaByTitle(string title);
+        List<MediaDTO> FindMediaByTitle(string title, int organizationId);
 
-        List<media> FindMoviesByGenre(string inputGenre);
-
-        IQueryable<genre> FindRelatedGenres(string inputGenre);
+        List<MediaDTO> FindMoviesByGenre(string inputGenre, int organizationId);
 
         rating FindRating(int movieId, int userId);
 
@@ -38,6 +36,6 @@ namespace PublishITService.Repositories
 
         bool CheckingIfRentExists(int userId, int movieId);
 
-        List<media> FindMediasByAuthorId(int id);
+        List<MediaDTO> FindMediasByAuthorId(int userId);
     }
 }

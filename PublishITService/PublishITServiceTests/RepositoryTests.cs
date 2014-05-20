@@ -600,20 +600,6 @@ namespace PublishITServiceTests
             _publishITEntitiesMock.Verify(x => x.SaveChanges(), Times.Exactly(2));
         }
 
-        //Thomas
-        [TestMethod] //FEJLER!
-        public void SuccessfullyDownloadMedia()
-        {
-            //var downloadedMedia = _repository.DownloadMedia(1);
-            Assert.AreEqual(1, 2);
-        }
-
-        //Thomas
-        [TestMethod] //FEJLER!
-        public void UnsuccessfullyDownloadMedia()
-        {
-            Assert.AreEqual(1, 2);
-        }
 
         //GetMediaPath test
 
@@ -638,55 +624,55 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullySearchMediaByTitleVerifyByCount()
         {
-            var listOfMedia = _repository.FindMediaByTitle("title");
+            var listOfMedia = _repository.FindMediaByTitle("title", 1);
 
-            Assert.AreEqual(listOfMedia.Count, 4);
+            Assert.AreEqual(listOfMedia.Count, 3);
         }
 
         [TestMethod]
         public void SuccessfullySearchMediaByTitleVerifyByMediaId()
         {
-            var listOfMedia = _repository.FindMediaByTitle("title");
+            var listOfMedia = _repository.FindMediaByTitle("title", 1);
 
-            Assert.AreEqual(listOfMedia[0].media_id, 1);
+            Assert.AreEqual(listOfMedia[0].MediaId, 1);
         }
 
         [TestMethod]
         public void SuccessfullySearchMediaByTitleVerifyByUserId()
         {
-            var listOfMedia = _repository.FindMediaByTitle("title");
+            var listOfMedia = _repository.FindMediaByTitle("title", 1);
 
-            Assert.AreEqual(listOfMedia[0].user_id, 1);
+            Assert.AreEqual(listOfMedia[0].UserId, 1);
         }
 
         [TestMethod]
         public void SuccessfullySearchMediaByTitleVerifyByFormatId()
         {
-            var listOfMedia = _repository.FindMediaByTitle("title");
+            var listOfMedia = _repository.FindMediaByTitle("title", 1);
 
-            Assert.AreEqual(listOfMedia[0].format_id, 1);
+            Assert.AreEqual(listOfMedia[0].FormatId, 1);
         }
 
         [TestMethod]
         public void SuccessfullySearchMediaByTitleVerifyByTitle()
         {
-            var listOfMedia = _repository.FindMediaByTitle("title");
+            var listOfMedia = _repository.FindMediaByTitle("title", 1);
 
-            Assert.AreEqual(listOfMedia[0].title, "title 1");
+            Assert.AreEqual(listOfMedia[0].Title, "title 1");
         }
 
         [TestMethod]
         public void SuccessfullySearchMediaByTitleVerifyByLocation()
         {
-            var listOfMedia = _repository.FindMediaByTitle("title");
+            var listOfMedia = _repository.FindMediaByTitle("title", 1);
 
-            Assert.AreEqual(listOfMedia[0].location, "location 1");
+            Assert.AreEqual(listOfMedia[0].Location, "location 1");
         }
 
         [TestMethod]
         public void UnsuccessfullySearchMediaByTitleVerifyByCount()
         {
-            var listOfMedia = _repository.FindMediaByTitle("No media");
+            var listOfMedia = _repository.FindMediaByTitle("No media", 1);
 
             Assert.AreEqual(listOfMedia.Count, 0);
         }
@@ -694,7 +680,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullySearchMediaByTitleCapitalLetterVerifyByCount()
         {
-            var listOfMedia = _repository.FindMediaByTitle("TITLE");
+            var listOfMedia = _repository.FindMediaByTitle("TITLE", 1);
 
             Assert.AreEqual(listOfMedia.Count, 0);
         }
@@ -706,7 +692,7 @@ namespace PublishITServiceTests
         {
             var gottenMedia = _repository.FindMediaById(1);
 
-            Assert.AreEqual(gottenMedia.media_id, 1);
+            Assert.AreEqual(gottenMedia.MediaId, 1);
         }
 
         [TestMethod]
@@ -714,7 +700,7 @@ namespace PublishITServiceTests
         {
             var gottenMedia = _repository.FindMediaById(1);
 
-            Assert.AreEqual(gottenMedia.user_id, 1);
+            Assert.AreEqual(gottenMedia.UserId, 1);
         }
 
         [TestMethod]
@@ -722,7 +708,7 @@ namespace PublishITServiceTests
         {
             var gottenMedia = _repository.FindMediaById(1);
 
-            Assert.AreEqual(gottenMedia.format_id, 1);
+            Assert.AreEqual(gottenMedia.FormatId, 1);
         }
 
         [TestMethod]
@@ -730,7 +716,7 @@ namespace PublishITServiceTests
         {
             var gottenMedia = _repository.FindMediaById(1);
 
-            Assert.AreEqual(gottenMedia.title, "title 1");
+            Assert.AreEqual(gottenMedia.Title, "title 1");
         }
 
         [TestMethod]
@@ -738,7 +724,7 @@ namespace PublishITServiceTests
         {
             var gottenMedia = _repository.FindMediaById(1);
 
-            Assert.AreEqual(gottenMedia.location, "location 1");
+            Assert.AreEqual(gottenMedia.Location, "location 1");
         }
 
         [TestMethod]
@@ -746,7 +732,7 @@ namespace PublishITServiceTests
         {
             var gottenMedia = _repository.FindMediaById(5);
 
-            Assert.AreEqual(gottenMedia.title, "No media found");
+            Assert.AreEqual(gottenMedia.Title, "No media found");
         }
 
         //FindMoviesByGenre test
@@ -754,55 +740,55 @@ namespace PublishITServiceTests
         [TestMethod]
         public void SuccessfullyGettingMoviesByGenreVerifyByCount()
         {
-            var movies = _repository.FindMoviesByGenre("Comedy");
+            var movies = _repository.FindMoviesByGenre("Comedy", 1);
 
-            Assert.AreEqual(movies.Count, 2);
+            Assert.AreEqual(movies.Count, 1);
         }
 
         [TestMethod]
         public void SuccessfullyGettingMoviesByGenreVerifyByMediaId()
         {
-            var movies = _repository.FindMoviesByGenre("Comedy");
+            var movies = _repository.FindMoviesByGenre("Comedy", 1);
 
-            Assert.AreEqual(movies[0].media_id, 2);
+            Assert.AreEqual(movies[0].MediaId, 4);
         }
 
         [TestMethod]
         public void SuccessfullyGettingMoviesByGenreVerifyByUserId()
         {
-            var movies = _repository.FindMoviesByGenre("Comedy");
+            var movies = _repository.FindMoviesByGenre("Comedy", 1);
 
-            Assert.AreEqual(movies[0].user_id, 2);
+            Assert.AreEqual(movies[0].UserId, 1);
         }
 
         [TestMethod]
         public void SuccessfullyGettingMoviesByGenreVerifyByFormatId()
         {
-            var movies = _repository.FindMoviesByGenre("Comedy");
+            var movies = _repository.FindMoviesByGenre("Comedy", 1);
 
-            Assert.AreEqual(movies[0].format_id, 2);
+            Assert.AreEqual(movies[0].FormatId, 2);
         }
 
         [TestMethod]
         public void SuccessfullyGettingMoviesByGenreVerifyByTitle()
         {
-            var movies = _repository.FindMoviesByGenre("Comedy");
+            var movies = _repository.FindMoviesByGenre("Comedy", 1);
 
-            Assert.AreEqual(movies[0].title, "title 2");
+            Assert.AreEqual(movies[0].Title, "title 4");
         }
 
         [TestMethod]
         public void SuccessfullyGettingMoviesByGenreVerifyByLocation()
         {
-            var movies = _repository.FindMoviesByGenre("Comedy");
+            var movies = _repository.FindMoviesByGenre("Comedy", 1);
 
-            Assert.AreEqual(movies[0].location, "location 2");
+            Assert.AreEqual(movies[0].Location, "location 4");
         }
 
         [TestMethod]
         public void UnsuccessfullyGettingMoviesByGenreDueToNoMoviesInTheGenreVerifyByCount()
         {
-            var movies = _repository.FindMoviesByGenre("Science Fiction");
+            var movies = _repository.FindMoviesByGenre("Science Fiction", 1);
 
             Assert.AreEqual(movies.Count, 0);
         }
@@ -810,7 +796,7 @@ namespace PublishITServiceTests
         [TestMethod]
         public void UnsuccessfullyGettingMoviesByGenreDueToCapitalLettesVerifyByCount()
         {
-            var movies = _repository.FindMoviesByGenre("COMEDY");
+            var movies = _repository.FindMoviesByGenre("COMEDY", 1);
 
             Assert.AreEqual(movies.Count, 0);
         }
@@ -898,7 +884,7 @@ namespace PublishITServiceTests
         {
             var movie = _repository.FindMediasByAuthorId(1);
 
-            Assert.AreEqual(movie[0].media_id, 1);
+            Assert.AreEqual(movie[0].MediaId, 1);
         }
 
         [TestMethod]
@@ -906,7 +892,7 @@ namespace PublishITServiceTests
         {
             var movie = _repository.FindMediasByAuthorId(1);
 
-            Assert.AreEqual(movie[0].user_id, 1);
+            Assert.AreEqual(movie[0].UserId, 1);
         }
 
         [TestMethod]
@@ -914,7 +900,7 @@ namespace PublishITServiceTests
         {
             var movie = _repository.FindMediasByAuthorId(1);
 
-            Assert.AreEqual(movie[0].format_id, 1);
+            Assert.AreEqual(movie[0].FormatId, 1);
         }
 
         [TestMethod]
@@ -922,7 +908,7 @@ namespace PublishITServiceTests
         {
             var movie = _repository.FindMediasByAuthorId(1);
 
-            Assert.AreEqual(movie[0].title, "title 1");
+            Assert.AreEqual(movie[0].Title, "title 1");
         }
 
         [TestMethod]
@@ -930,7 +916,7 @@ namespace PublishITServiceTests
         {
             var movie = _repository.FindMediasByAuthorId(1);
 
-            Assert.AreEqual(movie[0].location, "location 1");
+            Assert.AreEqual(movie[0].Location, "location 1");
         }
 
         [TestMethod]
@@ -1102,12 +1088,14 @@ namespace PublishITServiceTests
             {
                 new document
                 {
-                    media_id = 1
+                    media_id = 1,
+                    status = "status"
                 },
 
                 new document
                 {
-                    media_id = 3
+                    media_id = 3,
+                    status = "status"
                 }
             }.AsQueryable();
         }

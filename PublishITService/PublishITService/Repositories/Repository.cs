@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using PublishITService.DTOs;
 using PublishITService.Parsers;
 
@@ -283,109 +284,180 @@ namespace PublishITService.Repositories
             }
         }
 
-        public media FindMediaById(int id)
+        public MediaDTO FindMediaById(int id)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
                 var foundMedia = (from med in entities.media
-                                  where med.media_id == id
-                                  select med).FirstOrDefault();
+                    where med.media_id == id
+                    select med).FirstOrDefault();
+
+                var foundDocument = (from doc in entities.document
+                                    where doc.media_id == id
+                                    select doc).FirstOrDefault();
+
+                var foundVideo = (from vid in entities.video
+                                 where vid.media_id == id
+                                 select vid).FirstOrDefault();
 
                 if (foundMedia != null)
                 {
-                    var theMedia = new media
+
+
+                    if (foundDocument != null)
                     {
-                        media_id = foundMedia.media_id,
-                        user_id = foundMedia.user_id,
-                        format_id = foundMedia.format_id,
-                        title = foundMedia.title,
-                        average_rating = foundMedia.average_rating,
-                        date = foundMedia.date,
-                        description = foundMedia.description,
-                        location = foundMedia.location,
-                        number_of_downloads = foundMedia.number_of_downloads
-                    };
-                    return theMedia;
+                        return new MediaDTO
+                        {
+                            MediaId = foundMedia.media_id,
+                            UserId = foundMedia.user_id,
+                            FormatId = foundMedia.format_id,
+                            Title = foundMedia.title,
+                            AvgRating = foundMedia.average_rating,
+                            Date = foundMedia.date,
+                            Description = foundMedia.description,
+                            Location = foundMedia.location,
+                            NumberOfDownloads = foundMedia.number_of_downloads,
+                            Status = foundDocument.status
+                        };
+                    }
+                    if (foundVideo != null)
+                    {
+                        return new MediaDTO
+                        {
+                            MediaId = foundMedia.media_id,
+                            UserId = foundMedia.user_id,
+                            FormatId = foundMedia.format_id,
+                            Title = foundMedia.title,
+                            AvgRating = foundMedia.average_rating,
+                            Date = foundMedia.date,
+                            Description = foundMedia.description,
+                            Location = foundMedia.location,
+                            NumberOfDownloads = foundMedia.number_of_downloads,
+                            Length = foundVideo.length,
+                            NumberOfRents = foundVideo.number_of_rents,
+                            NumberOfTrailerViews = foundVideo.number_of_trailer_views
+                        };
+                    }
                 }
-                return new media
+
+                return new MediaDTO
                 {
-                    title = "No media found"
+                    Title = "No media found"
                 };
             }
         }
 
-        public List<media> FindMediaByTitle(string title)
+        public List<MediaDTO> FindMediaByTitle(string title, int organizationId)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                var medias = new List<media>();
+                var medias = new List<MediaDTO>();
 
-                var foundMedia = from m in entities.media
-                                 where m.title.Contains(title)
-                                 select m;
+                var foundMediaDoc = from med in entities.media
+                    join u in entities.user on med.user_id equals u.user_id
+                    join doc in entities.document on med.media_id equals doc.media_id
+                    where med.title.Contains(title) && u.organization_id == organizationId
+                    select new {med, doc};
 
-                foreach (var med in foundMedia)
+                var foundMediaVid = from med in entities.media
+                    join u in entities.user on med.user_id equals u.user_id
+                    join vid in entities.video on med.media_id equals vid.media_id
+                    where med.title.Contains(title) && u.organization_id == organizationId
+                    select new { med, vid };
+
+                if(foundMediaDoc.Any())
                 {
-                    medias.Add(new media
+                    foreach (var med in foundMediaDoc)
                     {
-                        media_id = med.media_id,
-                        user_id = med.user_id,
-                        format_id = med.format_id,
-                        title = med.title,
-                        average_rating = med.average_rating,
-                        date = med.date,
-                        description = med.description,
-                        location = med.location,
-                        number_of_downloads = med.number_of_downloads
-                    });
-                }
-
-                return medias;
-            }
-        }
-
-        public IQueryable<genre> FindRelatedGenres(string inputGenre)
-        {
-            using (var entities = _publishITEntities ?? new RentIt09Entities())
-            {
-                return from genreName in entities.genre
-                    where genreName.genre1.Contains(inputGenre)
-                    select genreName;
-            }
-        }
-
-        public List<media> FindMoviesByGenre(string inputGenre)
-        {
-            using (var entities = _publishITEntities ?? new RentIt09Entities())
-            {
-                var medias = new List<media>();
-
-                // Search for genres. Genre contains a collection of medias that represent the specific genre
-                var foundgenre = FindRelatedGenres(inputGenre);
-
-
-                foreach (var gen in foundgenre)
-                {
-                    // Traversal of the media collection in the specific genre.
-                    foreach (var med in gen.media)
-                    {
-                        medias.Add(new media
+                        medias.Add(new MediaDTO
                         {
-                            media_id = med.media_id,
-                            user_id = med.user_id,
-                            format_id = med.format_id,
-                            title = med.title,
-                            average_rating = med.average_rating,
-                            date = med.date,
-                            description = med.description,
-                            location = med.location,
-                            number_of_downloads = med.number_of_downloads
+                            MediaId = med.med.media_id,
+                            UserId = med.med.user_id,
+                            FormatId = med.med.format_id,
+                            Title = med.med.title,
+                            AvgRating = med.med.average_rating,
+                            Date = med.med.date,
+                            Description = med.med.description,
+                            Location = med.med.location,
+                            NumberOfDownloads = med.med.number_of_downloads,
+                            Status = med.doc.status
                         });
                     }
                 }
+                if (foundMediaVid.Any())
+                {
+                    foreach (var med in foundMediaVid)
+                    {
+                        medias.Add(new MediaDTO
+                        {
+                            MediaId = med.med.media_id,
+                            UserId = med.med.user_id,
+                            FormatId = med.med.format_id,
+                            Title = med.med.title,
+                            AvgRating = med.med.average_rating,
+                            Date = med.med.date,
+                            Description = med.med.description,
+                            Location = med.med.location,
+                            NumberOfDownloads = med.med.number_of_downloads,
+                            Length = med.vid.length,
+                            NumberOfRents = med.vid.number_of_rents,
+                            NumberOfTrailerViews = med.vid.number_of_trailer_views
+                        });
+                    }
+                }
+                
 
                 return medias;
             }
+        }
+
+        public List<MediaDTO> FindMoviesByGenre(string inputGenre, int organizationId)
+        {
+            using (var entities = _publishITEntities ?? new RentIt09Entities())
+            {
+                var medias = new List<MediaDTO>();
+
+                // Search for genres. Genre contains a collection of medias that represent the specific genre
+                var gen = (from genreName in entities.genre
+                    where genreName.genre1.Equals(inputGenre)
+                    select genreName).FirstOrDefault();
+                
+                    // Traversal of the media collection in the specific genre.
+                if (gen != null)
+                {
+                    var foundMediaVid = (from med in gen.media
+                                        join u in entities.user on med.user_id equals u.user_id
+                                        join vid in entities.video on med.media_id equals vid.media_id
+                                        where u.organization_id == organizationId
+                                        select new { med, vid });
+                    
+                        foreach (var med in foundMediaVid)
+                        {
+                            if (med.med != null && med.vid != null)
+                            {
+                                medias.Add(new MediaDTO
+                                {
+                                    MediaId = med.med.media_id,
+                                    UserId = med.med.user_id,
+                                    FormatId = med.med.format_id,
+                                    Title = med.med.title,
+                                    AvgRating = med.med.average_rating,
+                                    Date = med.med.date,
+                                    Description = med.med.description,
+                                    Location = med.med.location,
+                                    NumberOfDownloads = med.med.number_of_downloads,
+                                    Length = med.vid.length,
+                                    NumberOfRents = med.vid.number_of_rents,
+                                    NumberOfTrailerViews = med.vid.number_of_trailer_views
+                                });
+                            }
+                        }
+                    }
+                
+
+                return medias;
+            }
+
         }
 
         public rating FindRating(int movieId, int userId)
@@ -440,31 +512,76 @@ namespace PublishITService.Repositories
             }
         }
 
-        public List<media> FindMediasByAuthorId(int id)
+        public List<MediaDTO> FindMediasByAuthorId(int userId)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                List<media> medias = new List<media>();
+                List<MediaDTO> medias = new List<MediaDTO>();
 
-                var foundMedia = from med in entities.media
-                                 where med.user_id == id
-                                 select med;
+                
+                    var userMedia = from med in entities.media
+                        where med.user_id == userId
+                        select med;
 
-                foreach (media med in foundMedia)
+                if (userMedia.Any())
                 {
-                    medias.Add(new media
+                    var mediaIds = userMedia.Select(med => med.media_id)
+                        .Union(entities.document.Select(doc => doc.media_id))
+                        .Union(entities.video.Select(vid => vid.media_id));
+
+                    var foundMedia = from id in mediaIds
+                        join med in entities.media on id equals med.media_id into mMed
+                        from med in mMed.DefaultIfEmpty()
+                        join doc in entities.document on id equals doc.media_id into mDocs
+                        from doc in mDocs.DefaultIfEmpty()
+                        join vid in entities.video on id equals vid.media_id into mVids
+                        from vid in mVids.DefaultIfEmpty()
+                        where doc == null ^ vid == null ^ med == null
+                        select new {med, doc, vid};
+
+
+                    foreach (var med in foundMedia)
                     {
-                        media_id = med.media_id,
-                        user_id = med.user_id,
-                        format_id = med.format_id,
-                        title = med.title,
-                        average_rating = med.average_rating,
-                        date = med.date,
-                        description = med.description,
-                        location = med.location,
-                        number_of_downloads = med.number_of_downloads
-                    });
+                        if (med.med != null)
+                        {
+                            if (med.vid == null)
+                            {
+                                medias.Add(new MediaDTO
+                                {
+                                    MediaId = med.med.media_id,
+                                    UserId = med.med.user_id,
+                                    FormatId = med.med.format_id,
+                                    Title = med.med.title,
+                                    AvgRating = med.med.average_rating,
+                                    Date = med.med.date,
+                                    Description = med.med.description,
+                                    Location = med.med.location,
+                                    NumberOfDownloads = med.med.number_of_downloads,
+                                    Status = med.doc.status
+                                });
+                            }
+                            if (med.doc == null)
+                            {
+                                medias.Add(new MediaDTO
+                                {
+                                    MediaId = med.med.media_id,
+                                    UserId = med.med.user_id,
+                                    FormatId = med.med.format_id,
+                                    Title = med.med.title,
+                                    AvgRating = med.med.average_rating,
+                                    Date = med.med.date,
+                                    Description = med.med.description,
+                                    Location = med.med.location,
+                                    NumberOfDownloads = med.med.number_of_downloads,
+                                    Length = med.vid.length,
+                                    NumberOfRents = med.vid.number_of_rents,
+                                    NumberOfTrailerViews = med.vid.number_of_trailer_views
+                                });
+                            }
+                        }
+                    }
                 }
+
                 return medias;
             }
         }
