@@ -629,16 +629,12 @@ namespace PublishITService.Repositories
 
                 if (userMedia.Count() > 0)
                 {
-                    var mediaIds = userMedia.Select(med => med.media_id)
-                        .Union(entities.document.Select(doc => doc.media_id))
-                        .Union(entities.video.Select(vid => vid.media_id));
-
-                    var foundMedia = from id in mediaIds
-                        join med in entities.media on id equals med.media_id into mMed
+                    var foundMedia = from u in userMedia
+                        join med in entities.media on u.media_id equals med.media_id into mMed
                         from med in mMed.DefaultIfEmpty()
-                        join doc in entities.document on id equals doc.media_id into mDocs
+                        join doc in entities.document on u.media_id equals doc.media_id into mDocs
                         from doc in mDocs.DefaultIfEmpty()
-                        join vid in entities.video on id equals vid.media_id into mVids
+                        join vid in entities.video on u.media_id equals vid.media_id into mVids
                         from vid in mVids.DefaultIfEmpty()
                         where doc == null ^ vid == null ^ med == null
                         select new {med, doc, vid};
@@ -738,16 +734,12 @@ namespace PublishITService.Repositories
 
                 if (userMedia.Count() > 0)
                 {
-                    var mediaIds = userMedia.Select(med => med.media_id)
-                        .Union(entities.document.Select(doc => doc.media_id))
-                        .Union(entities.video.Select(vid => vid.media_id));
-
-                    var foundMedia = from id in mediaIds
-                        join med in entities.media on id equals med.media_id into mMed
+                    var foundMedia = from u in userMedia
+                        join med in entities.media on u.media_id equals med.media_id into mMed
                         from med in mMed.DefaultIfEmpty()
-                        join doc in entities.document on id equals doc.media_id into mDocs
+                        join doc in entities.document on u.media_id equals doc.media_id into mDocs
                         from doc in mDocs.DefaultIfEmpty()
-                        join vid in entities.video on id equals vid.media_id into mVids
+                        join vid in entities.video on u.media_id equals vid.media_id into mVids
                         from vid in mVids.DefaultIfEmpty()
                         where doc == null ^ vid == null ^ med == null
                         select new {med, doc, vid};
