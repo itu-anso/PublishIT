@@ -2,6 +2,9 @@
 
 namespace PublishITService.DTOs
 {
+    /// <summary>
+    /// MediaDTO is the data type that covers for both a video- and document-type.. 
+    /// </summary>
     public class MediaDTO
     {
         public int MediaId { get; set; }

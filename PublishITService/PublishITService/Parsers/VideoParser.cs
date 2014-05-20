@@ -2,11 +2,20 @@
 using System.IO;
 
 namespace PublishITService.Parsers {
+
+    /// <summary>
+    /// VideoParser implements the IMediaParser-interface which has a method that stores a media object into a database. 
+    /// </summary>
 	public class VideoParser : IMediaParser {
 
 		public IPublishITEntities _publishITEntities { get; set; }
 
-		public void StoreMedia(Stream mediaStream, RemoteFileInfo request, IPublishITEntities entities) {
+        /// <summary>
+        /// Stores a media into a database.
+        /// </summary>
+        /// <param name="request">Object containing different info relevant for a media object.</param>
+        /// <param name="entities">Interface for every entity class in the database.</param>
+		public void StoreMedia(RemoteFileInfo request, IPublishITEntities entities) {
 			string path = @"\RentItServices\RentIt09\resources\media\video\" + request.FileName;
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 			

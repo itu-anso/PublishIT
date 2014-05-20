@@ -8,6 +8,9 @@ using PublishITService.Parsers;
 
 namespace PublishITService.Repositories
 {
+    /// <summary>
+    /// This class is meant for testing. 
+    /// </summary>
     public class TestRepository : IRepository
     {
         private readonly IPublishITEntities _publishITEntities;

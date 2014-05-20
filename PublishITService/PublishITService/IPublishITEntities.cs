@@ -4,7 +4,7 @@ using System.Data.Entity;
 namespace PublishITService
 {
     /// <summary>
-    /// Interface for every entity class in our database
+    /// Interface for every entity class in our database.
     /// </summary>
     public interface IPublishITEntities : IDisposable
     {

@@ -9,6 +9,10 @@ using PublishITService.DTOs;
 namespace PublishITService
 {
     [ServiceContract]
+
+    /// <summary>
+    /// Interface that defines the Services available. 
+    /// </summary>
     public interface IPublishITService
     {
         // Operation contracts for users
@@ -113,32 +117,4 @@ namespace PublishITService
 		public byte[] Content { get; set; }
 	}
 
-	[DataContract]
-	public class MediaInfo
-	{
-		[DataMember]
-		public string FileName { get; set; }
-
-		[DataMember]
-		public string Title { get; set; }
-
-		[DataMember]
-		public int UserId { get; set; }
-
-		[DataMember]
-		public string Description { get; set; }
-
-		[DataMember]
-		public string Date { get; set; }
-
-		[DataMember]
-		public string Status { get; set; }
-
-		[DataMember]
-		public string Length { get; set; }
-
-		[DataMember]
-		public int GenreId { get; set; }
-
-	}
 }
