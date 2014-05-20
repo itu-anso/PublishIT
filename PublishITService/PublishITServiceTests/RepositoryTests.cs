@@ -585,6 +585,7 @@ namespace PublishITServiceTests
                 Length = 1,
                 Status = "status",
                 UserId = 1
+
             };
 
 			_repository.StoreMedia(remoteFileInfo, mediaParser);
