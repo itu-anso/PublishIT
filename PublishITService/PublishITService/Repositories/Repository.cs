@@ -386,7 +386,7 @@ namespace PublishITService.Repositories
                     where med.title.Contains(title) && u.organization_id == organizationId
                     select new { med, vid };
 
-                if(foundMediaDoc.Any())
+                if(foundMediaDoc.Count() > 0)
                 {
                     foreach (var med in foundMediaDoc)
                     {
