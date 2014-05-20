@@ -139,8 +139,8 @@ namespace PublishITService
 			// Create a new FileStream with the path, how to open the file and access rights.
 			// FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
 
-			bytes = System.IO.File.ReadAllBytes(path);
-	        //bytes[0] = HttpContext.Current.Server.MapPath("~/");
+			bytes = File.ReadAllBytes(path);
+	        
 			return bytes;
 		}
 
@@ -203,11 +203,16 @@ namespace PublishITService
         }
 
 
-        public List<MediaDTO> GetMediaByAuthor(int userId)
+        public List<MediaDTO> GetMediaByAuthorId(int userId)
         {
             return _repository.FindMediasByAuthorId(userId);
-        }        
-        
+        }
+
+        public List<MediaDTO> GetMediaByAuthorName(string username, int organizationId)
+        {
+            return _repository.FindMediasByAuthorName(username, organizationId);
+        }
+
         /// <summary>
         /// Gets a certain media by given the media's integer id
         /// </summary>
@@ -216,6 +221,11 @@ namespace PublishITService
         public MediaDTO GetMedia(int id)
         {
             return _repository.FindMediaById(id);
+        }
+
+        public void AddAdminRole(int userId)
+        {
+            _repository.AddAdminAsRole(userId);
         }
 
         /// <summary>

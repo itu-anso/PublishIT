@@ -37,5 +37,9 @@ namespace PublishITService.Repositories
         bool CheckingIfRentExists(int userId, int movieId);
 
         List<MediaDTO> FindMediasByAuthorId(int userId);
+
+        List<MediaDTO> FindMediasByAuthorName(string username, int organizationId);
+
+        void AddAdminAsRole(int userId);
     }
 }
