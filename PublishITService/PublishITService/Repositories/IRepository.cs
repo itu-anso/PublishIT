@@ -16,7 +16,7 @@ namespace PublishITService.Repositories
 
         ResponseMessage AddUser(UserDTO newUser);
 
-        void DeleteUser(int id);
+        ResponseMessage DeleteUser(int id);
 
         void EditUser(UserDTO inputUser);
 

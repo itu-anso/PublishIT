@@ -177,7 +177,7 @@ namespace PublishITService.Repositories
                         where r.role_id == 1
                         select r).FirstOrDefault();
 
-                    entities.user.Add(new user
+                    userRole.user.Add(new user
                     {
                         user_id = id,
                         name = newUser.name,
@@ -187,8 +187,7 @@ namespace PublishITService.Repositories
                         email = newUser.email,
                         organization_id = newUser.organization_id,
                         salt = "salt",
-                        status = "Active",
-                        role = new Collection<role> {new role {role_id = userRole.role_id, role1 = userRole.role1}}
+                        status = "Active"
                     });
 
                     entities.SaveChanges();
@@ -216,24 +215,41 @@ namespace PublishITService.Repositories
             }
         }
 
-        public void DeleteUser(int id)
+        public ResponseMessage DeleteUser(int id)
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                var foundUser = (from u in entities.user
+                var userToBeDeleted = (from u in entities.user
                     where u.user_id == id
                     select u).FirstOrDefault();
 
-                if (foundUser != null) foundUser.status = "Deleted";
+                if (userToBeDeleted != null && userToBeDeleted.status.Equals("Active"))
+                {
+                    userToBeDeleted.status = "Deleted";
 
-                try
-                {
-                    entities.SaveChanges();
+                    try
+                    {
+                        entities.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
-                catch (Exception e)
+                else
                 {
-                    Console.WriteLine(e);
+                    return new ResponseMessage { IsExecuted = false, Message = "No user found. Deletion failed" };
                 }
+
+                var userThatShouldBeDeletedNow = (from u in entities.user
+                    where u.user_id == id
+                    select u).FirstOrDefault();
+
+                if (userThatShouldBeDeletedNow != null && userThatShouldBeDeletedNow.status.Equals("Deleted"))
+                {
+                    return new ResponseMessage { IsExecuted = true, Message = "Deletion completed" };
+                }
+                return new ResponseMessage { IsExecuted = false, Message = "Deletion failed" };
             }
         }
 

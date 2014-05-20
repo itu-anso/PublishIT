@@ -82,22 +82,7 @@ namespace PublishITService
         /// <returns> A response message with a boolean value saying if the deletion was a success and a message explaining why/why not </returns>
 	    public ResponseMessage DeleteUser(int id)
         {
-            var userToBeDeleted = GetUserById(id);
-
-            if (userToBeDeleted != null && userToBeDeleted.status.Equals("Active"))
-            {
-                _repository.DeleteUser(id);
-            }
-            else
-            {
-                return new ResponseMessage {IsExecuted = false, Message = "No user found. Deletion failed"};
-            }
-                if (GetUserById(id).status.Equals("Deleted"))
-                {
-                    return new ResponseMessage {IsExecuted = true, Message = "Deletion completed"};
-                }
-                return new ResponseMessage {IsExecuted = false, Message = "Deletion failed"};
-            
+                return _repository.DeleteUser(id);
         }
 
         /// <summary>

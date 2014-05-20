@@ -190,14 +190,34 @@ namespace PublishITService.Repositories
             return new ResponseMessage { IsExecuted = false, Message = "Username already exists" };
         }
 
-        public void DeleteUser(int id)
+        public ResponseMessage DeleteUser(int id)
         {
-            var foundUser = (from u in _userSet
-                             where u.user_id == id
-                             select u).FirstOrDefault();
+            var userToBeDeleted = (from u in _userSet
+                    where u.user_id == id
+                    select u).FirstOrDefault();
 
-            if (foundUser != null) foundUser.status = "Deleted";
-        }
+                if (userToBeDeleted != null && userToBeDeleted.status.Equals("Active"))
+                {
+                    userToBeDeleted.status = "Deleted";
+
+                    
+                }
+                else
+                {
+                    return new ResponseMessage { IsExecuted = false, Message = "No user found. Deletion failed" };
+                }
+
+                var userThatShouldBeDeletedNow = (from u in _userSet
+                    where u.user_id == id
+                    select u).FirstOrDefault();
+
+                if (userThatShouldBeDeletedNow != null && userThatShouldBeDeletedNow.status.Equals("Deleted"))
+                {
+                    return new ResponseMessage { IsExecuted = true, Message = "Deletion completed" };
+                }
+                return new ResponseMessage { IsExecuted = false, Message = "Deletion failed" };
+            }
+        
 
         public void EditUser(UserDTO inputUser)
         {

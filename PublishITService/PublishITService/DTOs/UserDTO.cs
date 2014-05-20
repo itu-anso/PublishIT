@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace PublishITService.DTOs
@@ -17,6 +18,7 @@ namespace PublishITService.DTOs
         public string name { get; set; }
         [DataMember]
         public string username { get; set; }
+        [EmailAddress]
         [DataMember]
         public string email { get; set; }
         [DataMember]
