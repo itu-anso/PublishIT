@@ -290,13 +290,9 @@ namespace PublishITService.Repositories
 
                 if (foundUser != null)
                 {
-                    foundUser.name = inputUser.name;
                     foundUser.user_name = inputUser.username;
-                    foundUser.password = inputUser.password;
-                    foundUser.birthday = inputUser.birthday;
                     foundUser.email = inputUser.email;
-                    foundUser.organization_id = inputUser.organization_id;
-
+                    
                     entities.SaveChanges();
                 }
             }
