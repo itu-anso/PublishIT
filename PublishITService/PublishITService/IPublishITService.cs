@@ -77,7 +77,7 @@ namespace PublishITService
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
-        ResponseMessage PostRating(int rating, int movieId, int userId);
+        ResponseMessage PostRating(int rating, int mediaId, int userId);
     }
 
 	[MessageContract]

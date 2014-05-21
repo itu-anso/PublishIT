@@ -249,12 +249,12 @@ namespace PublishITService
         /// Adds or changes a certain user's integer rating to a certain movie
         /// </summary>
         /// <param name="rating"> The rating of the movie </param>
-        /// <param name="movieId"> The id of the movie to be rated </param>
+        /// <param name="mediaId"> The id of the movie to be rated </param>
         /// <param name="userId"> The id of the user giving the rating </param>
         /// <returns> A response message with a boolean value saying if the rating was a success and a message explaining why/why not </returns>
-        public ResponseMessage PostRating(int rating, int movieId, int userId)
+        public ResponseMessage PostRating(int rating, int mediaId, int userId)
         {
-            return _repository.PostRating(rating, movieId, userId);
+            return _repository.PostRating(rating, mediaId, userId);
         }
 
         /// <summary>
