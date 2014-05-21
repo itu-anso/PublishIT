@@ -574,7 +574,7 @@ namespace PublishITService.Repositories
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                var foundRating = FindRating(movieId, userId);
+                var foundRating = entities.rating.SingleOrDefault(rate => rate.media_id == movieId && rate.user_id == userId); ;
 
                 if (foundRating == null)
                 {
