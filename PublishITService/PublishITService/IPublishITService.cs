@@ -45,9 +45,6 @@ namespace PublishITService
         [OperationContract]
 		byte[] DownloadMedia(int id);
 
-	    [OperationContract]
-	    string Test();
-
         [OperationContract]
 		string StreamMovie(int userId, int movieId);
 
@@ -73,7 +70,7 @@ namespace PublishITService
         // Operation contracts for rating
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json)]
-        int GetRating(int movieId, int userId);
+        int GetRating(int mediaId, int userId);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]

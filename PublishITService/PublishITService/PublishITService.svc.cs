@@ -144,11 +144,6 @@ namespace PublishITService
 			return bytes;
 		}
 
-	    public string Test()
-	    {
-			return "test";
-	    }
-
         /// <summary>
         /// Streams a movie by providing an HTML source code containing the path to the movie and 
         /// a screen to show the movie on
@@ -231,12 +226,12 @@ namespace PublishITService
         /// <summary>
         /// Gets a rating on a certain movie by a certain user by given the two integer id's
         /// </summary>
-        /// <param name="movieId"> The movie's id used to search in the database </param>
+        /// <param name="mediaId"> The movie's id used to search in the database </param>
         /// <param name="userId"> The user's id used to search in the database </param>
         /// <returns> Returns the rating as an integer if found or -1 if not found </returns>
-        public int GetRating(int movieId, int userId)
+        public int GetRating(int mediaId, int userId)
         {
-            var foundRating = _repository.FindRating(movieId, userId);
+            var foundRating = _repository.FindRating(mediaId, userId);
 
             if (foundRating != null)
             {
