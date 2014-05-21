@@ -40,6 +40,7 @@ namespace PublishITService
         /// </summary>
         /// <param name="username"> user's user name </param>
         /// <param name="password"> user's password </param>
+        /// <param name="organizationId"> The organization the user is linked to </param>
         /// <returns> Returns a UserDTO with all information on a user </returns>
         public UserDTO SignIn(string username, string password, int organizationId)
         {
@@ -111,7 +112,7 @@ namespace PublishITService
         /// <returns> A response message with a boolean value saying if the upload was a success and a message explaining why/why not </returns>
 		public void UploadMedia(RemoteFileInfo request)
 		{
-			IMediaParser mediaParser = null;
+			IMediaParser mediaParser;
 
 			if (Path.GetExtension(request.FileName) == ".mp4")
 			{
@@ -180,6 +181,7 @@ namespace PublishITService
         /// Gets a list of medias with a title containing the input string
         /// </summary>
         /// <param name="title"> The title string used to search in the database </param>
+        /// <param name="organizationId"> The organization the user is linked to </param>
         /// <returns> Returns a list of media objects containing the information of the media </returns>
         public List<MediaDTO> SearchMedia(string title, int organizationId)
         {
@@ -190,6 +192,7 @@ namespace PublishITService
         /// Gets movies of a certain genre
         /// </summary>
         /// <param name="inputGenre"> The genre string used to search in the database </param>
+        /// <param name="organizationId"> The organization the user is linked to </param>
         /// <returns> Returns a list of media objects containing the information of the media </returns>
         public List<MediaDTO> GetMoviesByGenre(string inputGenre, int organizationId)
 
