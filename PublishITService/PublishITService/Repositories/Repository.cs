@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using PublishITService.DTOs;
 using PublishITService.Parsers;
@@ -125,8 +124,8 @@ namespace PublishITService.Repositories
         /// </summary>
         /// <param name="username">Username of a user.</param>
         /// <param name="password">Password of a user.</param>
+        /// <param name="organizationId"> The organization the user is linked to </param>
         /// <returns>The user returned based on the username and password.</returns>
-
         public UserDTO FindUserByUsernameAndPassword(string username, string password, int organizationId)
 
         {
@@ -298,14 +297,7 @@ namespace PublishITService.Repositories
                     foundUser.email = inputUser.email;
                     foundUser.organization_id = inputUser.organization_id;
 
-                    try
-                    {
-                        entities.SaveChanges();
-                    }
-                    catch (Exception e)
-                    {
-                        throw new Exception();
-                    }
+                    entities.SaveChanges();
                 }
             }
         }
@@ -574,7 +566,7 @@ namespace PublishITService.Repositories
         {
             using (var entities = _publishITEntities ?? new RentIt09Entities())
             {
-                var foundRating = entities.rating.SingleOrDefault(rate => rate.media_id == movieId && rate.user_id == userId); ;
+                var foundRating = entities.rating.SingleOrDefault(rate => rate.media_id == movieId && rate.user_id == userId); 
 
                 if (foundRating == null)
                 {
