@@ -603,7 +603,7 @@ namespace PublishITService.Repositories
                     return new ResponseMessage { IsExecuted = true, Message = "Rating added" };
                 }
 
-                foundRating.rating_id = rating;
+                foundRating.rating1 = rating;
 
                 entities.SaveChanges();
 
